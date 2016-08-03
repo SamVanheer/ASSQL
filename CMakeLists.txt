@@ -159,8 +159,57 @@ foreach(variable ${variables})
 endforeach()
 message(STATUS "")
 
+if( UNIX )
+	set( LINUX_32BIT_FLAG "-m32" )
+else()
+	set( LINUX_32BIT_FLAG "" )
+endif()
+
 #C++14 support
 set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y" )
+
+#Find shared dependencies
+find_library( ANGELSCRIPTLIB Angelscript PATHS external/Angelscript/lib/ )
+find_library( ANGELSCRIPTUTILS AngelscriptUtils PATHS external/Angelscript/lib/ )
+
+if( NOT WIN32 )
+
+	#This mucking about is needed because CMake can't figure out how to handle libraries not named lib<name>.a
+	set( ANGELSCRIPTLIB "-l:\"${ANGELSCRIPTLIB}\"" )
+	set( ANGELSCRIPTUTILS "-l:\"${ANGELSCRIPTUTILS}\"" )
+
+endif()
+
+#
+#Begin SQL library
+#
+
+add_subdirectory( src/Angelscript )
+
+preprocess_sources()
+
+include_directories(
+	external/Angelscript/include
+)
+
+add_library( AngelscriptSQL STATIC ${PREP_SRCS} )
+
+#Link with SQL dependencies
+target_link_libraries( AngelscriptSQL 
+	"${ANGELSCRIPTLIB}"
+	"${ANGELSCRIPTUTILS}"
+)
+
+set_target_properties( AngelscriptSQL PROPERTIES COMPILE_FLAGS "${LINUX_32BIT_FLAG}" LINK_FLAGS "${SQL_LINK_FLAGS} ${LINUX_32BIT_FLAG}" )
+
+#Create filters
+create_source_groups( "${CMAKE_SOURCE_DIR}" )
+
+clear_sources()
+
+#
+#End SQL library
+#
 
 #
 #Test exe
@@ -172,14 +221,11 @@ preprocess_sources()
 
 add_executable( AngelscriptSQLTest ${PREP_SRCS} )
 
-if( WIN32 AND MSVC )
-	#Set Windows subsystem
-	set( TEST_LINK_FLAGS "/SUBSYSTEM:WINDOWS" )
-else()
-	set( TEST_LINK_FLAGS "" )
-endif()
+target_link_libraries( AngelscriptSQLTest
+	AngelscriptSQL
+)
 
-set_target_properties( AngelscriptSQLTest PROPERTIES COMPILE_FLAGS "${LINUX_32BIT_FLAG}" LINK_FLAGS "${CLIENT_LINK_FLAGS} ${LINUX_32BIT_FLAG}" )
+set_target_properties( AngelscriptSQLTest PROPERTIES COMPILE_FLAGS "${LINUX_32BIT_FLAG}" LINK_FLAGS "${TEST_LINK_FLAGS} ${LINUX_32BIT_FLAG}" )
 
 #Create filters
 create_source_groups( "${CMAKE_SOURCE_DIR}" )
