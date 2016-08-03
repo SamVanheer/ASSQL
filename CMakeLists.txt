@@ -190,14 +190,18 @@ preprocess_sources()
 
 include_directories(
 	external/Angelscript/include
+	external/SQLite/include
 )
 
 add_library( AngelscriptSQL STATIC ${PREP_SRCS} )
+
+find_library( SQLITE3 "sqlite3${CMAKE_STATIC_LIBRARY_SUFFIX}" PATHS external/SQLite/lib )
 
 #Link with SQL dependencies
 target_link_libraries( AngelscriptSQL 
 	"${ANGELSCRIPTLIB}"
 	"${ANGELSCRIPTUTILS}"
+	"${SQLITE3}"
 )
 
 set_target_properties( AngelscriptSQL PROPERTIES COMPILE_FLAGS "${LINUX_32BIT_FLAG}" LINK_FLAGS "${SQL_LINK_FLAGS} ${LINUX_32BIT_FLAG}" )
@@ -235,6 +239,13 @@ create_source_groups( "${CMAKE_SOURCE_DIR}" )
 set_property( DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT AngelscriptSQLTest )
 
 clear_sources()
+
+#Copy the sqlite3 dll so the exe can get to it
+add_custom_command( TARGET AngelscriptSQLTest POST_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy_if_different
+	"${CMAKE_CURRENT_SOURCE_DIR}/external/SQLite/lib/sqlite3.dll"
+	$<TARGET_FILE_DIR:AngelscriptSQLTest>
+)
 
 #
 #End test exe
