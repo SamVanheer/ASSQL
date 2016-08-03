@@ -1,6 +1,8 @@
 #include <cassert>
+#include <thread>
 
 #include "../CASSQLThreadPool.h"
+#include "../CASSQLThreadQueue.h"
 
 #include"CASSQLiteConnection.h"
 
@@ -50,6 +52,25 @@ void CASSQLitePreparedStatement::Execute()
 
 		case SQLITE_ROW:
 			//TODO: handle rows. - Solokiller
+
+			if( m_pRowCallback )
+			{
+				m_bHandlingRow = true;
+				m_bCallbackInvoked = false;
+
+				CASSQLiteRow row( *this );
+
+				m_pConnection->GetThreadPool().GetThreadQueue().AddItem( &row, m_pRowCallback );
+
+				//Let the callback complete first. - Solokiller
+				while( !m_bCallbackInvoked )
+				{
+					std::this_thread::yield();
+				}
+
+				m_bHandlingRow = false;
+			}
+
 			continue;
 
 		default:
@@ -57,6 +78,18 @@ void CASSQLitePreparedStatement::Execute()
 			bContinue = false;
 			break;
 		}
+	}
+
+	if( m_pRowCallback )
+	{
+		m_pRowCallback->Release();
+		m_pRowCallback = nullptr;
+	}
+
+	if( m_pCallback )
+	{
+		m_pCallback->Release();
+		m_pCallback = nullptr;
 	}
 }
 
@@ -71,12 +104,35 @@ void CASSQLitePreparedStatement::Bind( int iIndex, int iValue )
 	sqlite3_bind_int( m_pStatement, iIndex, iValue );
 }
 
-void CASSQLitePreparedStatement::ExecuteStatement( asIScriptFunction* pCallback )
+void CASSQLitePreparedStatement::ExecuteStatement( asIScriptFunction* pRowCallback, asIScriptFunction* pCallback )
 {
 	//TODO: handle multiple calls. - Solokiller
 
 	m_pConnection->GetThreadPool().AddItem( this, pCallback );
 
-	if( pCallback )
-		pCallback->Release();
+	m_pRowCallback = pRowCallback;
+	m_pCallback = pCallback;
+}
+
+void CASSQLitePreparedStatement::CASSQLiteRow::CallbackInvoked()
+{
+	m_Statement.m_bCallbackInvoked = true;
+}
+
+int CASSQLitePreparedStatement::CASSQLiteRow::GetColumnCount() const
+{
+	return sqlite3_column_count( m_Statement.GetStatement() );
+}
+
+int CASSQLitePreparedStatement::CASSQLiteRow::GetColumnInt( int iColumn ) const
+{
+	if( !m_Statement.IsHandlingRow() )
+		return 0;
+
+	if( iColumn < 0 || iColumn >= GetColumnCount() )
+	{
+		return 0;
+	}
+
+	return sqlite3_column_int( m_Statement.GetStatement(), iColumn );
 }

@@ -144,10 +144,15 @@ int main( int iArgc, char* pszArgV[] )
 			{
 				as::Call( pFunction );
 
+				CASOwningContext ctx( *manager.GetEngine() );
+
+				while( g_ASSQL.GetThreadPool().ThreadsActive() )
+				{
+					g_ASSQL.GetThreadPool().ProcessQueue( *ctx.GetContext() );
+				}
+
 				g_ASSQL.GetThreadPool().Stop( true );
 
-				CASOwningContext ctx( *manager.GetEngine() );
-				g_ASSQL.GetThreadPool().ProcessQueue( *ctx.GetContext() );
 			}
 			else
 			{

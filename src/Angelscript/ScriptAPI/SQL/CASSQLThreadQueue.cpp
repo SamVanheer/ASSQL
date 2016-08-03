@@ -58,6 +58,8 @@ void CASSQLThreadQueue::ProcessQueue( asIScriptContext& context )
 
 		as::Call( &context, entry.pCallback, entry.pItem );
 
+		entry.pItem->CallbackInvoked();
+
 		entry.pCallback->Release();
 
 		entry.pItem->Release();

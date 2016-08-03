@@ -10,6 +10,7 @@ add_sources(
 	IASSQLConnection.h
 	IASSQLPreparedStatement.h
 	IASSQLQuery.h
+	IASSQLRow.h
 )
 
 add_subdirectory( SQLite )

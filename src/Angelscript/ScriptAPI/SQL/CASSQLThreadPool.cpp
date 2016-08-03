@@ -11,6 +11,11 @@ CASSQLThreadPool::CASSQLThreadPool( const size_t uiNumThreads )
 {
 }
 
+bool CASSQLThreadPool::ThreadsActive() const
+{
+	return ( m_Pool.size() - m_Pool.n_idle() ) > 0;
+}
+
 bool CASSQLThreadPool::AddItem( IASSQLASyncItem* pItem, asIScriptFunction* pCallback )
 {
 	assert( pItem );

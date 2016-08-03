@@ -57,7 +57,14 @@ void main()
 		{
 			pStmt.Bind( 1, 10 );
 			
-			pStmt.ExecuteStatement( @StmtCallback );
+			pStmt.ExecuteStatement( null, @StmtCallback );
+		}
+		
+		SQLPreparedStatement@ pStmt2 = g_pConnection.CreatePreparedStatement( "SELECT * FROM Test" );
+		
+		if( pStmt2 !is null )
+		{
+			pStmt2.ExecuteStatement( @RowCallback );
 		}
 	}
 }
@@ -70,4 +77,11 @@ void QueryCallback( SQLQuery@ pQuery )
 void StmtCallback( SQLPreparedStatement@ pStmt )
 {
 	Print( "Statement callback invoked\n" );
+}
+
+void RowCallback( SQLRow@ pRow )
+{
+	Print( "Statement 2 callback invoked\n" );
+	
+	Print( "Value: %1\n", pRow.GetColumnInt( 1 ) );
 }

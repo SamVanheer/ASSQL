@@ -10,6 +10,8 @@ public:
 	virtual void Release() const = 0;
 
 	virtual void Execute() = 0;
+
+	virtual void CallbackInvoked() {}
 };
 
 #endif //ANGELSCRIPT_SCRIPTAPI_SQL_IASSQLASYNCITEM_H

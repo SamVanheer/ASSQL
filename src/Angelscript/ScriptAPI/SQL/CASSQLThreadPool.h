@@ -21,6 +21,10 @@ public:
 	CASSQLThreadPool( const size_t uiNumThreads );
 	~CASSQLThreadPool() = default;
 
+	CASSQLThreadQueue& GetThreadQueue() { return m_Queue; }
+
+	bool ThreadsActive() const;
+
 	/**
 	*	Adds an item to the queue.
 	*	@param pItem Item to add. The item's reference counting shall be thread-safe.

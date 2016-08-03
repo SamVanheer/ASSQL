@@ -5,6 +5,7 @@
 #include "IASSQLConnection.h"
 #include "IASSQLPreparedStatement.h"
 #include "IASSQLQuery.h"
+#include "IASSQLRow.h"
 
 #include "ASSQL.h"
 
@@ -21,6 +22,25 @@ static void RegisterScriptSQLQuery( asIScriptEngine& engine )
 		asMETHOD( IASSQLQuery, IsValid ), asCALL_THISCALL );
 
 	engine.RegisterFuncdef( "void SQLQueryCallback(SQLQuery@ pQuery)" );
+}
+
+static void RegisterScriptSQLRow( asIScriptEngine& engine )
+{
+	const char* const pszObjectName = "SQLRow";
+
+	engine.RegisterObjectType( pszObjectName, 0, asOBJ_REF );
+
+	as::RegisterRefCountedBaseClass<IASSQLRow>( &engine, pszObjectName );
+
+	engine.RegisterObjectMethod(
+		pszObjectName, "int GetColumnCount() const",
+		asMETHOD( IASSQLRow, GetColumnCount ), asCALL_THISCALL );
+
+	engine.RegisterObjectMethod(
+		pszObjectName, "int GetColumnInt(const int iColumn) const",
+		asMETHOD( IASSQLRow, GetColumnInt ), asCALL_THISCALL );
+
+	engine.RegisterFuncdef( "void SQLRowCallback(SQLRow@ pRow)" );
 }
 
 static void RegisterScriptSQLPreparedStatement( asIScriptEngine& engine )
@@ -42,7 +62,7 @@ static void RegisterScriptSQLPreparedStatement( asIScriptEngine& engine )
 	engine.RegisterFuncdef( "void SQLPreparedStatementCallback(SQLPreparedStatement@ pStatement)" );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "void ExecuteStatement(SQLPreparedStatementCallback@ pCallback)",
+		pszObjectName, "void ExecuteStatement(SQLRowCallback@ pRowCallback = null, SQLPreparedStatementCallback@ pCallback = null)",
 		asMETHOD( IASSQLPreparedStatement, ExecuteStatement ), asCALL_THISCALL );
 }
 
@@ -74,6 +94,7 @@ static void RegisterScriptSQLConnection( asIScriptEngine& engine )
 void RegisterScriptSQL( asIScriptEngine& engine )
 {
 	RegisterScriptSQLQuery( engine );
+	RegisterScriptSQLRow( engine );
 	RegisterScriptSQLPreparedStatement( engine );
 	RegisterScriptSQLConnection( engine );
 }
