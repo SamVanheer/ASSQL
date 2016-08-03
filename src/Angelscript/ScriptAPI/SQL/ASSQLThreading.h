@@ -1,0 +1,13 @@
+#ifndef ANGELSCRIPT_SCRIPTAPI_SQL_ASSQLTHREADING_H
+#define ANGELSCRIPT_SCRIPTAPI_SQL_ASSQLTHREADING_H
+
+class IASSQLASyncItem;
+class asIScriptFunction;
+
+struct CASSQLItem final
+{
+	IASSQLASyncItem* pItem;
+	asIScriptFunction* pCallback;
+};
+
+#endif //ANGELSCRIPT_SCRIPTAPI_SQL_ASSQLTHREADING_H
