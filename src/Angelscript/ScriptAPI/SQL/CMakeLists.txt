@@ -8,6 +8,7 @@ add_sources(
 	CASSQLThreadQueue.cpp
 	IASSQLASyncItem.h
 	IASSQLConnection.h
+	IASSQLQuery.h
 )
 
 add_subdirectory( SQLite )

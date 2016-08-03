@@ -35,11 +35,27 @@ void ASMessageCallback( asSMessageInfo* pMsg )
 	std::cout << pszType << pMsg->section << '(' << pMsg->row << ", " << pMsg->col << ')' << std::endl << pMsg->message << std::endl;
 }
 
-CASSQLiteConnection* CreateSQLiteConnection( const std::string& szFilename )
+class CASSQL final
 {
-	//TODO: sanitize input filename.
-	return new CASSQLiteConnection( szFilename.c_str() );
-}
+public:
+	CASSQL()
+		: m_ThreadPool( std::thread::hardware_concurrency() )
+	{
+	}
+
+	CASSQLThreadPool& GetThreadPool() { return m_ThreadPool; }
+
+	CASSQLiteConnection* CreateSQLiteConnection( const std::string& szFilename )
+	{
+		//TODO: sanitize input filename.
+		return new CASSQLiteConnection( szFilename.c_str(), m_ThreadPool );
+	}
+
+private:
+	CASSQLThreadPool m_ThreadPool;
+};
+
+CASSQL g_ASSQL;
 
 void Print( asIScriptGeneric* pArguments )
 {
@@ -73,9 +89,13 @@ public:
 
 		RegisterScriptSQL( engine );
 
-		engine.RegisterGlobalFunction( 
-			"SQLConnection@ CreateSQLiteConnection(const string& in szFilename)", 
-			asFUNCTION( CreateSQLiteConnection ), asCALL_CDECL );
+		engine.RegisterObjectType( "CSQL", 0, asOBJ_REF | asOBJ_NOCOUNT );
+
+		engine.RegisterObjectMethod( 
+			"CSQL", "SQLConnection@ CreateSQLiteConnection(const string& in szFilename)", 
+			asMETHOD( CASSQL, CreateSQLiteConnection ), asCALL_THISCALL );
+
+		engine.RegisterGlobalProperty( "CSQL SQL", &g_ASSQL );
 
 		as::RegisterVarArgsFunction( engine, "void", "Print", "const string& in szFormat", 0, 8, asFUNCTION( Print ) );
 
@@ -114,8 +134,6 @@ int main( int iArgc, char* pszArgV[] )
 	{
 		std::cout << "Starting tests" << std::endl;
 
-		CASSQLThreadPool pool( std::thread::hardware_concurrency() );
-
 		manager.GetModuleManager().AddDescriptor( "Test", 0xFFFFFFFF, as::ModulePriority::HIGHEST );
 
 		CASModuleBuilder builder;
@@ -125,6 +143,8 @@ int main( int iArgc, char* pszArgV[] )
 			if( auto pFunction = pModule->GetModule()->GetFunctionByDecl( "void main()" ) )
 			{
 				as::Call( pFunction );
+
+				g_ASSQL.GetThreadPool().Stop( true );
 			}
 			else
 			{

@@ -33,6 +33,11 @@ void CASSQLThreadPool::ProcessQueue( asIScriptContext& context )
 	m_Queue.ProcessQueue( context );
 }
 
+void CASSQLThreadPool::Stop( const bool bWait )
+{
+	m_Pool.stop( bWait );
+}
+
 void CASSQLThreadPool::ExecuteItem( int iID, CASSQLThreadPool* pPool, CASSQLItem item )
 {
 	item.pItem->Execute();

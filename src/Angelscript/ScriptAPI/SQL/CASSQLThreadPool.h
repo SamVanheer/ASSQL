@@ -33,6 +33,12 @@ public:
 	*/
 	void ProcessQueue( asIScriptContext& context );
 
+	/**
+	*	Stops all threads.
+	*	@param bWait If true, will wait for all threads to finish before stopping. Otherwise, terminates all threads.
+	*/
+	void Stop( const bool bWait = false );
+
 private:
 	static void ExecuteItem( int iID, CASSQLThreadPool* pPool, CASSQLItem item );
 

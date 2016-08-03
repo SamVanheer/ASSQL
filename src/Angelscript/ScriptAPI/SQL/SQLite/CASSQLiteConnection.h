@@ -7,13 +7,15 @@
 
 #include "../IASSQLConnection.h"
 
+class CASSQLThreadPool;
+
 /**
 *	Angelscript SQLite connection.
 */
 class CASSQLiteConnection : public IASSQLConnection, public CASAtomicRefCountedBaseClass
 {
 public:
-	CASSQLiteConnection( const char* const pszFilename );
+	CASSQLiteConnection( const char* const pszFilename, CASSQLThreadPool& pool );
 
 	/**
 	*	Destructor.
@@ -36,8 +38,16 @@ public:
 
 	void Close() override;
 
+	bool Query( const std::string& szQuery ) override;
+
+	sqlite3* GetConnection() { return m_pConnection; }
+
+	CASSQLThreadPool& GetThreadPool() { return m_ThreadPool; }
+
 private:
 	sqlite3* m_pConnection = nullptr;
+
+	CASSQLThreadPool& m_ThreadPool;
 
 private:
 	CASSQLiteConnection( const CASSQLiteConnection& ) = delete;
