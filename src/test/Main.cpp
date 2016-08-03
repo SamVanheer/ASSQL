@@ -1,45 +1,147 @@
 #include <iostream>
 
+#include <Angelscript/CASManager.h>
+#include <Angelscript/CASModule.h>
+#include <Angelscript/IASInitializer.h>
+#include <Angelscript/IASModuleBuilder.h>
+
+#include <Angelscript/add_on/scriptbuilder.h>
+#include <Angelscript/add_on/scriptstdstring.h>
+
+#include <Angelscript/util/ASUtil.h>
 #include <Angelscript/util/CASBaseClass.h>
+#include <Angelscript/wrapper/ASCallable.h>
 
 #include <Angelscript/ScriptAPI/SQL/ASSQL.h>
 #include <Angelscript/ScriptAPI/SQL/CASSQLThreadPool.h>
 #include <Angelscript/ScriptAPI/SQL/IASSQLASyncItem.h>
+#include <Angelscript/ScriptAPI/SQL/SQLite/CASSQLiteConnection.h>
 
-#include "sqlite3.h"
+void ASMessageCallback( asSMessageInfo* pMsg )
+{
+	const char* pszType = "";
 
-class CASyncItem : public CASAtomicRefCountedBaseClass, public IASSQLASyncItem
+	switch( pMsg->type )
+	{
+	case asMSGTYPE_ERROR:
+		pszType = "Error: ";
+		break;
+
+	case asMSGTYPE_WARNING:
+		pszType = "Warning: ";
+		break;
+	}
+
+	std::cout << pszType << pMsg->section << '(' << pMsg->row << ", " << pMsg->col << ')' << std::endl << pMsg->message << std::endl;
+}
+
+CASSQLiteConnection* CreateSQLiteConnection( const std::string& szFilename )
+{
+	//TODO: sanitize input filename.
+	return new CASSQLiteConnection( szFilename.c_str() );
+}
+
+void Print( asIScriptGeneric* pArguments )
+{
+	char szBuffer[ 4096 ];
+
+	const std::string& szFormat = *reinterpret_cast<const std::string*>( pArguments->GetArgAddress( 0 ) );
+
+	if( as::SPrintf( szBuffer, szFormat.c_str(), 1, *pArguments ) )
+	{
+		std::cout << szBuffer;
+	}
+}
+
+class CASInitializer final : public IASInitializer
 {
 public:
-
-	void AddRef() const
+	bool GetMessageCallback( asSFuncPtr& outFuncPtr, void*& pOutObj, asDWORD& outCallConv ) override
 	{
-		CASAtomicRefCountedBaseClass::AddRef();
+		outFuncPtr = asFUNCTION( ASMessageCallback );
+		pOutObj = nullptr;
+		outCallConv = asCALL_CDECL;
+
+		return true;
 	}
 
-	void Release() const
+	bool RegisterCoreAPI( CASManager& manager ) override
 	{
-		if( InternalRelease() )
-			delete this;
+		auto& engine = *manager.GetEngine();
+
+		RegisterStdString( &engine );
+
+		RegisterScriptSQL( engine );
+
+		engine.RegisterGlobalFunction( 
+			"SQLConnection@ CreateSQLiteConnection(const string& in szFilename)", 
+			asFUNCTION( CreateSQLiteConnection ), asCALL_CDECL );
+
+		as::RegisterVarArgsFunction( engine, "void", "Print", "const string& in szFormat", 0, 8, asFUNCTION( Print ) );
+
+		return true;
 	}
 
-	void Execute()
+	bool RegisterAPI( CASManager& manager )
 	{
-		std::cout << "Executing item" << std::endl;
+		return true;
+	}
+};
+
+class CASModuleBuilder : public IASModuleBuilder
+{
+public:
+	bool AddScripts( CScriptBuilder& builder ) override
+	{
+		//Assumes the working directory is <repo>/working_dir
+		return builder.AddSectionFromFile( "../tests/test_SQLite.as" ) >= 0;
 	}
 };
 
 int main( int iArgc, char* pszArgV[] )
 {
-	CASSQLThreadPool pool( std::thread::hardware_concurrency() );
+	CASManager manager;
 
-	auto pItem = new CASyncItem();
+	bool bSuccess = false;
 
-	pool.AddItem( pItem, nullptr );
+	{
+		CASInitializer initializer;
 
-	pItem->Release();
+		bSuccess = manager.Initialize( initializer );
+	}
+
+	if( bSuccess )
+	{
+		std::cout << "Starting tests" << std::endl;
+
+		CASSQLThreadPool pool( std::thread::hardware_concurrency() );
+
+		manager.GetModuleManager().AddDescriptor( "Test", 0xFFFFFFFF, as::ModulePriority::HIGHEST );
+
+		CASModuleBuilder builder;
+
+		if( CASModule* pModule = manager.GetModuleManager().BuildModule( "Test", "Test", builder ) )
+		{
+			if( auto pFunction = pModule->GetModule()->GetFunctionByDecl( "void main()" ) )
+			{
+				as::Call( pFunction );
+			}
+			else
+			{
+				std::cout << "Couldn't find main function" << std::endl;
+			}
+		}
+		else
+		{
+			std::cout << "Couldn't build module" << std::endl;
+		}
+	}
+
+	manager.Shutdown();
+
+	std::cout << "Finished running tests" << std::endl;
 
 	std::cin.get();
 
-	return 0;
+	return bSuccess ? EXIT_SUCCESS : EXIT_FAILURE;
 }

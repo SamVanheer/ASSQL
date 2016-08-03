@@ -9,3 +9,5 @@ add_sources(
 	IASSQLASyncItem.h
 	IASSQLConnection.h
 )
+
+add_subdirectory( SQLite )
