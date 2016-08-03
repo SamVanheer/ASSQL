@@ -38,7 +38,7 @@ public:
 
 	void Close() override;
 
-	bool Query( const std::string& szQuery ) override;
+	bool Query( const std::string& szQuery, asIScriptFunction* const pCallback ) override;
 
 	sqlite3* GetConnection() { return m_pConnection; }
 

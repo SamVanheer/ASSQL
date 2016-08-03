@@ -36,19 +36,21 @@ void CASSQLiteConnection::Close()
 	}
 }
 
-bool CASSQLiteConnection::Query( const std::string& szQuery )
+bool CASSQLiteConnection::Query( const std::string& szQuery, asIScriptFunction* const pCallback )
 {
 	auto pQuery = new CASSQLiteQuery( this, szQuery.c_str() );
 
-	if( !pQuery->IsValid() )
+	bool bSuccess = false;
+
+	if( pQuery->IsValid() )
 	{
-		delete pQuery;
-		return false;
+		bSuccess = m_ThreadPool.AddItem( pQuery, pCallback );
 	}
 
-	m_ThreadPool.AddItem( pQuery, nullptr );
+	if( pCallback )
+		pCallback->Release();
 
 	pQuery->Release();
 
-	return true;
+	return bSuccess;
 }

@@ -3,6 +3,8 @@
 
 #include <string>
 
+class asIScriptFunction;
+
 /**
 *	Represents an SQL connection.
 */
@@ -25,9 +27,10 @@ public:
 	/**
 	*	Performs a simple query.
 	*	@param szQuery Query to perform.
+	*	@param pCallback Optional. Callback to invoke.
 	*	@return Whether the query is well formed.
 	*/
-	virtual bool Query( const std::string& szQuery ) = 0;
+	virtual bool Query( const std::string& szQuery, asIScriptFunction* const pCallback = nullptr ) = 0;
 };
 
 #endif //ANGELSCRIPT_SCRIPTAPI_SQL_ISQLCONNECTION_H

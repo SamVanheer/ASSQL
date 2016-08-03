@@ -18,6 +18,8 @@ static void RegisterScriptSQLQuery( asIScriptEngine& engine )
 	engine.RegisterObjectMethod(
 		pszObjectName, "bool IsValid() const",
 		asMETHOD( IASSQLQuery, IsValid ), asCALL_THISCALL );
+
+	engine.RegisterFuncdef( "void SQLQueryCallback(SQLQuery@ pQuery)" );
 }
 
 static void RegisterScriptSQLConnection( asIScriptEngine& engine )
@@ -37,12 +39,12 @@ static void RegisterScriptSQLConnection( asIScriptEngine& engine )
 		asMETHOD( IASSQLConnection, Close ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "bool Query(const string& in szQuery)",
+		pszObjectName, "bool Query(const string& in szQuery, SQLQueryCallback@ pCallback = nullptr)",
 		asMETHOD( IASSQLConnection, Query ), asCALL_THISCALL );
 }
 
 void RegisterScriptSQL( asIScriptEngine& engine )
 {
-	RegisterScriptSQLConnection( engine );
 	RegisterScriptSQLQuery( engine );
+	RegisterScriptSQLConnection( engine );
 }
