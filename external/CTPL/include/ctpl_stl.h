@@ -81,10 +81,10 @@ namespace ctpl {
         }
 
         // get the number of running threads in the pool
-        int size() { return static_cast<int>(this->threads.size()); }
+        int size() const { return static_cast<int>(this->threads.size()); }
 
         // number of idle threads
-        int n_idle() { return this->nWaiting; }
+        int n_idle() const { return this->nWaiting; }
         std::thread & get_thread(int i) { return *this->threads[i]; }
 
         // change the number of threads in the pool
