@@ -189,8 +189,10 @@ add_subdirectory( src/Angelscript )
 preprocess_sources()
 
 include_directories(
+	src
 	external/Angelscript/include
 	external/SQLite/include
+	external/CTPL/include
 )
 
 add_library( AngelscriptSQL STATIC ${PREP_SRCS} )
