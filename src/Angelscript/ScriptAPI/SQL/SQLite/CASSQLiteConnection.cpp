@@ -54,3 +54,17 @@ bool CASSQLiteConnection::Query( const std::string& szQuery, asIScriptFunction* 
 
 	return bSuccess;
 }
+
+CASSQLitePreparedStatement* CASSQLiteConnection::CreatePreparedStatement( const std::string& szStatement )
+{
+	auto pStatement = new CASSQLitePreparedStatement( this, szStatement.c_str() );
+
+	if( pStatement->IsValid() )
+	{
+		return pStatement;
+	}
+
+	pStatement->Release();
+
+	return nullptr;
+}

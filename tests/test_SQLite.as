@@ -41,16 +41,33 @@ void main()
 	{
 		const bool bSuccess = g_pConnection.Query( 
 			"CREATE TABLE IF NOT EXISTS Test("
-			"ID INT PRIMARY_KEY NOT NULL"
+			"ID INT PRIMARY_KEY NOT NULL,"
+			"VALUE INT NOT NULL"
 			")",
 			@QueryCallback
 		);
 		
 		Print( "Created query: %1\n", bSuccess ? "yes" : "no" );
+		
+		SQLPreparedStatement@ pStmt = g_pConnection.CreatePreparedStatement( "INSERT INTO Test (ID, VALUE) VALUES(1, ?)" );
+		
+		Print( "Created statement: %1\n", pStmt !is null ? "yes" : "no" );
+		
+		if( pStmt !is null )
+		{
+			pStmt.Bind( 1, 10 );
+			
+			pStmt.ExecuteStatement( @StmtCallback );
+		}
 	}
 }
 
 void QueryCallback( SQLQuery@ pQuery )
 {
 	Print( "Query callback invoked\n" );
+}
+
+void StmtCallback( SQLPreparedStatement@ pStmt )
+{
+	Print( "Statement callback invoked\n" );
 }

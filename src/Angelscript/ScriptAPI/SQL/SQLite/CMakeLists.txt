@@ -1,6 +1,8 @@
 add_sources(
 	CASSQLiteConnection.h
 	CASSQLiteConnection.cpp
+	CASSQLitePreparedStatement.h
+	CASSQLitePreparedStatement.cpp
 	CASSQLiteQuery.h
 	CASSQLiteQuery.cpp
 )

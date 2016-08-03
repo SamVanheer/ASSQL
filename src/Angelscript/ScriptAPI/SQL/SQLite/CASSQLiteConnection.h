@@ -7,6 +7,8 @@
 
 #include "../IASSQLConnection.h"
 
+#include "CASSQLitePreparedStatement.h"
+
 class CASSQLThreadPool;
 
 /**
@@ -39,6 +41,8 @@ public:
 	void Close() override;
 
 	bool Query( const std::string& szQuery, asIScriptFunction* const pCallback ) override;
+
+	CASSQLitePreparedStatement* CreatePreparedStatement( const std::string& szStatement ) override;
 
 	sqlite3* GetConnection() { return m_pConnection; }
 
