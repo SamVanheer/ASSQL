@@ -159,11 +159,6 @@ int main( int iArgc, char* pszArgV[] )
 
 				do
 				{
-					while( g_ASSQL.GetThreadPool().ThreadsActive() )
-					{
-						g_ASSQL.GetThreadPool().ProcessQueue( *ctx.GetContext() );
-					}
-
 					g_ASSQL.GetThreadPool().ProcessQueue( *ctx.GetContext() );
 				}
 				while( g_ASSQL.GetThreadPool().ThreadsActive() );
