@@ -5,6 +5,4 @@ add_sources(
 	CASSQLitePreparedStatement.cpp
 	CASSQLiteQuery.h
 	CASSQLiteQuery.cpp
-	CASSQLiteRow.h
-	CASSQLiteRow.cpp
 )
