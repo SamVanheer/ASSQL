@@ -2,43 +2,10 @@
 
 #include <Angelscript/util/CASBaseClass.h>
 
-#include "ASSQLDataType.h"
-
 #include "IASSQLConnection.h"
 #include "IASSQLQuery.h"
 
 #include "ASSQL.h"
-
-static std::string ASScriptSQLDataTypeToString( const ASSQLDataType type )
-{
-	return ASSQLDataTypeToString( type );
-}
-
-static ASSQLDataType ASScriptStringToSQLDataType( const std::string& szString )
-{
-	return ASStringToSQLDataType( szString.c_str() );
-}
-
-static void RegisterScriptSQLDataType( asIScriptEngine& engine )
-{
-	const char* const pszObjectName = "SQLDataType";
-
-	engine.RegisterEnum( pszObjectName );
-
-	engine.RegisterEnumValue( pszObjectName, "SQL_TYPE_NULL", static_cast<int>( SQL_TYPE_NULL ) );
-	engine.RegisterEnumValue( pszObjectName, "SQL_TYPE_INTEGER", static_cast<int>( SQL_TYPE_INTEGER ) );
-	engine.RegisterEnumValue( pszObjectName, "SQL_TYPE_FLOAT", static_cast<int>( SQL_TYPE_FLOAT ) );
-	engine.RegisterEnumValue( pszObjectName, "SQL_TYPE_TEXT", static_cast<int>( SQL_TYPE_TEXT ) );
-	engine.RegisterEnumValue( pszObjectName, "SQL_TYPE_BLOB", static_cast<int>( SQL_TYPE_BLOB ) );
-
-	engine.RegisterGlobalFunction( 
-		"string SQLDataTypeToString(const SQLDataType type)",
-		asFUNCTION( ASScriptSQLDataTypeToString ), asCALL_CDECL );
-
-	engine.RegisterGlobalFunction(
-		"SQLDataType StringToSQLDataType(const string& in szString)",
-		asFUNCTION( ASScriptStringToSQLDataType ), asCALL_CDECL );
-}
 
 static void RegisterScriptSQLQuery( asIScriptEngine& engine )
 {
@@ -76,7 +43,6 @@ void RegisterScriptSQLConnection( asIScriptEngine& engine, const char* const psz
 
 void RegisterScriptSQL( asIScriptEngine& engine )
 {
-	RegisterScriptSQLDataType( engine );
 	RegisterScriptSQLQuery( engine );
 	RegisterScriptSQLConnection( engine, "SQLConnection" );
 }

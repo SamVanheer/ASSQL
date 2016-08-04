@@ -8,7 +8,6 @@
 
 #include <Angelscript/util/CASBaseClass.h>
 
-#include "../ASSQLDataType.h"
 #include "../IASSQLASyncItem.h"
 
 class CASSQLiteConnection;
@@ -47,7 +46,7 @@ public:
 		/**
 		*	@return The type of the given column. Invalid column indices are always null.
 		*/
-		ASSQLDataType GetColumnType( const int iColumn ) const;
+		int GetColumnType( const int iColumn ) const;
 
 		/**
 		*	@return Whether the given column is null. Invalid column indices are always null.

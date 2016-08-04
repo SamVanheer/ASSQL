@@ -1,8 +1,6 @@
 add_sources(
 	ASSQL.h
 	ASSQL.cpp
-	ASSQLDataType.h
-	ASSQLDataType.cpp
 	ASSQLThreading.h
 	CASSQLThreadPool.h
 	CASSQLThreadPool.cpp

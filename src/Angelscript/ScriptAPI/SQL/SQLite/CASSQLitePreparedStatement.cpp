@@ -178,24 +178,14 @@ int CASSQLitePreparedStatement::CASSQLiteRow::GetColumnCount() const
 	return sqlite3_column_count( m_Statement.GetStatement() );
 }
 
-ASSQLDataType CASSQLitePreparedStatement::CASSQLiteRow::GetColumnType( const int iColumn ) const
+int CASSQLitePreparedStatement::CASSQLiteRow::GetColumnType( const int iColumn ) const
 {
 	if( iColumn < 0 || iColumn >= GetColumnCount() )
 	{
-		return SQL_TYPE_NULL;
+		return SQLITE_NULL;
 	}
 
-	switch( sqlite3_column_type( m_Statement.GetStatement(), iColumn ) )
-	{
-	case SQLITE_INTEGER:	return SQL_TYPE_INTEGER;
-	case SQLITE_FLOAT:		return SQL_TYPE_FLOAT;
-	case SQLITE_TEXT:		return SQL_TYPE_TEXT;
-	case SQLITE_BLOB:		return SQL_TYPE_BLOB;
-
-	default:
-		//TODO: warn about unknown type. - Solokiller
-	case SQLITE_NULL:		return SQL_TYPE_NULL;
-	}
+	return sqlite3_column_type( m_Statement.GetStatement(), iColumn );
 }
 
 bool CASSQLitePreparedStatement::CASSQLiteRow::IsColumnNull( const int iColumn ) const

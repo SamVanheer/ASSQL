@@ -1,6 +1,8 @@
 add_sources(
 	ASSQLite.h
 	ASSQLite.cpp
+	ASSQLiteDataType.h
+	ASSQLiteDataType.cpp
 	CASSQLiteConnection.h
 	CASSQLiteConnection.cpp
 	CASSQLitePreparedStatement.h

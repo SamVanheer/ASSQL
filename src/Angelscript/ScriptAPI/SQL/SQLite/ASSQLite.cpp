@@ -5,10 +5,43 @@
 
 #include "../ASSQL.h"
 
+#include "ASSQLiteDataType.h"
+
 #include "CASSQLiteConnection.h"
 #include "CASSQLitePreparedStatement.h"
 
 #include "ASSQLite.h"
+
+static std::string ASScriptSQLiteDataTypeToString( const int type )
+{
+	return ASSQLiteDataTypeToString( type );
+}
+
+static int ASScriptStringToSQLiteDataType( const std::string& szString )
+{
+	return ASStringToSQLiteDataType( szString.c_str() );
+}
+
+static void RegisterScriptSQLDataType( asIScriptEngine& engine )
+{
+	const char* const pszObjectName = "SQLiteDataType";
+
+	engine.RegisterEnum( pszObjectName );
+
+	engine.RegisterEnumValue( pszObjectName, "SQLITE_NULL", static_cast<int>( SQLITE_NULL ) );
+	engine.RegisterEnumValue( pszObjectName, "SQLITE_INTEGER", static_cast<int>( SQLITE_INTEGER ) );
+	engine.RegisterEnumValue( pszObjectName, "SQLITE_FLOAT", static_cast<int>( SQLITE_FLOAT ) );
+	engine.RegisterEnumValue( pszObjectName, "SQLITE_TEXT", static_cast<int>( SQLITE_TEXT ) );
+	engine.RegisterEnumValue( pszObjectName, "SQLITE_BLOB", static_cast<int>( SQLITE_BLOB ) );
+
+	engine.RegisterGlobalFunction(
+		"string SQLiteDataTypeToString(const SQLiteDataType type)",
+		asFUNCTION( ASScriptSQLiteDataTypeToString ), asCALL_CDECL );
+
+	engine.RegisterGlobalFunction(
+		"SQLiteDataType StringToSQLiteDataType(const string& in szString)",
+		asFUNCTION( ASScriptStringToSQLiteDataType ), asCALL_CDECL );
+}
 
 static void RegisterScriptSQLiteRow( asIScriptEngine& engine )
 {
@@ -26,7 +59,7 @@ static void RegisterScriptSQLiteRow( asIScriptEngine& engine )
 		asMETHOD( CASSQLitePreparedStatement::CASSQLiteRow, GetColumnCount ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "SQLDataType GetColumnType(const int iColumn) const",
+		pszObjectName, "SQLiteDataType GetColumnType(const int iColumn) const",
 		asMETHOD( CASSQLitePreparedStatement::CASSQLiteRow, GetColumnType ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
@@ -94,6 +127,7 @@ static void RegisterScriptSQLiteConnection( asIScriptEngine& engine )
 
 void RegisterScriptSQLite( asIScriptEngine& engine )
 {
+	RegisterScriptSQLDataType( engine );
 	RegisterScriptSQLiteRow( engine );
 	RegisterScriptSQLitePreparedStatement( engine );
 	RegisterScriptSQLiteConnection( engine );

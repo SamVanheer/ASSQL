@@ -87,6 +87,6 @@ void RowCallback( SQLiteRow@ pRow )
 	
 	for( int iColumn = 0; iColumn < pRow.GetColumnCount(); ++iColumn )
 	{
-		Print( "Column %1: Type %2\n", iColumn, SQLDataTypeToString( pRow.GetColumnType( iColumn ) ) );
+		Print( "Column %1: Type %2\n", iColumn, SQLiteDataTypeToString( pRow.GetColumnType( iColumn ) ) );
 	}
 }
