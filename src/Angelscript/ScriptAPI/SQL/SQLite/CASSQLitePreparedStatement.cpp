@@ -125,6 +125,17 @@ void CASSQLitePreparedStatement::Bind( int iIndex, double flValue )
 	sqlite3_bind_double( m_pStatement, iIndex, flValue );
 }
 
+void CASSQLitePreparedStatement::Bind( int iIndex, const std::string& szString )
+{
+	const size_t uiLength = szString.length();
+
+	char* pszString = new char[ uiLength + 1 ];
+
+	strcpy( pszString, szString.c_str() );
+
+	sqlite3_bind_text( m_pStatement, iIndex, pszString, -1, ::operator delete[] );
+}
+
 bool CASSQLitePreparedStatement::ExecuteStatement( asIScriptFunction* pRowCallback, asIScriptFunction* pCallback )
 {
 	if( m_bExecuting )
@@ -217,7 +228,7 @@ double CASSQLitePreparedStatement::CASSQLiteRow::GetColumnDouble( int iColumn ) 
 	return sqlite3_column_double( m_Statement.GetStatement(), iColumn );
 }
 
-std::string CASSQLitePreparedStatement::CASSQLiteRow::GetColumnString( int iColumn ) const
+std::string CASSQLitePreparedStatement::CASSQLiteRow::GetColumnText( int iColumn ) const
 {
 	if( iColumn < 0 || iColumn >= GetColumnCount() )
 	{

@@ -11,7 +11,6 @@ add_sources(
 	IASSQLASyncItem.h
 	IASSQLConnection.h
 	IASSQLQuery.h
-	IASSQLRow.h
 )
 
 add_subdirectory( MySQL )

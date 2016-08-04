@@ -8,16 +8,16 @@
 
 #include <Angelscript/util/CASBaseClass.h>
 
+#include "../ASSQLDataType.h"
 #include "../IASSQLASyncItem.h"
-#include "../IASSQLRow.h"
 
 class CASSQLiteConnection;
 
 class CASSQLitePreparedStatement final : public IASSQLASyncItem, public CASAtomicRefCountedBaseClass
 {
-private:
+public:
 
-	class CASSQLiteRow final : public IASSQLRow
+	class CASSQLiteRow final : public IASSQLASyncItem
 	{
 	public:
 		CASSQLiteRow( CASSQLitePreparedStatement& statement, const int iRowIndex )
@@ -34,19 +34,40 @@ private:
 
 		void CallbackInvoked() override;
 
+		/**
+		*	@return The row index.
+		*/
 		int GetRowIndex() const;
 
-		int GetColumnCount() const override;
+		/**
+		*	@return The column count.
+		*/
+		int GetColumnCount() const;
 
-		ASSQLDataType GetColumnType( const int iColumn ) const override;
+		/**
+		*	@return The type of the given column. Invalid column indices are always null.
+		*/
+		ASSQLDataType GetColumnType( const int iColumn ) const;
 
-		bool IsColumnNull( const int iColumn ) const override;
+		/**
+		*	@return Whether the given column is null. Invalid column indices are always null.
+		*/
+		bool IsColumnNull( const int iColumn ) const;
 
-		int GetColumnInt( int iColumn ) const override;
+		/**
+		*	@return A column integer.
+		*/
+		int GetColumnInt( int iColumn ) const;
 
-		double GetColumnDouble( int iColumn ) const override;
+		/**
+		*	@return A column double.
+		*/
+		double GetColumnDouble( int iColumn ) const;
 
-		std::string GetColumnString( int iColumn ) const override;
+		/**
+		*	@return A column string.
+		*/
+		std::string GetColumnText( int iColumn ) const;
 
 	private:
 		CASSQLitePreparedStatement& m_Statement;
@@ -81,6 +102,8 @@ public:
 	void Bind( int iIndex, int iValue );
 
 	void Bind( int iIndex, double flValue );
+
+	void Bind( int iIndex, const std::string& szString );
 
 	bool ExecuteStatement( asIScriptFunction* pRowCallback = nullptr, asIScriptFunction* pCallback = nullptr );
 

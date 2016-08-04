@@ -6,7 +6,6 @@
 
 #include "IASSQLConnection.h"
 #include "IASSQLQuery.h"
-#include "IASSQLRow.h"
 
 #include "ASSQL.h"
 

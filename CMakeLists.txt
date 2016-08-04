@@ -198,6 +198,10 @@ include_directories(
 
 add_library( AngelscriptSQL STATIC ${PREP_SRCS} )
 
+target_compile_definitions( AngelscriptSQL PRIVATE
+	_CRT_SECURE_NO_WARNINGS
+)
+
 find_library( SQLITE3 "sqlite3${CMAKE_STATIC_LIBRARY_SUFFIX}" PATHS external/SQLite/lib )
 find_library( MARIADB "mariadbclient${CMAKE_STATIC_LIBRARY_SUFFIX}" PATHS external/MariaDB/lib )
 
@@ -229,6 +233,10 @@ add_subdirectory( src/test )
 preprocess_sources()
 
 add_executable( AngelscriptSQLTest ${PREP_SRCS} )
+
+target_compile_definitions( AngelscriptSQLTest PRIVATE
+	_CRT_SECURE_NO_WARNINGS
+)
 
 target_link_libraries( AngelscriptSQLTest
 	AngelscriptSQL

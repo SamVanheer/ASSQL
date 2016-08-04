@@ -19,31 +19,31 @@ static void RegisterScriptSQLiteRow( asIScriptEngine& engine )
 
 	engine.RegisterObjectMethod(
 		pszObjectName, "int GetRowIndex() const",
-		asMETHOD( IASSQLRow, GetRowIndex ), asCALL_THISCALL );
+		asMETHOD( CASSQLitePreparedStatement::CASSQLiteRow, GetRowIndex ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
 		pszObjectName, "int GetColumnCount() const",
-		asMETHOD( IASSQLRow, GetColumnCount ), asCALL_THISCALL );
+		asMETHOD( CASSQLitePreparedStatement::CASSQLiteRow, GetColumnCount ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
 		pszObjectName, "SQLDataType GetColumnType(const int iColumn) const",
-		asMETHOD( IASSQLRow, GetColumnType ), asCALL_THISCALL );
+		asMETHOD( CASSQLitePreparedStatement::CASSQLiteRow, GetColumnType ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
 		pszObjectName, "bool IsColumnNull(const int iColumn) const",
-		asMETHOD( IASSQLRow, IsColumnNull ), asCALL_THISCALL );
+		asMETHOD( CASSQLitePreparedStatement::CASSQLiteRow, IsColumnNull ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
 		pszObjectName, "int GetColumnInt(const int iColumn) const",
-		asMETHOD( IASSQLRow, GetColumnInt ), asCALL_THISCALL );
+		asMETHOD( CASSQLitePreparedStatement::CASSQLiteRow, GetColumnInt ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
 		pszObjectName, "float GetColumnDouble(const int iColumn) const",
-		asMETHOD( IASSQLRow, GetColumnDouble ), asCALL_THISCALL );
+		asMETHOD( CASSQLitePreparedStatement::CASSQLiteRow, GetColumnDouble ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "string GetColumnString(const int iColumn) const",
-		asMETHOD( IASSQLRow, GetColumnString ), asCALL_THISCALL );
+		pszObjectName, "string GetColumnText(const int iColumn) const",
+		asMETHOD( CASSQLitePreparedStatement::CASSQLiteRow, GetColumnText ), asCALL_THISCALL );
 
 	engine.RegisterFuncdef( "void SQLiteRowCallback(SQLiteRow@ pRow)" );
 }
@@ -63,6 +63,14 @@ static void RegisterScriptSQLitePreparedStatement( asIScriptEngine& engine )
 	engine.RegisterObjectMethod(
 		pszObjectName, "void Bind(int iIndex, int iValue)",
 		asMETHODPR( CASSQLitePreparedStatement, Bind, ( int, int ), void ), asCALL_THISCALL );
+
+	engine.RegisterObjectMethod(
+		pszObjectName, "void Bind(int iIndex, double flValue)",
+		asMETHODPR( CASSQLitePreparedStatement, Bind, ( int, double ), void ), asCALL_THISCALL );
+
+	engine.RegisterObjectMethod(
+		pszObjectName, "void Bind(int iIndex, const string& in szString)",
+		asMETHODPR( CASSQLitePreparedStatement, Bind, ( int, const std::string& ), void ), asCALL_THISCALL );
 
 	engine.RegisterFuncdef( "void SQLitePreparedStatementCallback(SQLitePreparedStatement@ pStatement)" );
 
