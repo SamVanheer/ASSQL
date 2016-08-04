@@ -2,6 +2,7 @@
 #define ANGELSCRIPT_SCRIPTAPI_SQL_SQLITE_CASSQLITEPREPAREDSTATEMENT_H
 
 #include <atomic>
+#include <cstdint>
 #include <string>
 
 #include <sqlite3.h>
@@ -59,6 +60,11 @@ public:
 		int GetColumnInt( int iColumn ) const;
 
 		/**
+		*	@return A column 64 bit integer.
+		*/
+		int64_t GetColumnInt64( int iColumn ) const;
+
+		/**
 		*	@return A column double.
 		*/
 		double GetColumnDouble( int iColumn ) const;
@@ -98,7 +104,11 @@ public:
 
 	bool IsValid() const;
 
+	void BindNull( int iIndex );
+
 	void Bind( int iIndex, int iValue );
+
+	void Bind64( int iIndex, int64_t iValue );
 
 	void Bind( int iIndex, double flValue );
 

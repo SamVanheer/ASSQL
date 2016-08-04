@@ -113,10 +113,22 @@ bool CASSQLitePreparedStatement::IsValid() const
 	return m_pStatement != nullptr;
 }
 
+void CASSQLitePreparedStatement::BindNull( int iIndex )
+{
+	//TODO: error handling - Solokiller
+	sqlite3_bind_null( m_pStatement, iIndex );
+}
+
 void CASSQLitePreparedStatement::Bind( int iIndex, int iValue )
 {
 	//TODO: error handling - Solokiller
 	sqlite3_bind_int( m_pStatement, iIndex, iValue );
+}
+
+void CASSQLitePreparedStatement::Bind64( int iIndex, int64_t iValue )
+{
+	//TODO: error handling - Solokiller
+	sqlite3_bind_int64( m_pStatement, iIndex, iValue );
 }
 
 void CASSQLitePreparedStatement::Bind( int iIndex, double flValue )
@@ -206,6 +218,16 @@ int CASSQLitePreparedStatement::CASSQLiteRow::GetColumnInt( int iColumn ) const
 	}
 
 	return sqlite3_column_int( m_Statement.GetStatement(), iColumn );
+}
+
+int64_t CASSQLitePreparedStatement::CASSQLiteRow::GetColumnInt64( int iColumn ) const
+{
+	if( iColumn < 0 || iColumn >= GetColumnCount() )
+	{
+		return 0;
+	}
+
+	return sqlite3_column_int64( m_Statement.GetStatement(), iColumn );
 }
 
 double CASSQLitePreparedStatement::CASSQLiteRow::GetColumnDouble( int iColumn ) const

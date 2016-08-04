@@ -71,6 +71,10 @@ static void RegisterScriptSQLiteRow( asIScriptEngine& engine )
 		asMETHOD( CASSQLitePreparedStatement::CASSQLiteRow, GetColumnInt ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
+		pszObjectName, "int GetColumnInt64(const int iColumn) const",
+		asMETHOD( CASSQLitePreparedStatement::CASSQLiteRow, GetColumnInt64 ), asCALL_THISCALL );
+
+	engine.RegisterObjectMethod(
 		pszObjectName, "float GetColumnDouble(const int iColumn) const",
 		asMETHOD( CASSQLitePreparedStatement::CASSQLiteRow, GetColumnDouble ), asCALL_THISCALL );
 
@@ -94,8 +98,16 @@ static void RegisterScriptSQLitePreparedStatement( asIScriptEngine& engine )
 		asMETHOD( CASSQLitePreparedStatement, IsValid ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
+		pszObjectName, "void BindNull(int iIndex)",
+		asMETHOD( CASSQLitePreparedStatement, BindNull ), asCALL_THISCALL );
+
+	engine.RegisterObjectMethod(
 		pszObjectName, "void Bind(int iIndex, int iValue)",
 		asMETHODPR( CASSQLitePreparedStatement, Bind, ( int, int ), void ), asCALL_THISCALL );
+
+	engine.RegisterObjectMethod(
+		pszObjectName, "void Bind64(int iIndex, int64 iValue)",
+		asMETHODPR( CASSQLitePreparedStatement, Bind64, ( int, int64_t ), void ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
 		pszObjectName, "void Bind(int iIndex, double flValue)",
