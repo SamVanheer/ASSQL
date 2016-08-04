@@ -125,16 +125,20 @@ void CASSQLitePreparedStatement::Bind( int iIndex, double flValue )
 	sqlite3_bind_double( m_pStatement, iIndex, flValue );
 }
 
-void CASSQLitePreparedStatement::ExecuteStatement( asIScriptFunction* pRowCallback, asIScriptFunction* pCallback )
+bool CASSQLitePreparedStatement::ExecuteStatement( asIScriptFunction* pRowCallback, asIScriptFunction* pCallback )
 {
 	if( m_bExecuting )
-		return;
+		return false;
+
+	bool bSuccess = false;
 
 	if( m_pConnection->GetThreadPool().AddItem( this, pCallback ) )
 	{
 		m_bExecuting = true;
 		m_pRowCallback = pRowCallback;
 		m_pCallback = pCallback;
+
+		bSuccess = true;
 	}
 	else
 	{
@@ -144,6 +148,8 @@ void CASSQLitePreparedStatement::ExecuteStatement( asIScriptFunction* pRowCallba
 		if( pCallback )
 			pCallback->Release();
 	}
+
+	return bSuccess;
 }
 
 void CASSQLitePreparedStatement::CASSQLiteRow::CallbackInvoked()

@@ -28,8 +28,9 @@ public:
 	*	Executes the statement.
 	*	@param pRowCallback Optional. Callback to invoke for each row.
 	*	@param pCallback Optional. Callback to invoke after the statement has been completed.
+	*	@return Whether the statement could be executed at this time.
 	*/
-	virtual void ExecuteStatement( asIScriptFunction* pRowCallback = nullptr, asIScriptFunction* pCallback = nullptr ) = 0;
+	virtual bool ExecuteStatement( asIScriptFunction* pRowCallback = nullptr, asIScriptFunction* pCallback = nullptr ) = 0;
 };
 
 #endif //ANGELSCRIPT_SCRIPTAPI_SQL_IASSQLPREPAREDSTATEMENT_H

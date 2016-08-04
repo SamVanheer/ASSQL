@@ -75,7 +75,7 @@ public:
 
 	void Bind( int iIndex, double flValue ) override;
 
-	void ExecuteStatement( asIScriptFunction* pRowCallback = nullptr, asIScriptFunction* pCallback = nullptr ) override;
+	bool ExecuteStatement( asIScriptFunction* pRowCallback = nullptr, asIScriptFunction* pCallback = nullptr ) override;
 
 	sqlite3_stmt* GetStatement() { return m_pStatement; }
 
