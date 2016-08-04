@@ -192,18 +192,21 @@ include_directories(
 	src
 	external/Angelscript/include
 	external/SQLite/include
+	external/MariaDB/include
 	external/CTPL/include
 )
 
 add_library( AngelscriptSQL STATIC ${PREP_SRCS} )
 
 find_library( SQLITE3 "sqlite3${CMAKE_STATIC_LIBRARY_SUFFIX}" PATHS external/SQLite/lib )
+find_library( MARIADB "mariadbclient${CMAKE_STATIC_LIBRARY_SUFFIX}" PATHS external/MariaDB/lib )
 
 #Link with SQL dependencies
 target_link_libraries( AngelscriptSQL 
 	"${ANGELSCRIPTLIB}"
 	"${ANGELSCRIPTUTILS}"
 	"${SQLITE3}"
+	"${MARIADB}"
 )
 
 set_target_properties( AngelscriptSQL PROPERTIES COMPILE_FLAGS "${LINUX_32BIT_FLAG}" LINK_FLAGS "${SQL_LINK_FLAGS} ${LINUX_32BIT_FLAG}" )
@@ -246,6 +249,13 @@ clear_sources()
 add_custom_command( TARGET AngelscriptSQLTest POST_BUILD
 	COMMAND ${CMAKE_COMMAND} -E copy_if_different
 	"${CMAKE_CURRENT_SOURCE_DIR}/external/SQLite/lib/sqlite3.dll"
+	$<TARGET_FILE_DIR:AngelscriptSQLTest>
+)
+
+#Copy the mariadb dll so the exe can get to it
+add_custom_command( TARGET AngelscriptSQLTest POST_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy_if_different
+	"${CMAKE_CURRENT_SOURCE_DIR}/external/MariaDB/lib/libmariadb.dll"
 	$<TARGET_FILE_DIR:AngelscriptSQLTest>
 )
 
