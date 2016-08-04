@@ -16,6 +16,7 @@
 #include <Angelscript/ScriptAPI/SQL/CASSQLThreadPool.h>
 #include <Angelscript/ScriptAPI/SQL/IASSQLASyncItem.h>
 #include <Angelscript/ScriptAPI/SQL/SQLite/CASSQLiteConnection.h>
+#include <Angelscript/ScriptAPI/SQL/MySQL/CASMySQLConnection.h>
 
 void ASMessageCallback( asSMessageInfo* pMsg )
 {
@@ -49,6 +50,12 @@ public:
 	{
 		//TODO: sanitize input filename.
 		return new CASSQLiteConnection( szFilename.c_str(), m_ThreadPool );
+	}
+
+	CASMySQLConnection* CreateMySQLConnection( const std::string& szHost, const std::string& szUser, const std::string& szPassword )
+	{
+		//TODO: get all of this information from server config.
+		return new CASMySQLConnection( m_ThreadPool, szHost.c_str(), szUser.c_str(), szPassword.c_str(), nullptr, 0, nullptr, 0 );
 	}
 
 private:
@@ -95,6 +102,10 @@ public:
 			"CSQL", "SQLConnection@ CreateSQLiteConnection(const string& in szFilename)", 
 			asMETHOD( CASSQL, CreateSQLiteConnection ), asCALL_THISCALL );
 
+		engine.RegisterObjectMethod(
+			"CSQL", "SQLConnection@ CreateMySQLConnection(const string& in szHost, const string& in szUser, const string& in szPassword)",
+			asMETHOD( CASSQL, CreateMySQLConnection ), asCALL_THISCALL );
+
 		engine.RegisterGlobalProperty( "CSQL SQL", &g_ASSQL );
 
 		as::RegisterVarArgsFunction( engine, "void", "Print", "const string& in szFormat", 0, 8, asFUNCTION( Print ) );
@@ -114,7 +125,7 @@ public:
 	bool AddScripts( CScriptBuilder& builder ) override
 	{
 		//Assumes the working directory is <repo>/working_dir
-		return builder.AddSectionFromFile( "../tests/test_SQLite.as" ) >= 0;
+		return builder.AddSectionFromFile( "../tests/test_MySQL.as" ) >= 0;
 	}
 };
 

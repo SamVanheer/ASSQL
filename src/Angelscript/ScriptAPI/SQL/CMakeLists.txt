@@ -15,4 +15,5 @@ add_sources(
 	IASSQLRow.h
 )
 
+add_subdirectory( MySQL )
 add_subdirectory( SQLite )
