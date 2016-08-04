@@ -2,6 +2,7 @@
 #define ANGELSCRIPT_SCRIPTAPI_SQL_SQLITE_CASSQLITEPREPAREDSTATEMENT_H
 
 #include <atomic>
+#include <string>
 
 #include <sqlite3.h>
 
@@ -37,9 +38,15 @@ private:
 
 		int GetColumnCount() const override;
 
+		ASSQLDataType GetColumnType( const int iColumn ) const override;
+
+		bool IsColumnNull( const int iColumn ) const override;
+
 		int GetColumnInt( int iColumn ) const override;
 
 		double GetColumnDouble( int iColumn ) const override;
+
+		std::string GetColumnString( int iColumn ) const override;
 
 	private:
 		CASSQLitePreparedStatement& m_Statement;

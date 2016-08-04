@@ -82,4 +82,9 @@ void StmtCallback( SQLPreparedStatement@ pStmt )
 void RowCallback( SQLRow@ pRow )
 {
 	Print( "Statement 2 row callback invoked, Row %1, ID %2, value %3\n", pRow.GetRowIndex(), pRow.GetColumnInt( 0 ), pRow.GetColumnInt( 1 ) );
+	
+	for( int iColumn = 0; iColumn < pRow.GetColumnCount(); ++iColumn )
+	{
+		Print( "Column %1: Type %2\n", iColumn, SQLDataTypeToString( pRow.GetColumnType( iColumn ) ) );
+	}
 }

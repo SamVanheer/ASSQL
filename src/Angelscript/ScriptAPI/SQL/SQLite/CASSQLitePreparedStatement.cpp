@@ -167,6 +167,36 @@ int CASSQLitePreparedStatement::CASSQLiteRow::GetColumnCount() const
 	return sqlite3_column_count( m_Statement.GetStatement() );
 }
 
+ASSQLDataType CASSQLitePreparedStatement::CASSQLiteRow::GetColumnType( const int iColumn ) const
+{
+	if( iColumn < 0 || iColumn >= GetColumnCount() )
+	{
+		return SQL_TYPE_NULL;
+	}
+
+	switch( sqlite3_column_type( m_Statement.GetStatement(), iColumn ) )
+	{
+	case SQLITE_INTEGER:	return SQL_TYPE_INTEGER;
+	case SQLITE_FLOAT:		return SQL_TYPE_FLOAT;
+	case SQLITE_TEXT:		return SQL_TYPE_TEXT;
+	case SQLITE_BLOB:		return SQL_TYPE_BLOB;
+
+	default:
+		//TODO: warn about unknown type. - Solokiller
+	case SQLITE_NULL:		return SQL_TYPE_NULL;
+	}
+}
+
+bool CASSQLitePreparedStatement::CASSQLiteRow::IsColumnNull( const int iColumn ) const
+{
+	if( iColumn < 0 || iColumn >= GetColumnCount() )
+	{
+		return true;
+	}
+
+	return sqlite3_column_type( m_Statement.GetStatement(), iColumn ) == SQLITE_NULL;
+}
+
 int CASSQLitePreparedStatement::CASSQLiteRow::GetColumnInt( int iColumn ) const
 {
 	if( iColumn < 0 || iColumn >= GetColumnCount() )
@@ -185,4 +215,19 @@ double CASSQLitePreparedStatement::CASSQLiteRow::GetColumnDouble( int iColumn ) 
 	}
 
 	return sqlite3_column_double( m_Statement.GetStatement(), iColumn );
+}
+
+std::string CASSQLitePreparedStatement::CASSQLiteRow::GetColumnString( int iColumn ) const
+{
+	if( iColumn < 0 || iColumn >= GetColumnCount() )
+	{
+		return "";
+	}
+
+	const unsigned char* pszString = sqlite3_column_text( m_Statement.GetStatement(), iColumn );
+
+	if( pszString )
+		return reinterpret_cast<const char*>( pszString );
+	else
+		return "";
 }

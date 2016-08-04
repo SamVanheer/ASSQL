@@ -2,12 +2,45 @@
 
 #include <Angelscript/util/CASBaseClass.h>
 
+#include "ASSQLDataType.h"
+
 #include "IASSQLConnection.h"
 #include "IASSQLPreparedStatement.h"
 #include "IASSQLQuery.h"
 #include "IASSQLRow.h"
 
 #include "ASSQL.h"
+
+static std::string ASScriptSQLDataTypeToString( const ASSQLDataType type )
+{
+	return ASSQLDataTypeToString( type );
+}
+
+static ASSQLDataType ASScriptStringToSQLDataType( const std::string& szString )
+{
+	return ASStringToSQLDataType( szString.c_str() );
+}
+
+static void RegisterScriptSQLDataType( asIScriptEngine& engine )
+{
+	const char* const pszObjectName = "SQLDataType";
+
+	engine.RegisterEnum( pszObjectName );
+
+	engine.RegisterEnumValue( pszObjectName, "SQL_TYPE_NULL", static_cast<int>( SQL_TYPE_NULL ) );
+	engine.RegisterEnumValue( pszObjectName, "SQL_TYPE_INTEGER", static_cast<int>( SQL_TYPE_INTEGER ) );
+	engine.RegisterEnumValue( pszObjectName, "SQL_TYPE_FLOAT", static_cast<int>( SQL_TYPE_FLOAT ) );
+	engine.RegisterEnumValue( pszObjectName, "SQL_TYPE_TEXT", static_cast<int>( SQL_TYPE_TEXT ) );
+	engine.RegisterEnumValue( pszObjectName, "SQL_TYPE_BLOB", static_cast<int>( SQL_TYPE_BLOB ) );
+
+	engine.RegisterGlobalFunction( 
+		"string SQLDataTypeToString(const SQLDataType type)",
+		asFUNCTION( ASScriptSQLDataTypeToString ), asCALL_CDECL );
+
+	engine.RegisterGlobalFunction(
+		"SQLDataType StringToSQLDataType(const string& in szString)",
+		asFUNCTION( ASScriptStringToSQLDataType ), asCALL_CDECL );
+}
 
 static void RegisterScriptSQLQuery( asIScriptEngine& engine )
 {
@@ -40,12 +73,24 @@ static void RegisterScriptSQLRow( asIScriptEngine& engine )
 		asMETHOD( IASSQLRow, GetColumnCount ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
+		pszObjectName, "SQLDataType GetColumnType(const int iColumn) const",
+		asMETHOD( IASSQLRow, GetColumnType ), asCALL_THISCALL );
+
+	engine.RegisterObjectMethod(
+		pszObjectName, "bool IsColumnNull(const int iColumn) const",
+		asMETHOD( IASSQLRow, IsColumnNull ), asCALL_THISCALL );
+
+	engine.RegisterObjectMethod(
 		pszObjectName, "int GetColumnInt(const int iColumn) const",
 		asMETHOD( IASSQLRow, GetColumnInt ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
 		pszObjectName, "float GetColumnDouble(const int iColumn) const",
 		asMETHOD( IASSQLRow, GetColumnDouble ), asCALL_THISCALL );
+
+	engine.RegisterObjectMethod(
+		pszObjectName, "string GetColumnString(const int iColumn) const",
+		asMETHOD( IASSQLRow, GetColumnString ), asCALL_THISCALL );
 
 	engine.RegisterFuncdef( "void SQLRowCallback(SQLRow@ pRow)" );
 }
@@ -100,6 +145,7 @@ static void RegisterScriptSQLConnection( asIScriptEngine& engine )
 
 void RegisterScriptSQL( asIScriptEngine& engine )
 {
+	RegisterScriptSQLDataType( engine );
 	RegisterScriptSQLQuery( engine );
 	RegisterScriptSQLRow( engine );
 	RegisterScriptSQLPreparedStatement( engine );
