@@ -19,8 +19,9 @@ private:
 	class CASSQLiteRow final : public IASSQLRow
 	{
 	public:
-		CASSQLiteRow( CASSQLitePreparedStatement& statement )
+		CASSQLiteRow( CASSQLitePreparedStatement& statement, const int iRowIndex )
 			: m_Statement( statement )
+			, m_iRowIndex( iRowIndex )
 		{
 		}
 
@@ -32,12 +33,17 @@ private:
 
 		void CallbackInvoked() override;
 
+		int GetRowIndex() const;
+
 		int GetColumnCount() const override;
 
 		int GetColumnInt( int iColumn ) const override;
 
+		double GetColumnDouble( int iColumn ) const override;
+
 	private:
 		CASSQLitePreparedStatement& m_Statement;
+		const int m_iRowIndex;
 
 	private:
 		CASSQLiteRow( const CASSQLiteRow& ) = delete;
@@ -67,6 +73,8 @@ public:
 
 	void Bind( int iIndex, int iValue ) override;
 
+	void Bind( int iIndex, double flValue ) override;
+
 	void ExecuteStatement( asIScriptFunction* pRowCallback = nullptr, asIScriptFunction* pCallback = nullptr ) override;
 
 	sqlite3_stmt* GetStatement() { return m_pStatement; }
@@ -77,6 +85,7 @@ private:
 	CASSQLiteConnection* m_pConnection = nullptr;
 	sqlite3_stmt* m_pStatement = nullptr;
 
+	std::atomic<bool> m_bExecuting = false;
 	std::atomic<bool> m_bCallbackInvoked = false;
 	std::atomic<bool> m_bHandlingRow = false;
 

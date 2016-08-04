@@ -25,6 +25,19 @@ CASSQLitePreparedStatement::CASSQLitePreparedStatement( CASSQLiteConnection* pCo
 
 CASSQLitePreparedStatement::~CASSQLitePreparedStatement()
 {
+	//TODO: log warning if these are still non-null here. - Solokiller
+	if( m_pRowCallback )
+	{
+		m_pRowCallback->Release();
+		m_pRowCallback = nullptr;
+	}
+
+	if( m_pCallback )
+	{
+		m_pCallback->Release();
+		m_pCallback = nullptr;
+	}
+
 	if( m_pStatement )
 	{
 		sqlite3_finalize( m_pStatement );
@@ -42,6 +55,8 @@ void CASSQLitePreparedStatement::Execute()
 
 	bool bContinue = true;
 
+	int iRowIndex = 0;
+
 	while( bContinue && ( ( iResult = sqlite3_step( m_pStatement ) ) != SQLITE_DONE ) )
 	{
 		switch( iResult )
@@ -51,14 +66,12 @@ void CASSQLitePreparedStatement::Execute()
 			continue;
 
 		case SQLITE_ROW:
-			//TODO: handle rows. - Solokiller
-
 			if( m_pRowCallback )
 			{
 				m_bHandlingRow = true;
 				m_bCallbackInvoked = false;
 
-				CASSQLiteRow row( *this );
+				CASSQLiteRow row( *this, iRowIndex++ );
 
 				m_pConnection->GetThreadPool().GetThreadQueue().AddItem( &row, m_pRowCallback );
 
@@ -91,6 +104,8 @@ void CASSQLitePreparedStatement::Execute()
 		m_pCallback->Release();
 		m_pCallback = nullptr;
 	}
+
+	m_bExecuting = false;
 }
 
 bool CASSQLitePreparedStatement::IsValid() const
@@ -104,19 +119,41 @@ void CASSQLitePreparedStatement::Bind( int iIndex, int iValue )
 	sqlite3_bind_int( m_pStatement, iIndex, iValue );
 }
 
+void CASSQLitePreparedStatement::Bind( int iIndex, double flValue )
+{
+	//TODO: error handling - Solokiller
+	sqlite3_bind_double( m_pStatement, iIndex, flValue );
+}
+
 void CASSQLitePreparedStatement::ExecuteStatement( asIScriptFunction* pRowCallback, asIScriptFunction* pCallback )
 {
-	//TODO: handle multiple calls. - Solokiller
+	if( m_bExecuting )
+		return;
 
-	m_pConnection->GetThreadPool().AddItem( this, pCallback );
+	if( m_pConnection->GetThreadPool().AddItem( this, pCallback ) )
+	{
+		m_bExecuting = true;
+		m_pRowCallback = pRowCallback;
+		m_pCallback = pCallback;
+	}
+	else
+	{
+		if( pRowCallback )
+			pRowCallback->Release();
 
-	m_pRowCallback = pRowCallback;
-	m_pCallback = pCallback;
+		if( pCallback )
+			pCallback->Release();
+	}
 }
 
 void CASSQLitePreparedStatement::CASSQLiteRow::CallbackInvoked()
 {
 	m_Statement.m_bCallbackInvoked = true;
+}
+
+int CASSQLitePreparedStatement::CASSQLiteRow::GetRowIndex() const
+{
+	return m_iRowIndex;
 }
 
 int CASSQLitePreparedStatement::CASSQLiteRow::GetColumnCount() const
@@ -126,13 +163,20 @@ int CASSQLitePreparedStatement::CASSQLiteRow::GetColumnCount() const
 
 int CASSQLitePreparedStatement::CASSQLiteRow::GetColumnInt( int iColumn ) const
 {
-	if( !m_Statement.IsHandlingRow() )
-		return 0;
-
 	if( iColumn < 0 || iColumn >= GetColumnCount() )
 	{
 		return 0;
 	}
 
 	return sqlite3_column_int( m_Statement.GetStatement(), iColumn );
+}
+
+double CASSQLitePreparedStatement::CASSQLiteRow::GetColumnDouble( int iColumn ) const
+{
+	if( iColumn < 0 || iColumn >= GetColumnCount() )
+	{
+		return 0;
+	}
+
+	return sqlite3_column_double( m_Statement.GetStatement(), iColumn );
 }

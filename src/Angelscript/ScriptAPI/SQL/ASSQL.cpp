@@ -28,9 +28,12 @@ static void RegisterScriptSQLRow( asIScriptEngine& engine )
 {
 	const char* const pszObjectName = "SQLRow";
 
-	engine.RegisterObjectType( pszObjectName, 0, asOBJ_REF );
+	//Non-reference counted object passed into callbacks only. Don't keep references to this. - Solokiller
+	engine.RegisterObjectType( pszObjectName, 0, asOBJ_REF | asOBJ_NOCOUNT );
 
-	as::RegisterRefCountedBaseClass<IASSQLRow>( &engine, pszObjectName );
+	engine.RegisterObjectMethod(
+		pszObjectName, "int GetRowIndex() const",
+		asMETHOD( IASSQLRow, GetRowIndex ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
 		pszObjectName, "int GetColumnCount() const",
@@ -39,6 +42,10 @@ static void RegisterScriptSQLRow( asIScriptEngine& engine )
 	engine.RegisterObjectMethod(
 		pszObjectName, "int GetColumnInt(const int iColumn) const",
 		asMETHOD( IASSQLRow, GetColumnInt ), asCALL_THISCALL );
+
+	engine.RegisterObjectMethod(
+		pszObjectName, "float GetColumnDouble(const int iColumn) const",
+		asMETHOD( IASSQLRow, GetColumnDouble ), asCALL_THISCALL );
 
 	engine.RegisterFuncdef( "void SQLRowCallback(SQLRow@ pRow)" );
 }

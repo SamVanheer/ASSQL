@@ -20,6 +20,11 @@ public:
 	virtual void Bind( int iIndex, int iValue ) = 0;
 
 	/**
+	*	Binds a float argument.
+	*/
+	virtual void Bind( int iIndex, double flValue ) = 0;
+
+	/**
 	*	Executes the statement.
 	*	@param pRowCallback Optional. Callback to invoke for each row.
 	*	@param pCallback Optional. Callback to invoke after the statement has been completed.
