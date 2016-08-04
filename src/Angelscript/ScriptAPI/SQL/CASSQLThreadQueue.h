@@ -3,6 +3,8 @@
 
 #include <queue>
 #include <mutex>
+#include <string>
+#include <vector>
 
 #include "ASSQLThreading.h"
 
@@ -38,10 +40,24 @@ public:
 	*/
 	void ProcessQueue( asIScriptContext& context );
 
+	/**
+	*	Adds a log message to be output in the main thread.
+	*/
+	void AddLogMessage( const char* const pszMessage );
+
+	/**
+	*	@copydoc AddLogMessage( const char* const pszMessage )
+	*/
+	void AddLogMessage( std::string&& szMessage );
+
 private:
 	std::mutex m_Mutex;
 
 	Queue_t m_Queue;
+
+	std::mutex m_LogMutex;
+
+	std::vector<std::string> m_LogMessages;
 
 private:
 	CASSQLThreadQueue( const CASSQLThreadQueue& ) = delete;

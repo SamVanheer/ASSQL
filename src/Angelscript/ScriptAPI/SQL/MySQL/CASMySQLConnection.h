@@ -39,6 +39,8 @@ public:
 
 	CASSQLThreadPool& GetThreadPool() { return m_ThreadPool; }
 
+	MYSQL* GetConnection() { return m_pConnection; }
+
 private:
 	CASSQLThreadPool& m_ThreadPool;
 

@@ -135,7 +135,7 @@ static void RegisterScriptSQLConnection( asIScriptEngine& engine )
 		asMETHOD( IASSQLConnection, Close ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "bool Query(const string& in szQuery, SQLQueryCallback@ pCallback = nullptr)",
+		pszObjectName, "bool Query(const string& in szQuery, SQLQueryCallback@ pCallback = null)",
 		asMETHOD( IASSQLConnection, Query ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(

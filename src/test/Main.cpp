@@ -55,7 +55,7 @@ public:
 	CASMySQLConnection* CreateMySQLConnection( const std::string& szHost, const std::string& szUser, const std::string& szPassword )
 	{
 		//TODO: get all of this information from server config.
-		return new CASMySQLConnection( m_ThreadPool, szHost.c_str(), szUser.c_str(), szPassword.c_str(), nullptr, 0, nullptr, 0 );
+		return new CASMySQLConnection( m_ThreadPool, szHost.c_str(), szUser.c_str(), szPassword.c_str(), nullptr, 3306, nullptr, 0 );
 	}
 
 private:
@@ -157,10 +157,16 @@ int main( int iArgc, char* pszArgV[] )
 
 				CASOwningContext ctx( *manager.GetEngine() );
 
-				while( g_ASSQL.GetThreadPool().ThreadsActive() )
+				do
 				{
+					while( g_ASSQL.GetThreadPool().ThreadsActive() )
+					{
+						g_ASSQL.GetThreadPool().ProcessQueue( *ctx.GetContext() );
+					}
+
 					g_ASSQL.GetThreadPool().ProcessQueue( *ctx.GetContext() );
 				}
+				while( g_ASSQL.GetThreadPool().ThreadsActive() );
 
 				g_ASSQL.GetThreadPool().Stop( true );
 

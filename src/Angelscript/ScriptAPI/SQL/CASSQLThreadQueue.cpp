@@ -1,5 +1,7 @@
 #include <cassert>
 
+#include <iostream>
+
 #include <angelscript.h>
 
 #include <Angelscript/wrapper/ASCallable.h>
@@ -50,6 +52,17 @@ void CASSQLThreadQueue::Clear()
 
 void CASSQLThreadQueue::ProcessQueue( asIScriptContext& context )
 {
+	{
+		std::lock_guard<std::mutex> guard( m_LogMutex );
+
+		for( const auto& szMessage : m_LogMessages )
+		{
+			std::cout << szMessage << std::endl;
+		}
+
+		m_LogMessages.clear();
+	}
+
 	std::lock_guard<std::mutex> guard( m_Mutex );
 
 	while( !m_Queue.empty() )
@@ -66,4 +79,18 @@ void CASSQLThreadQueue::ProcessQueue( asIScriptContext& context )
 
 		m_Queue.pop();
 	}
+}
+
+void CASSQLThreadQueue::AddLogMessage( const char* const pszMessage )
+{
+	assert( pszMessage );
+
+	AddLogMessage( std::string( pszMessage ) );
+}
+
+void CASSQLThreadQueue::AddLogMessage( std::string&& szMessage )
+{
+	std::lock_guard<std::mutex> guard( m_LogMutex );
+
+	m_LogMessages.emplace_back( std::move( szMessage ) );
 }

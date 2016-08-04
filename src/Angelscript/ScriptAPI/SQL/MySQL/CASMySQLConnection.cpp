@@ -1,5 +1,9 @@
 #include <iostream>
 
+#include "../CASSQLThreadPool.h"
+
+#include "CASMySQLQuery.h"
+
 #include "CASMySQLConnection.h"
 
 CASMySQLConnection::CASMySQLConnection( CASSQLThreadPool& pool, 
@@ -40,10 +44,21 @@ void CASMySQLConnection::Close()
 
 bool CASMySQLConnection::Query( const std::string& szQuery, asIScriptFunction* const pCallback )
 {
+	auto pQuery = new CASMySQLQuery( this, szQuery.c_str() );
+
+	bool bSuccess = false;
+
+	if( pQuery->IsValid() )
+	{
+		bSuccess = m_ThreadPool.AddItem( pQuery, pCallback );
+	}
+
 	if( pCallback )
 		pCallback->Release();
 
-	return false;
+	pQuery->Release();
+
+	return bSuccess;
 }
 
 IASSQLPreparedStatement* CASMySQLConnection::CreatePreparedStatement( const std::string& szStatement )
