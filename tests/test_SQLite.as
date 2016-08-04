@@ -1,5 +1,5 @@
 
-SQLConnection@ g_pConnection = null;
+SQLiteConnection@ g_pConnection = null;
 
 void main()
 {
@@ -49,7 +49,7 @@ void main()
 		
 		Print( "Created query: %1\n", bSuccess ? "yes" : "no" );
 		
-		SQLPreparedStatement@ pStmt = g_pConnection.CreatePreparedStatement( "INSERT INTO Test (ID, VALUE) VALUES(1, ?)" );
+		SQLitePreparedStatement@ pStmt = g_pConnection.CreatePreparedStatement( "INSERT INTO Test (ID, VALUE) VALUES(1, ?)" );
 		
 		Print( "Created statement: %1\n", pStmt !is null ? "yes" : "no" );
 		
@@ -60,7 +60,7 @@ void main()
 			pStmt.ExecuteStatement( null, @StmtCallback );
 		}
 		
-		SQLPreparedStatement@ pStmt2 = g_pConnection.CreatePreparedStatement( "SELECT * FROM Test" );
+		SQLitePreparedStatement@ pStmt2 = g_pConnection.CreatePreparedStatement( "SELECT * FROM Test" );
 		
 		if( pStmt2 !is null )
 		{
@@ -74,12 +74,12 @@ void QueryCallback( SQLQuery@ pQuery )
 	Print( "Query callback invoked\n" );
 }
 
-void StmtCallback( SQLPreparedStatement@ pStmt )
+void StmtCallback( SQLitePreparedStatement@ pStmt )
 {
 	Print( "Statement callback invoked\n" );
 }
 
-void RowCallback( SQLRow@ pRow )
+void RowCallback( SQLiteRow@ pRow )
 {
 	Print( "Statement 2 row callback invoked, Row %1, ID %2, value %3\n", pRow.GetRowIndex(), pRow.GetColumnInt( 0 ), pRow.GetColumnInt( 1 ) );
 	

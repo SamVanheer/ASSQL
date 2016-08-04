@@ -60,8 +60,3 @@ bool CASMySQLConnection::Query( const std::string& szQuery, asIScriptFunction* c
 
 	return bSuccess;
 }
-
-IASSQLPreparedStatement* CASMySQLConnection::CreatePreparedStatement( const std::string& szStatement )
-{
-	return nullptr;
-}

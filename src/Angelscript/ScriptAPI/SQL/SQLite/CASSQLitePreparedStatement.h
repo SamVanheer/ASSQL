@@ -8,12 +8,12 @@
 
 #include <Angelscript/util/CASBaseClass.h>
 
-#include "../IASSQLPreparedStatement.h"
+#include "../IASSQLASyncItem.h"
 #include "../IASSQLRow.h"
 
 class CASSQLiteConnection;
 
-class CASSQLitePreparedStatement final : public IASSQLPreparedStatement, public CASAtomicRefCountedBaseClass
+class CASSQLitePreparedStatement final : public IASSQLASyncItem, public CASAtomicRefCountedBaseClass
 {
 private:
 
@@ -76,13 +76,13 @@ public:
 
 	void Execute() override;
 
-	bool IsValid() const override;
+	bool IsValid() const;
 
-	void Bind( int iIndex, int iValue ) override;
+	void Bind( int iIndex, int iValue );
 
-	void Bind( int iIndex, double flValue ) override;
+	void Bind( int iIndex, double flValue );
 
-	bool ExecuteStatement( asIScriptFunction* pRowCallback = nullptr, asIScriptFunction* pCallback = nullptr ) override;
+	bool ExecuteStatement( asIScriptFunction* pRowCallback = nullptr, asIScriptFunction* pCallback = nullptr );
 
 	sqlite3_stmt* GetStatement() { return m_pStatement; }
 

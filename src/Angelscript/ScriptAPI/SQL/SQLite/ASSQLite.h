@@ -1,0 +1,8 @@
+#ifndef ANGELSCRIPT_SCRIPTAPI_SQL_SQLITE_ASSQLITE_H
+#define ANGELSCRIPT_SCRIPTAPI_SQL_SQLITE_ASSQLITE_H
+
+class asIScriptEngine;
+
+void RegisterScriptSQLite( asIScriptEngine& engine );
+
+#endif //ANGELSCRIPT_SCRIPTAPI_SQL_SQLITE_ASSQLITE_H

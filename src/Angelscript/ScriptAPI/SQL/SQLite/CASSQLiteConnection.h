@@ -42,7 +42,12 @@ public:
 
 	bool Query( const std::string& szQuery, asIScriptFunction* const pCallback ) override;
 
-	CASSQLitePreparedStatement* CreatePreparedStatement( const std::string& szStatement ) override;
+	/**
+	*	Creates a prepared statement.
+	*	@param szStatement Statement.
+	*	@return if the statement is valid, returns the statement. Otherwise, returns null.
+	*/
+	CASSQLitePreparedStatement* CreatePreparedStatement( const std::string& szStatement );
 
 	sqlite3* GetConnection() { return m_pConnection; }
 

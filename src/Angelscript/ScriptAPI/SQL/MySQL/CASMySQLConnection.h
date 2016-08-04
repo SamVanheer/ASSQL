@@ -35,8 +35,6 @@ public:
 
 	bool Query( const std::string& szQuery, asIScriptFunction* const pCallback = nullptr ) override;
 
-	IASSQLPreparedStatement* CreatePreparedStatement( const std::string& szStatement ) override;
-
 	CASSQLThreadPool& GetThreadPool() { return m_ThreadPool; }
 
 	MYSQL* GetConnection() { return m_pConnection; }

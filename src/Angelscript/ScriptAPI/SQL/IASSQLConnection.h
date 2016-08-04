@@ -5,8 +5,6 @@
 
 class asIScriptFunction;
 
-class IASSQLPreparedStatement;
-
 /**
 *	Represents an SQL connection.
 */
@@ -33,13 +31,6 @@ public:
 	*	@return Whether the query is well formed.
 	*/
 	virtual bool Query( const std::string& szQuery, asIScriptFunction* const pCallback = nullptr ) = 0;
-
-	/**
-	*	Creates a prepared statement.
-	*	@param szStatement Statement.
-	*	@return if the statement is valid, returns the statement. Otherwise, returns null.
-	*/
-	virtual IASSQLPreparedStatement* CreatePreparedStatement( const std::string& szStatement ) = 0;
 };
 
 #endif //ANGELSCRIPT_SCRIPTAPI_SQL_ISQLCONNECTION_H
