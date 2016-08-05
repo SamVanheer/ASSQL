@@ -1,7 +1,7 @@
 
 class Database
 {
-	private SQLConnection@ m_pConnection = null;
+	private MySQLConnection@ m_pConnection = null;
 	
 	void Connect()
 	{
@@ -43,36 +43,31 @@ class Database
 	
 	private void CreatedTable( SQLQuery@ pQuery )
 	{
-		SQLPreparedStatement@ pStmt = m_pConnection.CreatePreparedStatement( "INSERT INTO Test (ID, VALUE) VALUES(1, ?)" );
+		MySQLPreparedStatement@ pStmt = m_pConnection.CreatePreparedStatement( "INSERT INTO Test (ID, VALUE) VALUES(1, ?)" );
 		
 		Print( "Created statement: %1\n", pStmt !is null ? "yes" : "no" );
 		
 		if( pStmt !is null )
 		{
-			pStmt.Bind( 1, 10 );
+			pStmt.Bind( 0, 10 );
 			
-			pStmt.ExecuteStatement( null, SQLPreparedStatementCallback( this.InsertedValues ) );
+			pStmt.ExecuteStatement( MySQLPreparedStatementCallback( this.InsertedValues ) );
 		}
 	}
 	
-	private void InsertedValues( SQLPreparedStatement@ pStmt )
+	private void InsertedValues( MySQLPreparedStatement@ pStmt )
 	{
-		SQLPreparedStatement@ pStmt2 = m_pConnection.CreatePreparedStatement( "SELECT * FROM Test" );
+		MySQLPreparedStatement@ pStmt2 = m_pConnection.CreatePreparedStatement( "SELECT * FROM Test" );
 		
 		if( pStmt2 !is null )
 		{
-			pStmt2.ExecuteStatement( SQLRowCallback( this.RowCallback ) );
+			pStmt2.ExecuteStatement( MySQLPreparedStatementCallback( this.Stmt2Callback ) );
 		}
 	}
 	
-	private void RowCallback( SQLRow@ pRow )
+	private void Stmt2Callback( MySQLPreparedStatement@ pStmt )
 	{
-		Print( "Statement 2 row callback invoked, Row %1, ID %2, value %3\n", pRow.GetRowIndex(), pRow.GetColumnInt( 0 ), pRow.GetColumnInt( 1 ) );
-	
-		for( int iColumn = 0; iColumn < pRow.GetColumnCount(); ++iColumn )
-		{
-			Print( "Column %1: Type %2\n", iColumn, SQLDataTypeToString( pRow.GetColumnType( iColumn ) ) );
-		}
+		Print( "Statement 2 row callback invoked\n" );
 	}
 }
 

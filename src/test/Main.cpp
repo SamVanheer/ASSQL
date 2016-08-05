@@ -107,7 +107,7 @@ public:
 			asMETHOD( CASSQL, CreateSQLiteConnection ), asCALL_THISCALL );
 
 		engine.RegisterObjectMethod(
-			"CSQL", "SQLConnection@ CreateMySQLConnection(const string& in szHost, const string& in szUser, const string& in szPassword)",
+			"CSQL", "MySQLConnection@ CreateMySQLConnection(const string& in szHost, const string& in szUser, const string& in szPassword)",
 			asMETHOD( CASSQL, CreateMySQLConnection ), asCALL_THISCALL );
 
 		engine.RegisterGlobalProperty( "CSQL SQL", &g_ASSQL );
@@ -161,11 +161,13 @@ int main( int iArgc, char* pszArgV[] )
 
 				CASOwningContext ctx( *manager.GetEngine() );
 
+				bool bDidWork = false;
+
 				do
 				{
-					g_ASSQL.GetThreadPool().ProcessQueue( *ctx.GetContext() );
+					bDidWork = g_ASSQL.GetThreadPool().ProcessQueue( *ctx.GetContext() );
 				}
-				while( g_ASSQL.GetThreadPool().ThreadsActive() );
+				while( bDidWork || g_ASSQL.GetThreadPool().ThreadsActive() );
 
 				g_ASSQL.GetThreadPool().Stop( true );
 

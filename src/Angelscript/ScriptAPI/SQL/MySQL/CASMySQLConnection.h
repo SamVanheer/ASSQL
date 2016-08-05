@@ -9,6 +9,8 @@
 
 class CASSQLThreadPool;
 
+class CASMySQLPreparedStatement;
+
 class CASMySQLConnection final : public IASSQLConnection, public CASAtomicRefCountedBaseClass
 {
 public:
@@ -34,6 +36,8 @@ public:
 	void Close() override;
 
 	bool Query( const std::string& szQuery, asIScriptFunction* const pCallback = nullptr ) override;
+
+	CASMySQLPreparedStatement* CreatePreparedStatement( const std::string& szStatement );
 
 	CASSQLThreadPool& GetThreadPool() { return m_ThreadPool; }
 

@@ -159,6 +159,7 @@ bool CASSQLitePreparedStatement::ExecuteStatement( asIScriptFunction* pRowCallba
 	{
 		m_bExecuting = true;
 		m_pRowCallback = pRowCallback;
+		//TODO: don't have to store this callback - Solokiller
 		m_pCallback = pCallback;
 
 		bSuccess = true;

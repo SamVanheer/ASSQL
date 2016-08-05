@@ -2,6 +2,7 @@
 
 #include "../CASSQLThreadPool.h"
 
+#include "CASMySQLPreparedStatement.h"
 #include "CASMySQLQuery.h"
 
 #include "CASMySQLConnection.h"
@@ -59,4 +60,16 @@ bool CASMySQLConnection::Query( const std::string& szQuery, asIScriptFunction* c
 	pQuery->Release();
 
 	return bSuccess;
+}
+
+CASMySQLPreparedStatement* CASMySQLConnection::CreatePreparedStatement( const std::string& szStatement )
+{
+	auto pStatement = new CASMySQLPreparedStatement( this, szStatement.c_str() );
+
+	if( pStatement->IsValid() )
+		return pStatement;
+
+	pStatement->Release();
+
+	return nullptr;
 }
