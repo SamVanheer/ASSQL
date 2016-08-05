@@ -17,6 +17,7 @@
 #include <Angelscript/ScriptAPI/SQL/IASSQLASyncItem.h>
 #include <Angelscript/ScriptAPI/SQL/SQLite/ASSQLite.h>
 #include <Angelscript/ScriptAPI/SQL/SQLite/CASSQLiteConnection.h>
+#include <Angelscript/ScriptAPI/SQL/MySQL/ASMySQL.h>
 #include <Angelscript/ScriptAPI/SQL/MySQL/CASMySQLConnection.h>
 
 void ASMessageCallback( asSMessageInfo* pMsg )
@@ -97,6 +98,7 @@ public:
 
 		RegisterScriptSQL( engine );
 		RegisterScriptSQLite( engine );
+		RegisterScriptMySQL( engine );
 
 		engine.RegisterObjectType( "CSQL", 0, asOBJ_REF | asOBJ_NOCOUNT );
 
@@ -127,7 +129,7 @@ public:
 	bool AddScripts( CScriptBuilder& builder ) override
 	{
 		//Assumes the working directory is <repo>/working_dir
-		return builder.AddSectionFromFile( "../tests/test_SQLite.as" ) >= 0;
+		return builder.AddSectionFromFile( "../tests/test_MySQL.as" ) >= 0;
 	}
 };
 
