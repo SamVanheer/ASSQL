@@ -2,6 +2,8 @@
 #define ANGELSCRIPT_SCRIPTAPI_SQL_MYSQL_CASMYSQLPREPAREDSTATEMENT_H
 
 #include <cstdint>
+#include <string>
+#include <vector>
 
 #include <mysql.h>
 
@@ -22,7 +24,7 @@ private:
 		Variable() = default;
 		~Variable();
 
-		void Set( enum_field_types type, MYSQL_BIND* pBind );
+		void Set( enum_field_types type, MYSQL_BIND* pBind, const char* const pBuffer = nullptr, const size_t uiLength = 0 );
 
 		void Clear();
 
@@ -38,9 +40,16 @@ private:
 			int32_t		m_iVal32;
 			int64_t		m_iVal64;
 
+			uint8_t		m_uiVal8;
+			uint16_t	m_uiVal16;
+			uint32_t	m_uiVal32;
+			uint64_t	m_uiVal64;
+
 			float		m_flValue;
 			double		m_dValue;
 		};
+
+		std::vector<char> m_Buffer;
 
 	private:
 		Variable( const Variable& ) = delete;
@@ -75,11 +84,94 @@ public:
 	int GetParamCount() const;
 
 	/**
+	*	Binds a null parameter.
+	*	@param iIndex Parameter index.
+	*/
+	void BindNull( int iIndex );
+
+	/**
+	*	Binds a boolean.
+	*	@param iIndex Parameter index.
+	*	@param bValue Value.
+	*/
+	void BindBoolean( int iIndex, bool bValue );
+
+	/**
+	*	Binds an 8 bit signed integer.
+	*	@param iIndex Parameter index.
+	*	@param iValue Value.
+	*/
+	void BindSigned8( int iIndex, int8_t iValue );
+
+	/**
+	*	Binds an 8 bit unsigned integer.
+	*	@param iIndex Parameter index.
+	*	@param uiValue Value.
+	*/
+	void BindUnsigned8( int iIndex, uint8_t uiValue );
+
+	/**
+	*	Binds a 16 bit signed integer.
+	*	@param iIndex Parameter index.
+	*	@param iValue Value.
+	*/
+	void BindSigned16( int iIndex, int16_t iValue );
+
+	/**
+	*	Binds a 16 bit unsigned integer.
+	*	@param iIndex Parameter index.
+	*	@param uiValue Value.
+	*/
+	void BindUnsigned16( int iIndex, uint16_t uiValue );
+
+	/**
 	*	Binds a 32 bit signed integer.
 	*	@param iIndex Parameter index.
 	*	@param iValue Value.
 	*/
-	void Bind( int iIndex, int iValue );
+	void BindSigned32( int iIndex, int32_t iValue );
+
+	/**
+	*	Binds a 32 bit unsigned integer.
+	*	@param iIndex Parameter index.
+	*	@param uiValue Value.
+	*/
+	void BindUnsigned32( int iIndex, uint32_t uiValue );
+
+	/**
+	*	Binds a 64 bit signed integer.
+	*	@param iIndex Parameter index.
+	*	@param iValue Value.
+	*/
+	void BindSigned64( int iIndex, int64_t iValue );
+
+	/**
+	*	Binds a 64 bit unsigned integer.
+	*	@param iIndex Parameter index.
+	*	@param uiValue Value.
+	*/
+	void BindUnsigned64( int iIndex, uint64_t uiValue );
+
+	/**
+	*	Binds a 32 bit float.
+	*	@param iIndex Parameter index.
+	*	@param flValue Value.
+	*/
+	void BindFloat( int iIndex, float flValue );
+
+	/**
+	*	Binds a 64 bit float.
+	*	@param iIndex Parameter index.
+	*	@param flValue Value.
+	*/
+	void BindDouble( int iIndex, double flValue );
+
+	/**
+	*	Binds a text string.
+	*	@param iIndex Parameter index.
+	*	@param szText Text.
+	*/
+	void BindText( int iIndex, const std::string& szText );
 
 	bool ExecuteStatement( asIScriptFunction* pCallback = nullptr );
 

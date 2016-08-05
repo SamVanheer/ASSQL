@@ -33,7 +33,8 @@ class Database
 		bool bSuccess = m_pConnection.Query( 
 			"CREATE TABLE IF NOT EXISTS Test("
 			"ID INT PRIMARY KEY NOT NULL,"
-			"VALUE INT NOT NULL"
+			"VALUE INT NOT NULL,"
+			"STRING TEXT NOT NULL"
 			")",
 			SQLQueryCallback( this.CreatedTable )
 		);
@@ -43,13 +44,14 @@ class Database
 	
 	private void CreatedTable( SQLQuery@ pQuery )
 	{
-		MySQLPreparedStatement@ pStmt = m_pConnection.CreatePreparedStatement( "INSERT INTO Test (ID, VALUE) VALUES(1, ?)" );
+		MySQLPreparedStatement@ pStmt = m_pConnection.CreatePreparedStatement( "INSERT INTO Test (ID, VALUE, STRING) VALUES(1, ?, ?)" );
 		
 		Print( "Created statement: %1\n", pStmt !is null ? "yes" : "no" );
 		
 		if( pStmt !is null )
 		{
-			pStmt.Bind( 0, 10 );
+			pStmt.BindSigned32( 0, 10 );
+			pStmt.BindText( 1, "Foo" );
 			
 			pStmt.ExecuteStatement( MySQLPreparedStatementCallback( this.InsertedValues ) );
 		}

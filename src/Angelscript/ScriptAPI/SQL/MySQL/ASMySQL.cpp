@@ -21,29 +21,58 @@ static void RegisterScriptMySQLPreparedStatement( asIScriptEngine& engine )
 		pszObjectName, "bool IsValid() const",
 		asMETHOD( CASMySQLPreparedStatement, IsValid ), asCALL_THISCALL );
 
-	/*
 	engine.RegisterObjectMethod(
 		pszObjectName, "void BindNull(int iIndex)",
 		asMETHOD( CASMySQLPreparedStatement, BindNull ), asCALL_THISCALL );
-		*/
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "void Bind(int iIndex, int iValue)",
-		asMETHODPR( CASMySQLPreparedStatement, Bind, ( int, int ), void ), asCALL_THISCALL );
-
-	/*
-	engine.RegisterObjectMethod(
-		pszObjectName, "void Bind64(int iIndex, int64 iValue)",
-		asMETHODPR( CASMySQLPreparedStatement, Bind64, ( int, int64_t ), void ), asCALL_THISCALL );
+		pszObjectName, "void BindBoolean(int iIndex, bool bValue)",
+		asMETHOD( CASMySQLPreparedStatement, BindBoolean ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "void Bind(int iIndex, double flValue)",
-		asMETHODPR( CASMySQLPreparedStatement, Bind, ( int, double ), void ), asCALL_THISCALL );
+		pszObjectName, "void BindSigned8(int iIndex, int8 iValue)",
+		asMETHOD( CASMySQLPreparedStatement, BindSigned8 ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "void Bind(int iIndex, const string& in szString)",
-		asMETHODPR( CASMySQLPreparedStatement, Bind, ( int, const std::string& ), void ), asCALL_THISCALL );
-*/
+		pszObjectName, "void BindUnsigned8(int iIndex, uint8 uiValue)",
+		asMETHOD( CASMySQLPreparedStatement, BindUnsigned8 ), asCALL_THISCALL );
+
+	engine.RegisterObjectMethod(
+		pszObjectName, "void BindSigned16(int iIndex, int16 iValue)",
+		asMETHOD( CASMySQLPreparedStatement, BindSigned16 ), asCALL_THISCALL );
+
+	engine.RegisterObjectMethod(
+		pszObjectName, "void BindUnsigned16(int iIndex, uint16 uiValue)",
+		asMETHOD( CASMySQLPreparedStatement, BindUnsigned16 ), asCALL_THISCALL );
+
+	engine.RegisterObjectMethod(
+		pszObjectName, "void BindSigned32(int iIndex, int32 iValue)",
+		asMETHOD( CASMySQLPreparedStatement, BindSigned32 ), asCALL_THISCALL );
+
+	engine.RegisterObjectMethod(
+		pszObjectName, "void BindUnsigned32(int iIndex, uint32 uiValue)",
+		asMETHOD( CASMySQLPreparedStatement, BindUnsigned32 ), asCALL_THISCALL );
+
+	engine.RegisterObjectMethod(
+		pszObjectName, "void BindSigned64(int iIndex, int64 iValue)",
+		asMETHOD( CASMySQLPreparedStatement, BindSigned64 ), asCALL_THISCALL );
+
+	engine.RegisterObjectMethod(
+		pszObjectName, "void BindUnsigned64(int iIndex, uint64 uiValue)",
+		asMETHOD( CASMySQLPreparedStatement, BindUnsigned64 ), asCALL_THISCALL );
+
+	engine.RegisterObjectMethod(
+		pszObjectName, "void BindFloat(int iIndex, float flValue)",
+		asMETHOD( CASMySQLPreparedStatement, BindFloat ), asCALL_THISCALL );
+
+	engine.RegisterObjectMethod(
+		pszObjectName, "void BindDouble(int iIndex, double flValue)",
+		asMETHOD( CASMySQLPreparedStatement, BindDouble ), asCALL_THISCALL );
+
+	engine.RegisterObjectMethod(
+		pszObjectName, "void BindText(int iIndex, const string& in szString)",
+		asMETHOD( CASMySQLPreparedStatement, BindText ), asCALL_THISCALL );
+
 	//TODO result set - Solokiller
 	engine.RegisterFuncdef( "void MySQLPreparedStatementCallback(MySQLPreparedStatement@ pStatement)" );
 
