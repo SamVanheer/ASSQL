@@ -37,8 +37,9 @@ public:
 	/**
 	*	Processes the queue of items.
 	*	@param context Context to use for callbacks.
+	*	@return Whether any work was done.
 	*/
-	void ProcessQueue( asIScriptContext& context );
+	bool ProcessQueue( asIScriptContext& context );
 
 	/**
 	*	Adds a log message to be output in the main thread.

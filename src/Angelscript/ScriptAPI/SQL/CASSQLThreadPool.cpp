@@ -11,9 +11,9 @@ CASSQLThreadPool::CASSQLThreadPool( const size_t uiNumThreads )
 {
 }
 
-bool CASSQLThreadPool::ThreadsActive() const
+bool CASSQLThreadPool::ThreadsActive()
 {
-	return ( m_Pool.size() - m_Pool.n_idle() ) > 0;
+	return m_Pool.has_work() || ( m_Pool.size() - m_Pool.n_idle() > 0 );
 }
 
 bool CASSQLThreadPool::AddItem( IASSQLASyncItem* pItem, asIScriptFunction* pCallback )
@@ -33,9 +33,9 @@ bool CASSQLThreadPool::AddItem( IASSQLASyncItem* pItem, asIScriptFunction* pCall
 	return true;
 }
 
-void CASSQLThreadPool::ProcessQueue( asIScriptContext& context )
+bool CASSQLThreadPool::ProcessQueue( asIScriptContext& context )
 {
-	m_Queue.ProcessQueue( context );
+	return m_Queue.ProcessQueue( context );
 }
 
 void CASSQLThreadPool::Stop( const bool bWait )

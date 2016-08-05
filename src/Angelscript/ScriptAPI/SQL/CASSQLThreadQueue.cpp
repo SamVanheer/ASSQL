@@ -50,7 +50,7 @@ void CASSQLThreadQueue::Clear()
 	}
 }
 
-void CASSQLThreadQueue::ProcessQueue( asIScriptContext& context )
+bool CASSQLThreadQueue::ProcessQueue( asIScriptContext& context )
 {
 	{
 		std::lock_guard<std::mutex> guard( m_LogMutex );
@@ -64,6 +64,8 @@ void CASSQLThreadQueue::ProcessQueue( asIScriptContext& context )
 	}
 
 	std::lock_guard<std::mutex> guard( m_Mutex );
+
+	const bool bWorkDone = !m_Queue.empty();
 
 	while( !m_Queue.empty() )
 	{
@@ -79,6 +81,8 @@ void CASSQLThreadQueue::ProcessQueue( asIScriptContext& context )
 
 		m_Queue.pop();
 	}
+
+	return bWorkDone;
 }
 
 void CASSQLThreadQueue::AddLogMessage( const char* const pszMessage )

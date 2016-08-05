@@ -23,7 +23,7 @@ public:
 
 	CASSQLThreadQueue& GetThreadQueue() { return m_Queue; }
 
-	bool ThreadsActive() const;
+	bool ThreadsActive();
 
 	/**
 	*	Adds an item to the queue.
@@ -35,7 +35,7 @@ public:
 	/**
 	*	Process the queue's items.
 	*/
-	void ProcessQueue( asIScriptContext& context );
+	bool ProcessQueue( asIScriptContext& context );
 
 	/**
 	*	Stops all threads.
