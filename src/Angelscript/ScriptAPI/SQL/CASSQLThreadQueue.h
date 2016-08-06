@@ -9,9 +9,10 @@
 
 #include "ASSQL.h"
 
-#include "ASSQLThreading.h"
-
 class asIScriptContext;
+
+class IASSQLASyncItem;
+class asIScriptFunction;
 
 /**
 *	A thread queue for Angelscript SQL items.
@@ -19,6 +20,12 @@ class asIScriptContext;
 class CASSQLThreadQueue final
 {
 private:
+	struct CASSQLItem final
+	{
+		IASSQLASyncItem* pItem;
+		asIScriptFunction* pCallback;
+	};
+
 	using Queue_t = std::queue<CASSQLItem>;
 
 public:

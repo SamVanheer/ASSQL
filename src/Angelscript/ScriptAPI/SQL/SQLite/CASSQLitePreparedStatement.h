@@ -9,15 +9,15 @@
 
 #include <Angelscript/util/CASBaseClass.h>
 
-#include "../IASSQLASyncItem.h"
+#include "../IASSQLASyncCommand.h"
 
 class CASSQLiteConnection;
 
-class CASSQLitePreparedStatement final : public IASSQLASyncItem, public CASAtomicRefCountedBaseClass
+class CASSQLitePreparedStatement final : public IASSQLASyncCommand, public CASAtomicRefCountedBaseClass
 {
 public:
 
-	class CASSQLiteRow final : public IASSQLASyncItem
+	class CASSQLiteRow final : public IASSQLASyncCommand
 	{
 	public:
 		CASSQLiteRow( CASSQLitePreparedStatement& statement, const int iRowIndex )

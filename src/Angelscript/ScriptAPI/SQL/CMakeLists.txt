@@ -1,11 +1,11 @@
 add_sources(
 	ASSQL.h
 	ASSQL.cpp
-	ASSQLThreading.h
 	CASSQLThreadPool.h
 	CASSQLThreadPool.cpp
 	CASSQLThreadQueue.h
 	CASSQLThreadQueue.cpp
+	IASSQLASyncCommand.h
 	IASSQLASyncItem.h
 	IASSQLConnection.h
 	IASSQLQuery.h

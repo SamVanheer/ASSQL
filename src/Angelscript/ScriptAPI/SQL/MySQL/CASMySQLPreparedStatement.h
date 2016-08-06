@@ -9,14 +9,14 @@
 
 #include <Angelscript/util/CASBaseClass.h>
 
-#include "../IASSQLASyncItem.h"
+#include "../IASSQLASyncCommand.h"
 
 class asIScriptFunction;
 
 class CASMySQLBind;
 class CASMySQLConnection;
 
-class CASMySQLPreparedStatement final : public IASSQLASyncItem, public CASAtomicRefCountedBaseClass
+class CASMySQLPreparedStatement final : public IASSQLASyncCommand, public CASAtomicRefCountedBaseClass
 {
 public:
 	CASMySQLPreparedStatement( CASMySQLConnection* pConnection, const char* const pszStatement );

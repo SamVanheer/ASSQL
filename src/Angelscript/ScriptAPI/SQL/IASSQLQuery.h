@@ -1,9 +1,9 @@
 #ifndef ANGELSCRIPT_SCRIPTAPI_SQL_IASSQLQUERY_H
 #define ANGELSCRIPT_SCRIPTAPI_SQL_IASSQLQUERY_H
 
-#include "IASSQLASyncItem.h"
+#include "IASSQLASyncCommand.h"
 
-class IASSQLQuery : public IASSQLASyncItem
+class IASSQLQuery : public IASSQLASyncCommand
 {
 public:
 

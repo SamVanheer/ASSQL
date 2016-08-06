@@ -15,7 +15,6 @@
 
 #include <Angelscript/ScriptAPI/SQL/ASSQL.h>
 #include <Angelscript/ScriptAPI/SQL/CASSQLThreadPool.h>
-#include <Angelscript/ScriptAPI/SQL/IASSQLASyncItem.h>
 #include <Angelscript/ScriptAPI/SQL/SQLite/ASSQLite.h>
 #include <Angelscript/ScriptAPI/SQL/SQLite/CASSQLiteConnection.h>
 #include <Angelscript/ScriptAPI/SQL/MySQL/ASMySQL.h>

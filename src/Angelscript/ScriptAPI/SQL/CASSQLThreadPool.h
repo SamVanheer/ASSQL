@@ -3,20 +3,24 @@
 
 #include <ctpl_stl.h>
 
-#include "ASSQLThreading.h"
-
 #include "CASSQLThreadQueue.h"
 
-class IASSQLASyncItem;
+class IASSQLASyncCommand;
 class asIScriptFunction;
 class asIScriptContext;
 
 /**
-*	A thread pool for Angelscript SQL items.
+*	A thread pool for Angelscript SQL commands.
 */
 class CASSQLThreadPool final
 {
 private:
+	struct CASSQLCommand final
+	{
+		IASSQLASyncCommand* pCommand;
+		asIScriptFunction* pCallback;
+	};
+
 public:
 	CASSQLThreadPool( const size_t uiNumThreads, ASSQLLogFunction pLogFunction );
 	~CASSQLThreadPool() = default;
@@ -32,10 +36,10 @@ public:
 
 	/**
 	*	Adds an item to the queue.
-	*	@param pItem Item to add. The item's reference counting shall be thread-safe.
+	*	@param pCommand Command to add. The command's reference counting shall be thread-safe.
 	*	@param pCallback Callback to invoke after completion.
 	*/
-	bool AddItem( IASSQLASyncItem* pItem, asIScriptFunction* pCallback );
+	bool AddItem( IASSQLASyncCommand* pCommand, asIScriptFunction* pCallback );
 
 	/**
 	*	Process the queue's items.
@@ -49,7 +53,7 @@ public:
 	void Stop( const bool bWait = false );
 
 private:
-	static void ExecuteItem( int iID, CASSQLThreadPool* pPool, CASSQLItem item );
+	static void ExecuteItem( int iID, CASSQLThreadPool* pPool, CASSQLCommand command );
 
 private:
 	ctpl::thread_pool m_Pool;

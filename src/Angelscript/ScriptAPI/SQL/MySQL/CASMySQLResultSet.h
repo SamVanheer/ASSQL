@@ -12,7 +12,6 @@
 class CASMySQLBind;
 class CASMySQLPreparedStatement;
 
-//TODO: IASSQLASyncItem isn't the right base class for this. - Solokiller
 class CASMySQLResultSet final : public IASSQLASyncItem, public CASAtomicRefCountedBaseClass
 {
 public:
@@ -29,8 +28,6 @@ public:
 		if( InternalRelease() )
 			delete this;
 	}
-
-	void Execute() override {}
 
 	/**
 	*	@return Whether this result set is valid.

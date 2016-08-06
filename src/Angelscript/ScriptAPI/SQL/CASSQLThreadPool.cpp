@@ -2,7 +2,7 @@
 
 #include <angelscript.h>
 
-#include "IASSQLASyncItem.h"
+#include "IASSQLASyncCommand.h"
 
 #include "CASSQLThreadPool.h"
 
@@ -17,19 +17,19 @@ bool CASSQLThreadPool::ThreadsActive()
 	return m_Pool.has_work() || ( m_Pool.size() - m_Pool.n_idle() > 0 );
 }
 
-bool CASSQLThreadPool::AddItem( IASSQLASyncItem* pItem, asIScriptFunction* pCallback )
+bool CASSQLThreadPool::AddItem( IASSQLASyncCommand* pCommand, asIScriptFunction* pCallback )
 {
-	assert( pItem );
+	assert( pCommand );
 
-	if( !pItem )
+	if( !pCommand )
 		return false;
 
-	pItem->AddRef();
+	pCommand->AddRef();
 
 	if( pCallback )
 		pCallback->AddRef();
 
-	m_Pool.push( &CASSQLThreadPool::ExecuteItem, this, CASSQLItem{ pItem, pCallback } );
+	m_Pool.push( &CASSQLThreadPool::ExecuteItem, this, CASSQLCommand{ pCommand, pCallback } );
 
 	return true;
 }
@@ -44,17 +44,17 @@ void CASSQLThreadPool::Stop( const bool bWait )
 	m_Pool.stop( bWait );
 }
 
-void CASSQLThreadPool::ExecuteItem( int iID, CASSQLThreadPool* pPool, CASSQLItem item )
+void CASSQLThreadPool::ExecuteItem( int iID, CASSQLThreadPool* pPool, CASSQLCommand command )
 {
-	item.pItem->Execute();
+	command.pCommand->Execute();
 
-	if( item.pCallback )
+	if( command.pCallback )
 	{
-		//Post the item for processing by the callback.
-		pPool->m_Queue.AddItem( item.pItem, item.pCallback );
+		//Post the command for processing by the callback.
+		pPool->m_Queue.AddItem( command.pCommand, command.pCallback );
 
-		item.pCallback->Release();
+		command.pCallback->Release();
 	}
 
-	item.pItem->Release();
+	command.pCommand->Release();
 }
