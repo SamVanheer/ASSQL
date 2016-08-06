@@ -51,7 +51,7 @@ public:
 	CASSQLiteConnection* CreateSQLiteConnection( const std::string& szFilename )
 	{
 		//TODO: sanitize input filename.
-		return new CASSQLiteConnection( szFilename.c_str(), m_ThreadPool );
+		return new CASSQLiteConnection( m_ThreadPool, szFilename.c_str() );
 	}
 
 	CASMySQLConnection* CreateMySQLConnection( const std::string& szHost, const std::string& szUser, const std::string& szPassword )

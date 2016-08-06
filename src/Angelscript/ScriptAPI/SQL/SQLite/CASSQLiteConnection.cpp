@@ -6,7 +6,7 @@
 
 #include "CASSQLiteConnection.h"
 
-CASSQLiteConnection::CASSQLiteConnection( const char* const pszFilename, CASSQLThreadPool& pool )
+CASSQLiteConnection::CASSQLiteConnection( CASSQLThreadPool& pool, const char* const pszFilename )
 	: m_ThreadPool( pool )
 {
 	assert( pszFilename );

@@ -17,7 +17,7 @@ class CASSQLThreadPool;
 class CASSQLiteConnection : public IASSQLConnection, public CASAtomicRefCountedBaseClass
 {
 public:
-	CASSQLiteConnection( const char* const pszFilename, CASSQLThreadPool& pool );
+	CASSQLiteConnection( CASSQLThreadPool& pool, const char* const pszFilename );
 
 	/**
 	*	Destructor.
