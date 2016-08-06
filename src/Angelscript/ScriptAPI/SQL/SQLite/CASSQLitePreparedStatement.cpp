@@ -211,7 +211,7 @@ bool CASSQLitePreparedStatement::CASSQLiteRow::IsColumnNull( const int iColumn )
 	return sqlite3_column_type( m_Statement.GetStatement(), iColumn ) == SQLITE_NULL;
 }
 
-int CASSQLitePreparedStatement::CASSQLiteRow::GetColumnInt( int iColumn ) const
+int32_t CASSQLitePreparedStatement::CASSQLiteRow::GetSigned32( int iColumn ) const
 {
 	if( iColumn < 0 || iColumn >= GetColumnCount() )
 	{
@@ -221,7 +221,7 @@ int CASSQLitePreparedStatement::CASSQLiteRow::GetColumnInt( int iColumn ) const
 	return sqlite3_column_int( m_Statement.GetStatement(), iColumn );
 }
 
-int64_t CASSQLitePreparedStatement::CASSQLiteRow::GetColumnInt64( int iColumn ) const
+int64_t CASSQLitePreparedStatement::CASSQLiteRow::GetSigned64( int iColumn ) const
 {
 	if( iColumn < 0 || iColumn >= GetColumnCount() )
 	{
@@ -231,7 +231,7 @@ int64_t CASSQLitePreparedStatement::CASSQLiteRow::GetColumnInt64( int iColumn ) 
 	return sqlite3_column_int64( m_Statement.GetStatement(), iColumn );
 }
 
-double CASSQLitePreparedStatement::CASSQLiteRow::GetColumnDouble( int iColumn ) const
+double CASSQLitePreparedStatement::CASSQLiteRow::GetDouble( int iColumn ) const
 {
 	if( iColumn < 0 || iColumn >= GetColumnCount() )
 	{
@@ -241,7 +241,7 @@ double CASSQLitePreparedStatement::CASSQLiteRow::GetColumnDouble( int iColumn ) 
 	return sqlite3_column_double( m_Statement.GetStatement(), iColumn );
 }
 
-std::string CASSQLitePreparedStatement::CASSQLiteRow::GetColumnText( int iColumn ) const
+std::string CASSQLitePreparedStatement::CASSQLiteRow::GetString( int iColumn ) const
 {
 	if( iColumn < 0 || iColumn >= GetColumnCount() )
 	{

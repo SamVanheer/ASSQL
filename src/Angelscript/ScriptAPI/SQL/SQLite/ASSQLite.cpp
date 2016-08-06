@@ -67,20 +67,20 @@ static void RegisterScriptSQLiteRow( asIScriptEngine& engine )
 		asMETHOD( CASSQLitePreparedStatement::CASSQLiteRow, IsColumnNull ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "int GetColumnInt(const int iColumn) const",
-		asMETHOD( CASSQLitePreparedStatement::CASSQLiteRow, GetColumnInt ), asCALL_THISCALL );
+		pszObjectName, "int GetSigned32(const int iColumn) const",
+		asMETHOD( CASSQLitePreparedStatement::CASSQLiteRow, GetSigned32 ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "int GetColumnInt64(const int iColumn) const",
-		asMETHOD( CASSQLitePreparedStatement::CASSQLiteRow, GetColumnInt64 ), asCALL_THISCALL );
+		pszObjectName, "int GetSigned64(const int iColumn) const",
+		asMETHOD( CASSQLitePreparedStatement::CASSQLiteRow, GetSigned64 ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "float GetColumnDouble(const int iColumn) const",
-		asMETHOD( CASSQLitePreparedStatement::CASSQLiteRow, GetColumnDouble ), asCALL_THISCALL );
+		pszObjectName, "float GetDouble(const int iColumn) const",
+		asMETHOD( CASSQLitePreparedStatement::CASSQLiteRow, GetDouble ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "string GetColumnText(const int iColumn) const",
-		asMETHOD( CASSQLitePreparedStatement::CASSQLiteRow, GetColumnText ), asCALL_THISCALL );
+		pszObjectName, "string GetString(const int iColumn) const",
+		asMETHOD( CASSQLitePreparedStatement::CASSQLiteRow, GetString ), asCALL_THISCALL );
 
 	engine.RegisterFuncdef( "void SQLiteRowCallback(SQLiteRow@ pRow)" );
 }

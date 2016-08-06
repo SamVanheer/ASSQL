@@ -57,22 +57,22 @@ public:
 		/**
 		*	@return A column integer.
 		*/
-		int GetColumnInt( int iColumn ) const;
+		int32_t GetSigned32( int iColumn ) const;
 
 		/**
 		*	@return A column 64 bit integer.
 		*/
-		int64_t GetColumnInt64( int iColumn ) const;
+		int64_t GetSigned64( int iColumn ) const;
 
 		/**
 		*	@return A column double.
 		*/
-		double GetColumnDouble( int iColumn ) const;
+		double GetDouble( int iColumn ) const;
 
 		/**
 		*	@return A column string.
 		*/
-		std::string GetColumnText( int iColumn ) const;
+		std::string GetString( int iColumn ) const;
 
 	private:
 		CASSQLitePreparedStatement& m_Statement;

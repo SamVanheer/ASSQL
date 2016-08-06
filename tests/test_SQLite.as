@@ -103,11 +103,11 @@ void RowCallback( SQLiteRow@ pRow )
 {
 	Print( "Statement 2 row callback invoked, Row %1, ID %2, value %3, text %4, 64 bit integer %5, Optional %6\n", 
 		pRow.GetRowIndex(), 
-		pRow.GetColumnInt( 0 ), 
-		pRow.GetColumnInt( 1 ), 
-		pRow.GetColumnText( 2 ),
-		pRow.GetColumnInt64( 3 ),
-		pRow.GetColumnType( 4 ) != SQLITE_NULL ? pRow.GetColumnText( 4 ) : "NULL" );
+		pRow.GetSigned32( 0 ), 
+		pRow.GetSigned32( 1 ), 
+		pRow.GetString( 2 ),
+		pRow.GetSigned64( 3 ),
+		pRow.GetColumnType( 4 ) != SQLITE_NULL ? pRow.GetString( 4 ) : "NULL" );
 	
 	for( int iColumn = 0; iColumn < pRow.GetColumnCount(); ++iColumn )
 	{
