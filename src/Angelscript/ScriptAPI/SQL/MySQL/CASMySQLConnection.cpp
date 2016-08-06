@@ -1,4 +1,4 @@
-#include <iostream>
+#include <cassert>
 
 #include "../CASSQLThreadPool.h"
 
@@ -7,12 +7,15 @@
 
 #include "CASMySQLConnection.h"
 
-CASMySQLConnection::CASMySQLConnection( CASSQLThreadPool& pool, 
+CASMySQLConnection::CASMySQLConnection( CASSQLThreadPool& pool, ASSQLLogFunction pLogFunction,
 										const char* const pszHost, const char* const pszUser, const char* const pszPassword, 
 										const char* const pszDatabase, const unsigned int uiPort, const char* const pszUnixSocket,
 										unsigned long clientflag )
 	: m_ThreadPool( pool )
+	, m_pLogFunction( pLogFunction )
 {
+	assert( pLogFunction );
+
 	m_pConnection = mysql_init( nullptr );
 
 	//Enable multiple statements in a query to allow for consistent API behavior with SQLite.
@@ -20,7 +23,7 @@ CASMySQLConnection::CASMySQLConnection( CASSQLThreadPool& pool,
 
 	if( !pResult )
 	{
-		std::cout << mysql_error( m_pConnection ) << std::endl;
+		m_pLogFunction( "%s\n", mysql_error( m_pConnection ) );
 		Close();
 	}
 }

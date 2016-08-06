@@ -1,3 +1,4 @@
+#include <cstdarg>
 #include <iostream>
 
 #include <Angelscript/CASManager.h>
@@ -38,6 +39,24 @@ void ASMessageCallback( asSMessageInfo* pMsg )
 	std::cout << pszType << pMsg->section << '(' << pMsg->row << ", " << pMsg->col << ')' << std::endl << pMsg->message << std::endl;
 }
 
+void SQLLogFunction( const char* const pszFormat, ... )
+{
+	assert( pszFormat );
+
+	char szBuffer[ 8192 ];
+
+	va_list list;
+
+	va_start( list, pszFormat );
+	const int iResult = vsnprintf( szBuffer, sizeof( szBuffer ), pszFormat, list );
+	va_end( list );
+
+	if( iResult >= 0 && static_cast<size_t>( iResult ) < sizeof( szBuffer ) )
+	{
+		std::cout << szBuffer;
+	}
+}
+
 class CASSQL final
 {
 public:
@@ -57,7 +76,7 @@ public:
 	CASMySQLConnection* CreateMySQLConnection( const std::string& szHost, const std::string& szUser, const std::string& szPassword )
 	{
 		//TODO: get all of this information from server config.
-		return new CASMySQLConnection( m_ThreadPool, szHost.c_str(), szUser.c_str(), szPassword.c_str(), nullptr, 3306, nullptr, 0 );
+		return new CASMySQLConnection( m_ThreadPool, &::SQLLogFunction, szHost.c_str(), szUser.c_str(), szPassword.c_str(), nullptr, 3306, nullptr, 0 );
 	}
 
 private:

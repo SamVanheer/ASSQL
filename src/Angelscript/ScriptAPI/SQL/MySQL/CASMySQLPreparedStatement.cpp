@@ -36,6 +36,14 @@ CASMySQLPreparedStatement::CASMySQLPreparedStatement( CASMySQLConnection* pConne
 				memset( m_pBinds, 0, sizeof( MYSQL_BIND ) * iParamCount );
 			}
 		}
+		else
+		{
+			m_pConnection->GetLogFunction()( "%s\n", mysql_error( m_pConnection->GetConnection() ) );
+		}
+	}
+	else
+	{
+		m_pConnection->GetLogFunction()( "%s\n", mysql_error( m_pConnection->GetConnection() ) );
 	}
 }
 
@@ -44,6 +52,14 @@ CASMySQLPreparedStatement::~CASMySQLPreparedStatement()
 	//Delete variables first so they can query binds for types - Solokiller
 	delete[] m_pVariables;
 	delete[] m_pBinds;
+
+	if( m_pStatement )
+	{
+		if( mysql_stmt_close( m_pStatement ) )
+		{
+			m_pConnection->GetLogFunction()( "%s\n", mysql_error( m_pConnection->GetConnection() ) );
+		}
+	}
 
 	m_pConnection->Release();
 }
