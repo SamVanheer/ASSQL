@@ -82,7 +82,7 @@ void CASSQLitePreparedStatement::Execute()
 
 		default:
 			//TODO: handle specific errors as needed. - Solokiller
-			m_pConnection->GetThreadPool().GetThreadQueue().AddLogMessage( std::string( sqlite3_errmsg( m_pConnection->GetConnection() ) ) + '\n' );
+			m_pConnection->GetThreadPool().GetThreadQueue().AddLogMessage( "%s\n", sqlite3_errmsg( m_pConnection->GetConnection() ) );
 			bContinue = false;
 			break;
 		}

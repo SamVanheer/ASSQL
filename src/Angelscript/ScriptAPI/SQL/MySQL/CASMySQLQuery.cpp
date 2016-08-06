@@ -32,7 +32,7 @@ void CASMySQLQuery::Execute()
 
 	if( iResult != 0 )
 	{
-		m_pConnection->GetThreadPool().GetThreadQueue().AddLogMessage( std::string( mysql_error( m_pConnection->GetConnection() ) ) + '\n' );
+		m_pConnection->GetThreadPool().GetThreadQueue().AddLogMessage( "%s\n", mysql_error( m_pConnection->GetConnection() ) );
 	}
 	else
 	{
@@ -51,7 +51,7 @@ void CASMySQLQuery::Execute()
 		while( iResult == 0 );
 
 		if( iResult > 0 )
-			m_pConnection->GetThreadPool().GetThreadQueue().AddLogMessage( std::string( mysql_error( m_pConnection->GetConnection() ) ) + '\n' );
+			m_pConnection->GetThreadPool().GetThreadQueue().AddLogMessage( "%s\n", mysql_error( m_pConnection->GetConnection() ) );
 	}
 }
 

@@ -129,7 +129,7 @@ public:
 	bool AddScripts( CScriptBuilder& builder ) override
 	{
 		//Assumes the working directory is <repo>/working_dir
-		return builder.AddSectionFromFile( "../tests/test_SQLite.as" ) >= 0;
+		return builder.AddSectionFromFile( "../tests/test_MySQL.as" ) >= 0;
 	}
 };
 
@@ -170,7 +170,6 @@ int main( int iArgc, char* pszArgV[] )
 				while( bDidWork || g_ASSQL.GetThreadPool().ThreadsActive() );
 
 				g_ASSQL.GetThreadPool().Stop( true );
-
 			}
 			else
 			{

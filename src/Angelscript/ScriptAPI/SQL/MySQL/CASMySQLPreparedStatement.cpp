@@ -54,14 +54,14 @@ void CASMySQLPreparedStatement::Execute()
 
 	if( m_pBinds && mysql_stmt_bind_param( m_pStatement, m_pBinds ) )
 	{
-		m_pConnection->GetThreadPool().GetThreadQueue().AddLogMessage( std::string( mysql_error( m_pConnection->GetConnection() ) ) + '\n' );
+		m_pConnection->GetThreadPool().GetThreadQueue().AddLogMessage( "%s\n", mysql_error( m_pConnection->GetConnection() ) );
 
 		bSuccess = false;
 	}
 
 	if( bSuccess && mysql_stmt_execute( m_pStatement ) )
 	{
-		m_pConnection->GetThreadPool().GetThreadQueue().AddLogMessage( std::string( mysql_error( m_pConnection->GetConnection() ) ) + '\n' );
+		m_pConnection->GetThreadPool().GetThreadQueue().AddLogMessage( "%s\n", mysql_error( m_pConnection->GetConnection() ) );
 		
 		bSuccess = false;
 	}

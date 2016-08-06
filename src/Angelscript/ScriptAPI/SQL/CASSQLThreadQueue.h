@@ -3,6 +3,7 @@
 
 #include <queue>
 #include <mutex>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -43,14 +44,10 @@ public:
 
 	/**
 	*	Adds a log message to be output in the main thread.
+	*	@param pszFormat Format string.
+	*	@param ... Arguments.
 	*/
-	void AddLogMessage( const char* const pszMessage );
-
-	/**
-	*	@copydoc AddLogMessage( const char* const pszMessage )
-	*/
-	//TODO: replace with a fixed size buffer, use varargs - Solokiller
-	void AddLogMessage( std::string&& szMessage );
+	void AddLogMessage( const char* const pszFormat, ... );
 
 private:
 	std::mutex m_Mutex;
@@ -59,7 +56,7 @@ private:
 
 	std::mutex m_LogMutex;
 
-	std::vector<std::string> m_LogMessages;
+	std::stringstream m_LogMessages;
 
 private:
 	CASSQLThreadQueue( const CASSQLThreadQueue& ) = delete;

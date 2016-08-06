@@ -1,4 +1,6 @@
 #include <cassert>
+#include <cstdarg>
+#include <cstring>
 
 #include <iostream>
 
@@ -55,12 +57,14 @@ bool CASSQLThreadQueue::ProcessQueue( asIScriptContext& context )
 	{
 		std::lock_guard<std::mutex> guard( m_LogMutex );
 
-		for( const auto& szMessage : m_LogMessages )
-		{
-			std::cout << szMessage << std::endl;
-		}
+		const std::string szString = m_LogMessages.str();
 
-		m_LogMessages.clear();
+		if( !szString.empty() )
+		{
+			std::cout << szString << std::endl;
+
+			m_LogMessages.str( "" );
+		}
 	}
 
 	std::lock_guard<std::mutex> guard( m_Mutex );
@@ -85,16 +89,21 @@ bool CASSQLThreadQueue::ProcessQueue( asIScriptContext& context )
 	return bWorkDone;
 }
 
-void CASSQLThreadQueue::AddLogMessage( const char* const pszMessage )
+void CASSQLThreadQueue::AddLogMessage( const char* const pszFormat, ... )
 {
-	assert( pszMessage );
+	assert( pszFormat );
 
-	AddLogMessage( std::string( pszMessage ) );
-}
+	char szBuffer[ 4096 ];
 
-void CASSQLThreadQueue::AddLogMessage( std::string&& szMessage )
-{
-	std::lock_guard<std::mutex> guard( m_LogMutex );
+	va_list list;
 
-	m_LogMessages.emplace_back( std::move( szMessage ) );
+	va_start( list, pszFormat );
+	const int iResult = vsnprintf( szBuffer, sizeof( szBuffer ), pszFormat, list );
+	va_end( list );
+
+	if( iResult >= 0 && static_cast<size_t>( iResult ) < sizeof( szBuffer ) )
+	{
+		std::lock_guard<std::mutex> guard( m_LogMutex );
+		m_LogMessages << szBuffer;
+	}
 }
