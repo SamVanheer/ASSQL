@@ -51,7 +51,7 @@ class Database
 		if( pStmt !is null )
 		{
 			pStmt.BindSigned32( 0, 10 );
-			pStmt.BindText( 1, "Foo" );
+			pStmt.BindString( 1, "Foo" );
 			
 			pStmt.ExecuteStatement( null, MySQLPreparedStatementCallback( this.InsertedValues ) );
 		}

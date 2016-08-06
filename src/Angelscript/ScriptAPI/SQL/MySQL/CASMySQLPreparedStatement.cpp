@@ -213,12 +213,12 @@ void CASMySQLPreparedStatement::BindDouble( int iIndex, double flValue )
 	m_pVariables[ iIndex ].m_flValue64 = flValue;
 }
 
-void CASMySQLPreparedStatement::BindText( int iIndex, const std::string& szText )
+void CASMySQLPreparedStatement::BindString( int iIndex, const std::string& szString )
 {
 	if( iIndex < 0 || iIndex >= GetParamCount() )
 		return;
 
-	m_pVariables[ iIndex ].Set( MYSQL_TYPE_STRING, &m_pBinds[ iIndex ], szText.data(), szText.length() );
+	m_pVariables[ iIndex ].Set( MYSQL_TYPE_STRING, &m_pBinds[ iIndex ], szString.data(), szString.length() );
 }
 
 bool CASMySQLPreparedStatement::ExecuteStatement( asIScriptFunction* pResultSetCallback, asIScriptFunction* pCallback )

@@ -140,8 +140,8 @@ static void RegisterScriptMySQLPreparedStatement( asIScriptEngine& engine )
 		asMETHOD( CASMySQLPreparedStatement, BindDouble ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "void BindText(int iIndex, const string& in szString)",
-		asMETHOD( CASMySQLPreparedStatement, BindText ), asCALL_THISCALL );
+		pszObjectName, "void BindString(int iIndex, const string& in szString)",
+		asMETHOD( CASMySQLPreparedStatement, BindString ), asCALL_THISCALL );
 
 	engine.RegisterFuncdef( "void MySQLResultSetCallback(MySQLResultSet@ pResultSet)" );
 	engine.RegisterFuncdef( "void MySQLPreparedStatementCallback(MySQLPreparedStatement@ pStatement)" );

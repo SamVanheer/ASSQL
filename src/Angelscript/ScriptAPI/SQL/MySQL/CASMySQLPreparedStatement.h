@@ -129,11 +129,11 @@ public:
 	void BindDouble( int iIndex, double flValue );
 
 	/**
-	*	Binds a text string.
+	*	Binds a string.
 	*	@param iIndex Parameter index.
-	*	@param szText Text.
+	*	@param szString String.
 	*/
-	void BindText( int iIndex, const std::string& szText );
+	void BindString( int iIndex, const std::string& szString );
 
 	bool ExecuteStatement( asIScriptFunction* pResultSetCallback = nullptr, asIScriptFunction* pCallback = nullptr );
 
