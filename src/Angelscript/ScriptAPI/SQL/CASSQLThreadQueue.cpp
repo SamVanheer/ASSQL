@@ -2,8 +2,6 @@
 #include <cstdarg>
 #include <cstring>
 
-#include <iostream>
-
 #include <angelscript.h>
 
 #include <Angelscript/wrapper/ASCallable.h>
@@ -11,6 +9,12 @@
 #include "IASSQLASyncItem.h"
 
 #include "CASSQLThreadQueue.h"
+
+CASSQLThreadQueue::CASSQLThreadQueue( ASSQLLogFunction pLogFunction )
+	: m_pLogFunction( pLogFunction )
+{
+	assert( pLogFunction );
+}
 
 CASSQLThreadQueue::~CASSQLThreadQueue()
 {
@@ -61,8 +65,7 @@ bool CASSQLThreadQueue::ProcessQueue( asIScriptContext& context )
 
 		if( !szString.empty() )
 		{
-			std::cout << szString << std::endl;
-
+			m_pLogFunction( "%s", szString.c_str() );
 			m_LogMessages.str( "" );
 		}
 	}

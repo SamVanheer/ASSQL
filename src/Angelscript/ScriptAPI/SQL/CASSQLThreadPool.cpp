@@ -6,8 +6,9 @@
 
 #include "CASSQLThreadPool.h"
 
-CASSQLThreadPool::CASSQLThreadPool( const size_t uiNumThreads )
+CASSQLThreadPool::CASSQLThreadPool( const size_t uiNumThreads, ASSQLLogFunction pLogFunction )
 	: m_Pool( uiNumThreads )
+	, m_Queue( pLogFunction )
 {
 }
 

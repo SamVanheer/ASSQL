@@ -1,7 +1,5 @@
 #include <cassert>
 
-#include "../CASSQLThreadPool.h"
-
 #include "CASSQLiteQuery.h"
 
 #include "CASSQLiteConnection.h"
@@ -11,9 +9,13 @@ CASSQLiteConnection::CASSQLiteConnection( CASSQLThreadPool& pool, const char* co
 {
 	assert( pszFilename );
 
-	if( SQLITE_OK != sqlite3_open( pszFilename, &m_pConnection ) )
+	const int iResult = sqlite3_open( pszFilename, &m_pConnection );
+
+	if( SQLITE_OK != iResult )
 	{
 		m_pConnection = nullptr;
+
+		GetLogFunction()( "%s\n", sqlite3_errstr( iResult ) );
 	}
 }
 

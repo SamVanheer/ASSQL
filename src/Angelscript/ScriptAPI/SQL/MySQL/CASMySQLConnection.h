@@ -5,11 +5,9 @@
 
 #include <Angelscript/util/CASBaseClass.h>
 
-#include "../ASSQL.h"
+#include "../CASSQLThreadPool.h"
 
 #include "../IASSQLConnection.h"
-
-class CASSQLThreadPool;
 
 class CASMySQLPreparedStatement;
 
@@ -20,7 +18,7 @@ public:
 	*	Constructor.
 	*	@param clientflag Client connection flags. CLIENT_MULTI_STATEMENTS is always set to maintain consistent behavior with the SQLite API.
 	*/
-	CASMySQLConnection( CASSQLThreadPool& pool, ASSQLLogFunction pLogFunction,
+	CASMySQLConnection( CASSQLThreadPool& pool,
 						const char* const pszHost, const char* const pszUser, const char* const pszPassword, 
 						const char* const pszDatabase, const unsigned int uiPort, const char* const pszUnixSocket,
 						unsigned long clientflag );
@@ -47,14 +45,12 @@ public:
 
 	CASSQLThreadPool& GetThreadPool() { return m_ThreadPool; }
 
-	ASSQLLogFunction GetLogFunction() { return m_pLogFunction; }
+	ASSQLLogFunction GetLogFunction() { return m_ThreadPool.GetLogFunction(); }
 
 	MYSQL* GetConnection() { return m_pConnection; }
 
 private:
 	CASSQLThreadPool& m_ThreadPool;
-
-	ASSQLLogFunction m_pLogFunction;
 
 	MYSQL* m_pConnection = nullptr;
 

@@ -7,6 +7,8 @@
 #include <string>
 #include <vector>
 
+#include "ASSQL.h"
+
 #include "ASSQLThreading.h"
 
 class asIScriptContext;
@@ -20,8 +22,13 @@ private:
 	using Queue_t = std::queue<CASSQLItem>;
 
 public:
-	CASSQLThreadQueue() = default;
+	CASSQLThreadQueue( ASSQLLogFunction pLogFunction );
 	~CASSQLThreadQueue();
+
+	/**
+	*	@return The log function.
+	*/
+	ASSQLLogFunction GetLogFunction() const { return m_pLogFunction; }
 
 	/**
 	*	Adds an item to the queue.
@@ -50,6 +57,8 @@ public:
 	void AddLogMessage( const char* const pszFormat, ... );
 
 private:
+	ASSQLLogFunction m_pLogFunction;
+
 	std::mutex m_Mutex;
 
 	Queue_t m_Queue;

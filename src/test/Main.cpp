@@ -61,7 +61,7 @@ class CASSQL final
 {
 public:
 	CASSQL()
-		: m_ThreadPool( std::thread::hardware_concurrency() )
+		: m_ThreadPool( std::thread::hardware_concurrency(), &::SQLLogFunction )
 	{
 	}
 
@@ -76,7 +76,8 @@ public:
 	CASMySQLConnection* CreateMySQLConnection( const std::string& szHost, const std::string& szUser, const std::string& szPassword )
 	{
 		//TODO: get all of this information from server config.
-		return new CASMySQLConnection( m_ThreadPool, &::SQLLogFunction, szHost.c_str(), szUser.c_str(), szPassword.c_str(), nullptr, 3306, nullptr, 0 );
+		//TODO: return in callback
+		return new CASMySQLConnection( m_ThreadPool, szHost.c_str(), szUser.c_str(), szPassword.c_str(), nullptr, 3306, nullptr, 0 );
 	}
 
 private:

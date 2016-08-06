@@ -5,11 +5,11 @@
 
 #include <Angelscript/util/CASBaseClass.h>
 
+#include "../CASSQLThreadPool.h"
+
 #include "../IASSQLConnection.h"
 
 #include "CASSQLitePreparedStatement.h"
-
-class CASSQLThreadPool;
 
 /**
 *	Angelscript SQLite connection.
@@ -49,14 +49,16 @@ public:
 	*/
 	CASSQLitePreparedStatement* CreatePreparedStatement( const std::string& szStatement );
 
-	sqlite3* GetConnection() { return m_pConnection; }
-
 	CASSQLThreadPool& GetThreadPool() { return m_ThreadPool; }
 
-private:
-	sqlite3* m_pConnection = nullptr;
+	ASSQLLogFunction GetLogFunction() { return m_ThreadPool.GetLogFunction(); }
 
+	sqlite3* GetConnection() { return m_pConnection; }
+
+private:
 	CASSQLThreadPool& m_ThreadPool;
+
+	sqlite3* m_pConnection = nullptr;
 
 private:
 	CASSQLiteConnection( const CASSQLiteConnection& ) = delete;

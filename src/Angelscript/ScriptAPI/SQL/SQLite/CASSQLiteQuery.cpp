@@ -1,6 +1,5 @@
 #include <cassert>
 #include <cstring>
-#include <iostream>
 
 #include "CASSQLiteConnection.h"
 
@@ -31,7 +30,7 @@ void CASSQLiteQuery::Execute()
 
 	if( pszError )
 	{
-		std::cout << "Error: " << pszError << std::endl;
+		m_pConnection->GetLogFunction()( "Error: %s\n", pszError );
 		sqlite3_free( pszError );
 	}
 }

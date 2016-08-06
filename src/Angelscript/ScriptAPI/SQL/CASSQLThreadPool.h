@@ -18,10 +18,15 @@ class CASSQLThreadPool final
 {
 private:
 public:
-	CASSQLThreadPool( const size_t uiNumThreads );
+	CASSQLThreadPool( const size_t uiNumThreads, ASSQLLogFunction pLogFunction );
 	~CASSQLThreadPool() = default;
 
 	CASSQLThreadQueue& GetThreadQueue() { return m_Queue; }
+
+	/**
+	*	@return The log function.
+	*/
+	ASSQLLogFunction GetLogFunction() const { return m_Queue.GetLogFunction(); }
 
 	bool ThreadsActive();
 
