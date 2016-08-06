@@ -67,11 +67,11 @@ static void RegisterScriptSQLiteRow( asIScriptEngine& engine )
 		asMETHOD( CASSQLitePreparedStatement::CASSQLiteRow, IsColumnNull ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "int GetSigned32(const int iColumn) const",
+		pszObjectName, "int32 GetSigned32(const int iColumn) const",
 		asMETHOD( CASSQLitePreparedStatement::CASSQLiteRow, GetSigned32 ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "int GetSigned64(const int iColumn) const",
+		pszObjectName, "int64 GetSigned64(const int iColumn) const",
 		asMETHOD( CASSQLitePreparedStatement::CASSQLiteRow, GetSigned64 ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
