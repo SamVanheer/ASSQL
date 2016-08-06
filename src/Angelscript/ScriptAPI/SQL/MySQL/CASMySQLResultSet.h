@@ -33,6 +33,11 @@ public:
 	void Execute() override {}
 
 	/**
+	*	@return Whether this result set is valid.
+	*/
+	bool IsValid() const;
+
+	/**
 	*	@return The number of fields in a single row.
 	*/
 	int GetFieldCount() const;

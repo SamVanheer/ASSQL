@@ -1,7 +1,10 @@
 #include <cassert>
 #include <cstring>
 
+#include <Angelscript/CASManager.h>
+
 #include "CASMySQLBind.h"
+#include "CASMySQLConnection.h"
 #include "CASMySQLPreparedStatement.h"
 
 #include "CASMySQLResultSet.h"
@@ -43,7 +46,16 @@ CASMySQLResultSet::CASMySQLResultSet( CASMySQLPreparedStatement* pStatement )
 	}
 	else
 	{
-		//TODO: log error - Solokiller
+		auto pManager = CASManager::GetActiveManager();
+
+		if( pManager )
+		{
+			char szMessage[ MYSQL_ERRMSG_SIZE ];
+
+			snprintf( szMessage, sizeof( MYSQL_ERRMSG_SIZE ), "%s\n", mysql_error( m_pStatement->GetConnection()->GetConnection() ) );
+
+			pManager->GetEngine()->WriteMessage( nullptr, 0, 0, asMSGTYPE_ERROR, szMessage );
+		}
 	}
 }
 
@@ -61,6 +73,11 @@ CASMySQLResultSet::~CASMySQLResultSet()
 	delete[] m_pVariables;
 
 	m_pStatement->Release();
+}
+
+bool CASMySQLResultSet::IsValid() const
+{
+	return m_pResultSet != nullptr;
 }
 
 int CASMySQLResultSet::GetFieldCount() const

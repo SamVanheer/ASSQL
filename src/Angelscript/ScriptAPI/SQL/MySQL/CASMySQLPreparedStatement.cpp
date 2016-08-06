@@ -72,7 +72,12 @@ void CASMySQLPreparedStatement::Execute()
 		{
 			auto pResultSet = new CASMySQLResultSet( this );
 
-			bSuccess = m_pConnection->GetThreadPool().GetThreadQueue().AddItem( pResultSet, m_pCallback );
+			if( pResultSet->IsValid() )
+			{
+				bSuccess = m_pConnection->GetThreadPool().GetThreadQueue().AddItem( pResultSet, m_pCallback );
+			}
+			else
+				bSuccess = false;
 
 			pResultSet->Release();
 		}

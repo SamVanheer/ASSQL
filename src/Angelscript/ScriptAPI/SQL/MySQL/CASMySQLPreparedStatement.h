@@ -137,6 +137,8 @@ public:
 
 	bool ExecuteStatement( asIScriptFunction* pResultSetCallback = nullptr, asIScriptFunction* pCallback = nullptr );
 
+	CASMySQLConnection* GetConnection() { return m_pConnection; }
+
 	MYSQL_STMT* GetStatement() { return m_pStatement; }
 
 private:
