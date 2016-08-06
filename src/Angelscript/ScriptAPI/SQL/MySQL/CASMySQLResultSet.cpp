@@ -1,8 +1,6 @@
 #include <cassert>
 #include <cstring>
 
-#include <Angelscript/CASManager.h>
-
 #include "CASMySQLBind.h"
 #include "CASMySQLConnection.h"
 #include "CASMySQLPreparedStatement.h"
@@ -46,16 +44,7 @@ CASMySQLResultSet::CASMySQLResultSet( CASMySQLPreparedStatement* pStatement )
 	}
 	else
 	{
-		auto pManager = CASManager::GetActiveManager();
-
-		if( pManager )
-		{
-			char szMessage[ MYSQL_ERRMSG_SIZE ];
-
-			snprintf( szMessage, sizeof( MYSQL_ERRMSG_SIZE ), "%s\n", mysql_error( m_pStatement->GetConnection()->GetConnection() ) );
-
-			pManager->GetEngine()->WriteMessage( nullptr, 0, 0, asMSGTYPE_ERROR, szMessage );
-		}
+		pStatement->GetConnection()->GetLogFunction()( "%s\n", mysql_error( m_pStatement->GetConnection()->GetConnection() ) );
 	}
 }
 
