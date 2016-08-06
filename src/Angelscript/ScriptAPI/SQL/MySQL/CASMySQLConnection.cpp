@@ -15,7 +15,8 @@ CASMySQLConnection::CASMySQLConnection( CASSQLThreadPool& pool,
 {
 	m_pConnection = mysql_init( nullptr );
 
-	auto pResult = mysql_real_connect( m_pConnection, pszHost, pszUser, pszPassword, pszDatabase, uiPort, pszUnixSocket, clientflag );
+	//Enable multiple statements in a query to allow for consistent API behavior with SQLite.
+	auto pResult = mysql_real_connect( m_pConnection, pszHost, pszUser, pszPassword, pszDatabase, uiPort, pszUnixSocket, clientflag | CLIENT_MULTI_STATEMENTS );
 
 	if( !pResult )
 	{

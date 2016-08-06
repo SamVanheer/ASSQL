@@ -14,6 +14,10 @@ class CASMySQLPreparedStatement;
 class CASMySQLConnection final : public IASSQLConnection, public CASAtomicRefCountedBaseClass
 {
 public:
+	/**
+	*	Constructor.
+	*	@param clientflag Client connection flags. CLIENT_MULTI_STATEMENTS is always set to maintain consistent behavior with the SQLite API.
+	*/
 	CASMySQLConnection( CASSQLThreadPool& pool, 
 						const char* const pszHost, const char* const pszUser, const char* const pszPassword, 
 						const char* const pszDatabase, const unsigned int uiPort, const char* const pszUnixSocket,

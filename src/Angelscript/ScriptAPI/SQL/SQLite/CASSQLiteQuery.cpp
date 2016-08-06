@@ -27,7 +27,6 @@ CASSQLiteQuery::~CASSQLiteQuery()
 
 void CASSQLiteQuery::Execute()
 {
-	//TODO: handle rows? - Solokiller
 	char* pszError;
 	sqlite3_exec( m_pConnection->GetConnection(), m_szQuery.c_str(), nullptr, nullptr, &pszError );
 

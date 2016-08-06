@@ -34,6 +34,25 @@ void CASMySQLQuery::Execute()
 	{
 		m_pConnection->GetThreadPool().GetThreadQueue().AddLogMessage( std::string( mysql_error( m_pConnection->GetConnection() ) ) + '\n' );
 	}
+	else
+	{
+		//Ignore the results.
+		int iResult;
+
+		MYSQL_RES* pResultSet;
+
+		do
+		{
+			if( pResultSet = mysql_store_result( m_pConnection->GetConnection() ) )
+				mysql_free_result( pResultSet );
+
+			iResult = mysql_next_result( m_pConnection->GetConnection() );
+		}
+		while( iResult == 0 );
+
+		if( iResult > 0 )
+			m_pConnection->GetThreadPool().GetThreadQueue().AddLogMessage( std::string( mysql_error( m_pConnection->GetConnection() ) ) + '\n' );
+	}
 }
 
 bool CASMySQLQuery::IsValid() const
