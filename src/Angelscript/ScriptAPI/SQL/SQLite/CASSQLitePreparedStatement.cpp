@@ -25,9 +25,11 @@ CASSQLitePreparedStatement::CASSQLitePreparedStatement( CASSQLiteConnection* pCo
 
 CASSQLitePreparedStatement::~CASSQLitePreparedStatement()
 {
-	//TODO: log warning if these are still non-null here. - Solokiller
 	if( m_pRowCallback )
 	{
+		m_pConnection->GetLogFunction()( 
+			"SQLite: Row callback is still null in prepared statement destructor!\nStatement SQL: %s\n", 
+			m_pStatement ? sqlite3_sql( m_pStatement ) : "Unknown" );
 		m_pRowCallback->Release();
 		m_pRowCallback = nullptr;
 	}
@@ -81,8 +83,7 @@ void CASSQLitePreparedStatement::Execute()
 			continue;
 
 		default:
-			//TODO: handle specific errors as needed. - Solokiller
-			m_pConnection->GetThreadPool().GetThreadQueue().AddLogMessage( "%s\n", sqlite3_errmsg( m_pConnection->GetConnection() ) );
+			m_pConnection->GetThreadPool().GetThreadQueue().AddLogMessage( "%s\n", sqlite3_errstr( iResult ) );
 			bContinue = false;
 			break;
 		}
@@ -104,26 +105,42 @@ bool CASSQLitePreparedStatement::IsValid() const
 
 void CASSQLitePreparedStatement::BindNull( int iIndex )
 {
-	//TODO: error handling - Solokiller
-	sqlite3_bind_null( m_pStatement, iIndex );
+	const int iResult = sqlite3_bind_null( m_pStatement, iIndex );
+
+	if( SQLITE_OK != iResult )
+	{
+		m_pConnection->GetLogFunction()( "%s\n", sqlite3_errstr( iResult ) );
+	}
 }
 
 void CASSQLitePreparedStatement::BindSigned32( int iIndex, int32_t iValue )
 {
-	//TODO: error handling - Solokiller
-	sqlite3_bind_int( m_pStatement, iIndex, iValue );
+	const int iResult = sqlite3_bind_int( m_pStatement, iIndex, iValue );
+
+	if( SQLITE_OK != iResult )
+	{
+		m_pConnection->GetLogFunction()( "%s\n", sqlite3_errstr( iResult ) );
+	}
 }
 
 void CASSQLitePreparedStatement::BindSigned64( int iIndex, int64_t iValue )
 {
-	//TODO: error handling - Solokiller
-	sqlite3_bind_int64( m_pStatement, iIndex, iValue );
+	const int iResult = sqlite3_bind_int64( m_pStatement, iIndex, iValue );
+
+	if( SQLITE_OK != iResult )
+	{
+		m_pConnection->GetLogFunction()( "%s\n", sqlite3_errstr( iResult ) );
+	}
 }
 
 void CASSQLitePreparedStatement::BindDouble( int iIndex, double flValue )
 {
-	//TODO: error handling - Solokiller
-	sqlite3_bind_double( m_pStatement, iIndex, flValue );
+	const int iResult = sqlite3_bind_double( m_pStatement, iIndex, flValue );
+
+	if( SQLITE_OK != iResult )
+	{
+		m_pConnection->GetLogFunction()( "%s\n", sqlite3_errstr( iResult ) );
+	}
 }
 
 void CASSQLitePreparedStatement::BindString( int iIndex, const std::string& szString )
@@ -134,7 +151,12 @@ void CASSQLitePreparedStatement::BindString( int iIndex, const std::string& szSt
 
 	strcpy( pszString, szString.c_str() );
 
-	sqlite3_bind_text( m_pStatement, iIndex, pszString, -1, ::operator delete[] );
+	const int iResult = sqlite3_bind_text( m_pStatement, iIndex, pszString, -1, ::operator delete[] );
+
+	if( SQLITE_OK != iResult )
+	{
+		m_pConnection->GetLogFunction()( "%s\n", sqlite3_errstr( iResult ) );
+	}
 }
 
 bool CASSQLitePreparedStatement::ExecuteStatement( asIScriptFunction* pRowCallback, asIScriptFunction* pCallback )
