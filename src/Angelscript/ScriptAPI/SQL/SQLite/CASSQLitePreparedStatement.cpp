@@ -32,12 +32,6 @@ CASSQLitePreparedStatement::~CASSQLitePreparedStatement()
 		m_pRowCallback = nullptr;
 	}
 
-	if( m_pCallback )
-	{
-		m_pCallback->Release();
-		m_pCallback = nullptr;
-	}
-
 	if( m_pStatement )
 	{
 		sqlite3_finalize( m_pStatement );
@@ -88,6 +82,7 @@ void CASSQLitePreparedStatement::Execute()
 
 		default:
 			//TODO: handle specific errors as needed. - Solokiller
+			m_pConnection->GetThreadPool().GetThreadQueue().AddLogMessage( std::string( sqlite3_errmsg( m_pConnection->GetConnection() ) ) + '\n' );
 			bContinue = false;
 			break;
 		}
@@ -97,12 +92,6 @@ void CASSQLitePreparedStatement::Execute()
 	{
 		m_pRowCallback->Release();
 		m_pRowCallback = nullptr;
-	}
-
-	if( m_pCallback )
-	{
-		m_pCallback->Release();
-		m_pCallback = nullptr;
 	}
 
 	m_bExecuting = false;
@@ -159,8 +148,6 @@ bool CASSQLitePreparedStatement::ExecuteStatement( asIScriptFunction* pRowCallba
 	{
 		m_bExecuting = true;
 		m_pRowCallback = pRowCallback;
-		//TODO: don't have to store this callback - Solokiller
-		m_pCallback = pCallback;
 
 		bSuccess = true;
 	}
@@ -168,10 +155,10 @@ bool CASSQLitePreparedStatement::ExecuteStatement( asIScriptFunction* pRowCallba
 	{
 		if( pRowCallback )
 			pRowCallback->Release();
-
-		if( pCallback )
-			pCallback->Release();
 	}
+
+	if( pCallback )
+		pCallback->Release();
 
 	return bSuccess;
 }

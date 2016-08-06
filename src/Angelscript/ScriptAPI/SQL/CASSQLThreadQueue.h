@@ -49,6 +49,7 @@ public:
 	/**
 	*	@copydoc AddLogMessage( const char* const pszMessage )
 	*/
+	//TODO: replace with a fixed size buffer, use varargs - Solokiller
 	void AddLogMessage( std::string&& szMessage );
 
 private:

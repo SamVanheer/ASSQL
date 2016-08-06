@@ -129,7 +129,6 @@ private:
 	std::atomic<bool> m_bHandlingRow = false;
 
 	asIScriptFunction* m_pRowCallback = nullptr;
-	asIScriptFunction* m_pCallback = nullptr;
 
 private:
 	CASSQLitePreparedStatement( const CASSQLitePreparedStatement& ) = delete;

@@ -15,7 +15,6 @@ CASSQLiteQuery::CASSQLiteQuery( CASSQLiteConnection* pConnection, const char* co
 
 	m_pConnection->AddRef();
 
-	//TODO: if MySQL doesn't allow for semicolon delimited query chaining, trim anything after a semicolon. - Solokiller
 	m_szQuery = pszQuery;
 }
 
