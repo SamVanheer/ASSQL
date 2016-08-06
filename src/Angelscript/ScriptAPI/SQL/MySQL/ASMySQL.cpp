@@ -6,8 +6,30 @@
 
 #include "CASMySQLConnection.h"
 #include "CASMySQLPreparedStatement.h"
+#include "CASMySQLResultSet.h"
 
 #include "ASMySQL.h"
+
+static void RegisterScriptMySQLResultSet( asIScriptEngine& engine )
+{
+	const char* const pszObjectName = "MySQLResultSet";
+
+	engine.RegisterObjectType( pszObjectName, 0, asOBJ_REF );
+
+	as::RegisterRefCountedBaseClass<CASMySQLResultSet>( &engine, pszObjectName );
+
+	engine.RegisterObjectMethod(
+		pszObjectName, "int GetFieldCount() const",
+		asMETHOD( CASMySQLResultSet, GetFieldCount ), asCALL_THISCALL );
+
+	engine.RegisterObjectMethod(
+		pszObjectName, "bool Next()",
+		asMETHOD( CASMySQLResultSet, Next ), asCALL_THISCALL );
+
+	engine.RegisterObjectMethod(
+		pszObjectName, "int32 GetSigned32(int iColumn) const",
+		asMETHOD( CASMySQLResultSet, GetSigned32 ), asCALL_THISCALL );
+}
 
 static void RegisterScriptMySQLPreparedStatement( asIScriptEngine& engine )
 {
@@ -74,10 +96,11 @@ static void RegisterScriptMySQLPreparedStatement( asIScriptEngine& engine )
 		asMETHOD( CASMySQLPreparedStatement, BindText ), asCALL_THISCALL );
 
 	//TODO result set - Solokiller
+	engine.RegisterFuncdef( "void MySQLResultSetCallback(MySQLResultSet@ pResultSet)" );
 	engine.RegisterFuncdef( "void MySQLPreparedStatementCallback(MySQLPreparedStatement@ pStatement)" );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "void ExecuteStatement(MySQLPreparedStatementCallback@ pCallback = null)",
+		pszObjectName, "void ExecuteStatement(MySQLResultSetCallback@ pResultSetCallback, MySQLPreparedStatementCallback@ pCallback = null)",
 		asMETHOD( CASMySQLPreparedStatement, ExecuteStatement ), asCALL_THISCALL );
 }
 
@@ -96,6 +119,7 @@ static void RegisterScriptMySQLConnection( asIScriptEngine& engine )
 
 void RegisterScriptMySQL( asIScriptEngine& engine )
 {
+	RegisterScriptMySQLResultSet( engine );
 	RegisterScriptMySQLPreparedStatement( engine );
 	RegisterScriptMySQLConnection( engine );
 }

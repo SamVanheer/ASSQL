@@ -13,49 +13,11 @@
 
 class asIScriptFunction;
 
+class CASMySQLBind;
 class CASMySQLConnection;
 
 class CASMySQLPreparedStatement final : public IASSQLASyncItem, public CASAtomicRefCountedBaseClass
 {
-private:
-	class Variable final
-	{
-	public:
-		Variable() = default;
-		~Variable();
-
-		void Set( enum_field_types type, MYSQL_BIND* pBind, const char* const pBuffer = nullptr, const size_t uiLength = 0 );
-
-		void Clear();
-
-		MYSQL_BIND* m_pBind = nullptr;
-
-		my_bool m_bIsNull = false;
-		my_bool m_bError = false;
-
-		union
-		{
-			int8_t		m_iVal8;
-			int16_t		m_iVal16;
-			int32_t		m_iVal32;
-			int64_t		m_iVal64;
-
-			uint8_t		m_uiVal8;
-			uint16_t	m_uiVal16;
-			uint32_t	m_uiVal32;
-			uint64_t	m_uiVal64;
-
-			float		m_flValue;
-			double		m_dValue;
-		};
-
-		std::vector<char> m_Buffer;
-
-	private:
-		Variable( const Variable& ) = delete;
-		Variable& operator=( const Variable& ) = delete;
-	};
-
 public:
 	CASMySQLPreparedStatement( CASMySQLConnection* pConnection, const char* const pszStatement );
 	~CASMySQLPreparedStatement();
@@ -173,14 +135,18 @@ public:
 	*/
 	void BindText( int iIndex, const std::string& szText );
 
-	bool ExecuteStatement( asIScriptFunction* pCallback = nullptr );
+	bool ExecuteStatement( asIScriptFunction* pResultSetCallback = nullptr, asIScriptFunction* pCallback = nullptr );
+
+	MYSQL_STMT* GetStatement() { return m_pStatement; }
 
 private:
 	CASMySQLConnection* m_pConnection = nullptr;
 	MYSQL_STMT* m_pStatement = nullptr;
 
-	Variable* m_pVariables = nullptr;
+	CASMySQLBind* m_pVariables = nullptr;
 	MYSQL_BIND* m_pBinds = nullptr;
+
+	asIScriptFunction* m_pCallback = nullptr;
 
 private:
 	CASMySQLPreparedStatement( const CASMySQLPreparedStatement& ) = delete;

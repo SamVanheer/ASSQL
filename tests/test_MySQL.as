@@ -53,7 +53,7 @@ class Database
 			pStmt.BindSigned32( 0, 10 );
 			pStmt.BindText( 1, "Foo" );
 			
-			pStmt.ExecuteStatement( MySQLPreparedStatementCallback( this.InsertedValues ) );
+			pStmt.ExecuteStatement( null, MySQLPreparedStatementCallback( this.InsertedValues ) );
 		}
 	}
 	
@@ -63,13 +63,18 @@ class Database
 		
 		if( pStmt2 !is null )
 		{
-			pStmt2.ExecuteStatement( MySQLPreparedStatementCallback( this.Stmt2Callback ) );
+			pStmt2.ExecuteStatement( MySQLResultSetCallback( this.Stmt2Callback ) );
 		}
 	}
 	
-	private void Stmt2Callback( MySQLPreparedStatement@ pStmt )
+	private void Stmt2Callback( MySQLResultSet@ pResultSet )
 	{
 		Print( "Statement 2 row callback invoked\n" );
+		
+		while( pResultSet.Next() )
+		{
+			Print( "Key: %1, Value: %2\n", pResultSet.GetSigned32( 0 ), pResultSet.GetSigned32( 1 ) );
+		}
 	}
 }
 

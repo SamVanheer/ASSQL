@@ -5,7 +5,9 @@
 
 #include "../CASSQLThreadPool.h"
 
+#include "CASMySQLBind.h"
 #include "CASMySQLConnection.h"
+#include "CASMySQLResultSet.h"
 
 #include "CASMySQLPreparedStatement.h"
 
@@ -28,7 +30,7 @@ CASMySQLPreparedStatement::CASMySQLPreparedStatement( CASMySQLConnection* pConne
 
 			if( iParamCount > 0 )
 			{
-				m_pVariables = new Variable[ iParamCount ];
+				m_pVariables = new CASMySQLBind[ iParamCount ];
 				m_pBinds = new MYSQL_BIND[ iParamCount ];
 
 				memset( m_pBinds, 0, sizeof( MYSQL_BIND ) * iParamCount );
@@ -48,14 +50,37 @@ CASMySQLPreparedStatement::~CASMySQLPreparedStatement()
 
 void CASMySQLPreparedStatement::Execute()
 {
+	bool bSuccess = true;
+
 	if( m_pBinds && mysql_stmt_bind_param( m_pStatement, m_pBinds ) )
 	{
 		m_pConnection->GetThreadPool().GetThreadQueue().AddLogMessage( std::string( mysql_error( m_pConnection->GetConnection() ) ) + '\n' );
-		return;
+
+		bSuccess = false;
 	}
 
-	if( mysql_stmt_execute( m_pStatement ) )
+	if( bSuccess && mysql_stmt_execute( m_pStatement ) )
+	{
 		m_pConnection->GetThreadPool().GetThreadQueue().AddLogMessage( std::string( mysql_error( m_pConnection->GetConnection() ) ) + '\n' );
+		
+		bSuccess = false;
+	}
+
+	if( m_pCallback )
+	{
+		if( bSuccess )
+		{
+			auto pResultSet = new CASMySQLResultSet( this );
+
+			bSuccess = m_pConnection->GetThreadPool().GetThreadQueue().AddItem( pResultSet, m_pCallback );
+
+			pResultSet->Release();
+		}
+
+		m_pCallback->Release();
+
+		m_pCallback = nullptr;
+	}
 }
 
 bool CASMySQLPreparedStatement::IsValid() const
@@ -191,110 +216,23 @@ void CASMySQLPreparedStatement::BindText( int iIndex, const std::string& szText 
 	m_pVariables[ iIndex ].Set( MYSQL_TYPE_STRING, &m_pBinds[ iIndex ], szText.data(), szText.length() );
 }
 
-bool CASMySQLPreparedStatement::ExecuteStatement( asIScriptFunction* pCallback )
+bool CASMySQLPreparedStatement::ExecuteStatement( asIScriptFunction* pResultSetCallback, asIScriptFunction* pCallback )
 {
 	bool bSuccess = false;
 
 	if( m_pConnection->GetThreadPool().AddItem( this, pCallback ) )
 	{
+		m_pCallback = pResultSetCallback;
 		bSuccess = true;
+	}
+	else
+	{
+		if( pResultSetCallback )
+			pResultSetCallback->Release();
 	}
 
 	if( pCallback )
 		pCallback->Release();
 
 	return bSuccess;
-}
-
-CASMySQLPreparedStatement::Variable::~Variable()
-{
-	Clear();
-}
-
-void CASMySQLPreparedStatement::Variable::Set( enum_field_types type, MYSQL_BIND* pBind, const char* const pBuffer, const size_t uiLength )
-{
-	Clear();
-
-	m_pBind = pBind;
-
-	memset( m_pBind, 0, sizeof( MYSQL_BIND ) );
-
-	m_pBind->buffer_type = type;
-	m_pBind->buffer = &m_iVal64;
-	m_pBind->length = &m_pBind->buffer_length;
-	m_pBind->is_null = &m_bIsNull;
-	m_pBind->error = &m_bError;
-
-	m_pBind->buffer_length = 0;
-
-	switch( type )
-	{
-	case MYSQL_TYPE_NULL:
-		m_pBind->buffer_length = 1;
-		break;
-
-	case MYSQL_TYPE_BIT:
-		m_pBind->buffer_length = 1;
-		break;
-
-	case MYSQL_TYPE_TINY:
-		m_pBind->buffer_length = sizeof( int8_t );
-		break;
-
-	case MYSQL_TYPE_SHORT:
-		m_pBind->buffer_length = sizeof( int16_t );
-		break;
-
-	case MYSQL_TYPE_LONG:
-		m_pBind->buffer_length = sizeof( int32_t );
-		break;
-
-	case MYSQL_TYPE_LONGLONG:
-		m_pBind->buffer_length = sizeof( int64_t );
-		break;
-
-	case MYSQL_TYPE_FLOAT:
-		m_pBind->buffer_length = sizeof( float );
-		break;
-
-	case MYSQL_TYPE_DOUBLE:
-		m_pBind->buffer_length = sizeof( double );
-		break;
-
-		//TODO
-
-	default:
-	case MYSQL_TYPE_DECIMAL:
-	case MYSQL_TYPE_NEWDECIMAL:
-	case MYSQL_TYPE_TINY_BLOB:
-	case MYSQL_TYPE_MEDIUM_BLOB:
-	case MYSQL_TYPE_LONG_BLOB:
-	case MYSQL_TYPE_ENUM:
-	case MYSQL_TYPE_VARCHAR:
-	case MYSQL_TYPE_VAR_STRING:
-	case MYSQL_TYPE_STRING:
-		{
-			if( uiLength > 0 )
-			{
-				m_Buffer.resize( uiLength );
-
-				m_pBind->buffer = m_Buffer.data();
-				m_pBind->buffer_length = m_Buffer.size();
-
-				if( pBuffer )
-				{
-					memcpy( m_Buffer.data(), pBuffer, uiLength );
-				}
-			}
-
-			break;
-		}
-	}
-}
-
-void CASMySQLPreparedStatement::Variable::Clear()
-{
-	//TODO
-	m_Buffer.clear();
-	m_pBind = nullptr;
 }
