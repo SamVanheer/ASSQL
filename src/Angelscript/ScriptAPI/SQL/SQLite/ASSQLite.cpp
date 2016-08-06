@@ -102,20 +102,20 @@ static void RegisterScriptSQLitePreparedStatement( asIScriptEngine& engine )
 		asMETHOD( CASSQLitePreparedStatement, BindNull ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "void Bind(int iIndex, int iValue)",
-		asMETHODPR( CASSQLitePreparedStatement, Bind, ( int, int ), void ), asCALL_THISCALL );
+		pszObjectName, "void BindSigned32(int iIndex, int32 iValue)",
+		asMETHOD( CASSQLitePreparedStatement, BindSigned32 ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "void Bind64(int iIndex, int64 iValue)",
-		asMETHODPR( CASSQLitePreparedStatement, Bind64, ( int, int64_t ), void ), asCALL_THISCALL );
+		pszObjectName, "void BindSigned64(int iIndex, int64 iValue)",
+		asMETHOD( CASSQLitePreparedStatement, BindSigned64 ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "void Bind(int iIndex, double flValue)",
-		asMETHODPR( CASSQLitePreparedStatement, Bind, ( int, double ), void ), asCALL_THISCALL );
+		pszObjectName, "void BindDouble(int iIndex, double flValue)",
+		asMETHOD( CASSQLitePreparedStatement, BindDouble ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "void Bind(int iIndex, const string& in szString)",
-		asMETHODPR( CASSQLitePreparedStatement, Bind, ( int, const std::string& ), void ), asCALL_THISCALL );
+		pszObjectName, "void BindString(int iIndex, const string& in szString)",
+		asMETHOD( CASSQLitePreparedStatement, BindString ), asCALL_THISCALL );
 
 	engine.RegisterFuncdef( "void SQLitePreparedStatementCallback(SQLitePreparedStatement@ pStatement)" );
 

@@ -58,10 +58,10 @@ void main()
 		
 		if( pStmt !is null )
 		{
-			pStmt.Bind( 1, 10 );
-			pStmt.Bind( 2, "Hello" );
-			pStmt.Bind( 3, 0xFFFFFFFFFF );
-			pStmt.Bind( 4, "Optional" );
+			pStmt.BindSigned32( 1, 10 );
+			pStmt.BindString( 2, "Hello" );
+			pStmt.BindSigned64( 3, 0xFFFFFFFFFF );
+			pStmt.BindString( 4, "Optional" );
 			
 			pStmt.ExecuteStatement( null, @StmtCallback );
 		}
@@ -72,9 +72,9 @@ void main()
 		
 		if( pStmt3 !is null )
 		{
-			pStmt3.Bind( 1, 10 );
-			pStmt3.Bind( 2, "Hello" );
-			pStmt3.Bind( 3, 0xFFFFFFFFFF );
+			pStmt3.BindSigned32( 1, 10 );
+			pStmt3.BindString( 2, "Hello" );
+			pStmt3.BindSigned64( 3, 0xFFFFFFFFFF );
 			pStmt3.BindNull( 4 );
 			
 			pStmt3.ExecuteStatement( null, @StmtCallback );

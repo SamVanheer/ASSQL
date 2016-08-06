@@ -106,13 +106,13 @@ public:
 
 	void BindNull( int iIndex );
 
-	void Bind( int iIndex, int iValue );
+	void BindSigned32( int iIndex, int32_t iValue );
 
-	void Bind64( int iIndex, int64_t iValue );
+	void BindSigned64( int iIndex, int64_t iValue );
 
-	void Bind( int iIndex, double flValue );
+	void BindDouble( int iIndex, double flValue );
 
-	void Bind( int iIndex, const std::string& szString );
+	void BindString( int iIndex, const std::string& szString );
 
 	bool ExecuteStatement( asIScriptFunction* pRowCallback = nullptr, asIScriptFunction* pCallback = nullptr );
 

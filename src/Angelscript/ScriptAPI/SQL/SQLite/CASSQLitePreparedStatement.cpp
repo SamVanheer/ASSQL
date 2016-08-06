@@ -119,25 +119,25 @@ void CASSQLitePreparedStatement::BindNull( int iIndex )
 	sqlite3_bind_null( m_pStatement, iIndex );
 }
 
-void CASSQLitePreparedStatement::Bind( int iIndex, int iValue )
+void CASSQLitePreparedStatement::BindSigned32( int iIndex, int32_t iValue )
 {
 	//TODO: error handling - Solokiller
 	sqlite3_bind_int( m_pStatement, iIndex, iValue );
 }
 
-void CASSQLitePreparedStatement::Bind64( int iIndex, int64_t iValue )
+void CASSQLitePreparedStatement::BindSigned64( int iIndex, int64_t iValue )
 {
 	//TODO: error handling - Solokiller
 	sqlite3_bind_int64( m_pStatement, iIndex, iValue );
 }
 
-void CASSQLitePreparedStatement::Bind( int iIndex, double flValue )
+void CASSQLitePreparedStatement::BindDouble( int iIndex, double flValue )
 {
 	//TODO: error handling - Solokiller
 	sqlite3_bind_double( m_pStatement, iIndex, flValue );
 }
 
-void CASSQLitePreparedStatement::Bind( int iIndex, const std::string& szString )
+void CASSQLitePreparedStatement::BindString( int iIndex, const std::string& szString )
 {
 	const size_t uiLength = szString.length();
 
