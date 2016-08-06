@@ -25,18 +25,14 @@ public:
 
 	union
 	{
-		int8_t		m_iVal8;
-		int16_t		m_iVal16;
-		int32_t		m_iVal32;
+		int32_t		m_iVal32[ 2 ];
 		int64_t		m_iVal64;
 
-		uint8_t		m_uiVal8;
-		uint16_t	m_uiVal16;
-		uint32_t	m_uiVal32;
+		uint32_t	m_uiVal32[ 2 ];
 		uint64_t	m_uiVal64;
 
-		float		m_flValue;
-		double		m_dValue;
+		float		m_flValue32[ 2 ];
+		double		m_flValue64;
 	};
 
 	std::vector<char> m_Buffer;

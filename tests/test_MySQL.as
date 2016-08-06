@@ -73,7 +73,7 @@ class Database
 		
 		while( pResultSet.Next() )
 		{
-			Print( "Key: %1, Value: %2\n", pResultSet.GetSigned32( 0 ), pResultSet.GetSigned32( 1 ) );
+			Print( "Key: %1, Value: %2, String: %3\n", pResultSet.GetSigned32( 0 ), pResultSet.GetSigned32( 1 ), pResultSet.GetString( 2 ) );
 		}
 	}
 }

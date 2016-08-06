@@ -196,7 +196,7 @@ void CASMySQLPreparedStatement::BindFloat( int iIndex, float flValue )
 		return;
 
 	m_pVariables[ iIndex ].Set( MYSQL_TYPE_FLOAT, &m_pBinds[ iIndex ] );
-	m_pVariables[ iIndex ].m_flValue = flValue;
+	m_pVariables[ iIndex ].m_flValue32[ 0 ] = flValue;
 }
 
 void CASMySQLPreparedStatement::BindDouble( int iIndex, double flValue )
@@ -205,7 +205,7 @@ void CASMySQLPreparedStatement::BindDouble( int iIndex, double flValue )
 		return;
 
 	m_pVariables[ iIndex ].Set( MYSQL_TYPE_DOUBLE, &m_pBinds[ iIndex ] );
-	m_pVariables[ iIndex ].m_dValue = flValue;
+	m_pVariables[ iIndex ].m_flValue64 = flValue;
 }
 
 void CASMySQLPreparedStatement::BindText( int iIndex, const std::string& szText )

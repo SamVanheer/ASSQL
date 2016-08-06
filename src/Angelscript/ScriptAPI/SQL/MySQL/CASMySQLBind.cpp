@@ -63,6 +63,7 @@ void CASMySQLBind::Set( enum_field_types type, MYSQL_BIND* pBind, const char* co
 	case MYSQL_TYPE_TINY_BLOB:
 	case MYSQL_TYPE_MEDIUM_BLOB:
 	case MYSQL_TYPE_LONG_BLOB:
+	case MYSQL_TYPE_BLOB:
 	case MYSQL_TYPE_ENUM:
 	case MYSQL_TYPE_VARCHAR:
 	case MYSQL_TYPE_VAR_STRING:
@@ -88,7 +89,7 @@ void CASMySQLBind::Set( enum_field_types type, MYSQL_BIND* pBind, const char* co
 
 void CASMySQLBind::SetOutput( const MYSQL_FIELD& field, MYSQL_BIND* pBind )
 {
-	Set( field.type, pBind );
+	Set( field.type, pBind, nullptr, field.max_length );
 }
 
 void CASMySQLBind::Clear()

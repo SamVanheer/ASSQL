@@ -1,6 +1,8 @@
 #ifndef ANGELSCRIPT_SCRIPTAPI_SQL_MYSQL_CASMYSQLRESULTSET_H
 #define ANGELSCRIPT_SCRIPTAPI_SQL_MYSQL_CASMYSQLRESULTSET_H
 
+#include <string>
+
 #include <mysql.h>
 
 #include <Angelscript/util/CASBaseClass.h>
@@ -42,9 +44,92 @@ public:
 	bool Next();
 
 	/**
+	*	@return Whether the given column is null.
+	*/
+	bool IsNull( int iColumn ) const;
+
+	/**
+	*	@param iColumn Column to retrieve.
+	*	@return A boolean.
+	*/
+	bool GetBoolean( int iColumn ) const;
+
+	/**
+	*	Gets a signed 8 bit integer.
+	*	@param iColumn Column to retrieve.
+	*	@return An integer.
+	*/
+	int8_t GetSigned8( int iColumn ) const;
+
+	/**
+	*	Gets a signed 8 bit integer.
+	*	@param iColumn Column to retrieve.
+	*	@return An integer.
+	*/
+	uint8_t GetUnsigned8( int iColumn ) const;
+
+	/**
+	*	Gets a signed 16 bit integer.
+	*	@param iColumn Column to retrieve.
+	*	@return An integer.
+	*/
+	int16_t GetSigned16( int iColumn ) const;
+
+	/**
+	*	Gets a signed 16 bit integer.
+	*	@param iColumn Column to retrieve.
+	*	@return An integer.
+	*/
+	uint16_t GetUnsigned16( int iColumn ) const;
+
+	/**
 	*	Gets a signed 32 bit integer.
+	*	@param iColumn Column to retrieve.
+	*	@return An integer.
 	*/
 	int32_t GetSigned32( int iColumn ) const;
+
+	/**
+	*	Gets a signed 32 bit integer.
+	*	@param iColumn Column to retrieve.
+	*	@return An integer.
+	*/
+	uint32_t GetUnsigned32( int iColumn ) const;
+
+	/**
+	*	Gets a signed 64 bit integer.
+	*	@param iColumn Column to retrieve.
+	*	@return An integer.
+	*/
+	int64_t GetSigned64( int iColumn ) const;
+
+	/**
+	*	Gets a signed 64 bit integer.
+	*	@param iColumn Column to retrieve.
+	*	@return An integer.
+	*/
+	uint64_t GetUnsigned64( int iColumn ) const;
+
+	/**
+	*	Gets a 32 bit float.
+	*	@param iColumn Column to retrieve.
+	*	@return A float.
+	*/
+	float GetFloat( int iColumn ) const;
+
+	/**
+	*	Gets a 64 bit float.
+	*	@param iColumn Column to retrieve.
+	*	@return A double.
+	*/
+	double GetDouble( int iColumn ) const;
+
+	/**
+	*	Gets a string.
+	*	@param iColumn Column to retrieve.
+	*	@return A string.
+	*/
+	std::string GetString( int iColumn ) const;
 
 private:
 	CASMySQLPreparedStatement* m_pStatement = nullptr;

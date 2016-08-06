@@ -73,10 +73,105 @@ bool CASMySQLResultSet::Next()
 	return mysql_stmt_fetch( m_pStatement->GetStatement() ) == 0;
 }
 
+bool CASMySQLResultSet::IsNull( int iColumn ) const
+{
+	return m_pVariables[ iColumn ].m_bIsNull != 0;
+}
+
+bool CASMySQLResultSet::GetBoolean( int iColumn ) const
+{
+	if( iColumn < 0 || iColumn >= GetFieldCount() )
+		return 0;
+
+	return m_pVariables[ iColumn ].m_uiVal64 != 0;
+}
+
+int8_t CASMySQLResultSet::GetSigned8( int iColumn ) const
+{
+	if( iColumn < 0 || iColumn >= GetFieldCount() )
+		return 0;
+
+	return static_cast<int8_t>( m_pVariables[ iColumn ].m_iVal64 );
+}
+
+uint8_t CASMySQLResultSet::GetUnsigned8( int iColumn ) const
+{
+	if( iColumn < 0 || iColumn >= GetFieldCount() )
+		return 0;
+
+	return static_cast<uint8_t>( m_pVariables[ iColumn ].m_uiVal64 );
+}
+
+int16_t CASMySQLResultSet::GetSigned16( int iColumn ) const
+{
+	if( iColumn < 0 || iColumn >= GetFieldCount() )
+		return 0;
+
+	return static_cast<int16_t>( m_pVariables[ iColumn ].m_iVal64 );
+}
+
+uint16_t CASMySQLResultSet::GetUnsigned16( int iColumn ) const
+{
+	if( iColumn < 0 || iColumn >= GetFieldCount() )
+		return 0;
+
+	return static_cast<uint16_t>( m_pVariables[ iColumn ].m_uiVal64 );
+}
+
 int32_t CASMySQLResultSet::GetSigned32( int iColumn ) const
 {
 	if( iColumn < 0 || iColumn >= GetFieldCount() )
 		return 0;
 
-	return m_pVariables[ iColumn ].m_iVal32;
+	return static_cast<int32_t>( m_pVariables[ iColumn ].m_iVal64 );
+}
+
+uint32_t CASMySQLResultSet::GetUnsigned32( int iColumn ) const
+{
+	if( iColumn < 0 || iColumn >= GetFieldCount() )
+		return 0;
+
+	return static_cast<uint32_t>( m_pVariables[ iColumn ].m_uiVal64 );
+}
+
+int64_t CASMySQLResultSet::GetSigned64( int iColumn ) const
+{
+	if( iColumn < 0 || iColumn >= GetFieldCount() )
+		return 0;
+
+	return m_pVariables[ iColumn ].m_iVal64;
+}
+
+uint64_t CASMySQLResultSet::GetUnsigned64( int iColumn ) const
+{
+	if( iColumn < 0 || iColumn >= GetFieldCount() )
+		return 0;
+
+	return m_pVariables[ iColumn ].m_uiVal64;
+}
+
+float CASMySQLResultSet::GetFloat( int iColumn ) const
+{
+	if( iColumn < 0 || iColumn >= GetFieldCount() )
+		return 0;
+
+	return m_pVariables[ iColumn ].m_flValue32[ 0 ];
+}
+
+double CASMySQLResultSet::GetDouble( int iColumn ) const
+{
+	if( iColumn < 0 || iColumn >= GetFieldCount() )
+		return 0;
+
+	return m_pVariables[ iColumn ].m_flValue64;
+}
+
+std::string CASMySQLResultSet::GetString( int iColumn ) const
+{
+	if( iColumn < 0 || iColumn >= GetFieldCount() )
+		return "";
+
+	auto& buffer = m_pVariables[ iColumn ].m_Buffer;
+
+	return !buffer.empty() ? std::string( buffer.begin(), buffer.end() ) : "";
 }

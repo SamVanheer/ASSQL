@@ -27,8 +27,56 @@ static void RegisterScriptMySQLResultSet( asIScriptEngine& engine )
 		asMETHOD( CASMySQLResultSet, Next ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
+		pszObjectName, "bool IsNull(int iColumn) const",
+		asMETHOD( CASMySQLResultSet, IsNull ), asCALL_THISCALL );
+
+	engine.RegisterObjectMethod(
+		pszObjectName, "bool GetBoolean(int iColumn) const",
+		asMETHOD( CASMySQLResultSet, GetBoolean ), asCALL_THISCALL );
+
+	engine.RegisterObjectMethod(
+		pszObjectName, "int8 GetSigned8(int iColumn) const",
+		asMETHOD( CASMySQLResultSet, GetSigned8 ), asCALL_THISCALL );
+
+	engine.RegisterObjectMethod(
+		pszObjectName, "uint8 GetUnsigned8(int iColumn) const",
+		asMETHOD( CASMySQLResultSet, GetUnsigned8 ), asCALL_THISCALL );
+
+	engine.RegisterObjectMethod(
+		pszObjectName, "int16 GetSigned16(int iColumn) const",
+		asMETHOD( CASMySQLResultSet, GetSigned16 ), asCALL_THISCALL );
+
+	engine.RegisterObjectMethod(
+		pszObjectName, "uint16 GetUnsigned16(int iColumn) const",
+		asMETHOD( CASMySQLResultSet, GetUnsigned16 ), asCALL_THISCALL );
+
+	engine.RegisterObjectMethod(
 		pszObjectName, "int32 GetSigned32(int iColumn) const",
 		asMETHOD( CASMySQLResultSet, GetSigned32 ), asCALL_THISCALL );
+
+	engine.RegisterObjectMethod(
+		pszObjectName, "uint32 GetUnsigned32(int iColumn) const",
+		asMETHOD( CASMySQLResultSet, GetUnsigned32 ), asCALL_THISCALL );
+
+	engine.RegisterObjectMethod(
+		pszObjectName, "int64 GetSigned64(int iColumn) const",
+		asMETHOD( CASMySQLResultSet, GetSigned64 ), asCALL_THISCALL );
+
+	engine.RegisterObjectMethod(
+		pszObjectName, "uint64 GetUnsigned64(int iColumn) const",
+		asMETHOD( CASMySQLResultSet, GetUnsigned64 ), asCALL_THISCALL );
+
+	engine.RegisterObjectMethod(
+		pszObjectName, "float GetFloat(int iColumn) const",
+		asMETHOD( CASMySQLResultSet, GetFloat ), asCALL_THISCALL );
+
+	engine.RegisterObjectMethod(
+		pszObjectName, "double GetDouble(int iColumn) const",
+		asMETHOD( CASMySQLResultSet, GetDouble ), asCALL_THISCALL );
+
+	engine.RegisterObjectMethod(
+		pszObjectName, "string GetString(int iColumn ) const",
+		asMETHOD( CASMySQLResultSet, GetString ), asCALL_THISCALL );
 }
 
 static void RegisterScriptMySQLPreparedStatement( asIScriptEngine& engine )
@@ -95,12 +143,11 @@ static void RegisterScriptMySQLPreparedStatement( asIScriptEngine& engine )
 		pszObjectName, "void BindText(int iIndex, const string& in szString)",
 		asMETHOD( CASMySQLPreparedStatement, BindText ), asCALL_THISCALL );
 
-	//TODO result set - Solokiller
 	engine.RegisterFuncdef( "void MySQLResultSetCallback(MySQLResultSet@ pResultSet)" );
 	engine.RegisterFuncdef( "void MySQLPreparedStatementCallback(MySQLPreparedStatement@ pStatement)" );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "void ExecuteStatement(MySQLResultSetCallback@ pResultSetCallback, MySQLPreparedStatementCallback@ pCallback = null)",
+		pszObjectName, "void ExecuteStatement(MySQLResultSetCallback@ pResultSetCallback = null, MySQLPreparedStatementCallback@ pCallback = null)",
 		asMETHOD( CASMySQLPreparedStatement, ExecuteStatement ), asCALL_THISCALL );
 }
 
