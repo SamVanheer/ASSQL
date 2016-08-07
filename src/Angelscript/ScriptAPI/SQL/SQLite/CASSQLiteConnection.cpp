@@ -15,7 +15,7 @@ CASSQLiteConnection::CASSQLiteConnection( CASSQLThreadPool& pool, const char* co
 	{
 		m_pConnection = nullptr;
 
-		GetLogFunction()( "%s\n", sqlite3_errstr( iResult ) );
+		GetLogFunction()( "SQLiteConnection::SQLiteConnection: %s\n", sqlite3_errstr( iResult ) );
 	}
 }
 

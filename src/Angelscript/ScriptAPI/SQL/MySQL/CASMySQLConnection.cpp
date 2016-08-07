@@ -20,7 +20,7 @@ CASMySQLConnection::CASMySQLConnection( CASSQLThreadPool& pool,
 
 	if( !pResult )
 	{
-		GetLogFunction()( "%s\n", mysql_error( m_pConnection ) );
+		GetLogFunction()( "MySQLConnection::MySQLConnection: %s\n", mysql_error( m_pConnection ) );
 		Close();
 	}
 }

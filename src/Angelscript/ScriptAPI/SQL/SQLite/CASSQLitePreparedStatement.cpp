@@ -83,7 +83,7 @@ void CASSQLitePreparedStatement::Execute()
 			continue;
 
 		default:
-			m_pConnection->GetThreadPool().GetThreadQueue().AddLogMessage( "%s\n", sqlite3_errstr( iResult ) );
+			m_pConnection->GetThreadPool().GetThreadQueue().AddLogMessage( "SQLitePreparedStatement::Execute: %s\n", sqlite3_errstr( iResult ) );
 			bContinue = false;
 			break;
 		}

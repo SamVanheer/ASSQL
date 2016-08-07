@@ -13,6 +13,8 @@
 
 class asIScriptFunction;
 
+class CASDateTime;
+class CASTime;
 class CASMySQLBind;
 class CASMySQLConnection;
 
@@ -134,6 +136,27 @@ public:
 	*	@param szString String.
 	*/
 	void BindString( int iIndex, const std::string& szString );
+
+	/**
+	*	Binds a date instance.
+	*	@param iIndex Parameter index.
+	*	@param date Date instance.
+	*/
+	void BindDate( int iIndex, const CASDateTime& date );
+
+	/**
+	*	Binds a time instance.
+	*	@param iIndex Parameter index.
+	*	@param time Time instance.
+	*/
+	void BindTime( int iIndex, const CASTime& time );
+
+	/**
+	*	Binds a date time instance.
+	*	@param iIndex Parameter index.
+	*	@param dateTime Date time instance.
+	*/
+	void BindDateTime( int iIndex, const CASDateTime& dateTime );
 
 	bool ExecuteStatement( asIScriptFunction* pResultSetCallback = nullptr, asIScriptFunction* pCallback = nullptr );
 

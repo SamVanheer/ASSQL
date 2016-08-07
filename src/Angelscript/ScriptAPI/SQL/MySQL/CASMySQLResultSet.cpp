@@ -18,10 +18,10 @@ CASMySQLResultSet::CASMySQLResultSet( CASMySQLPreparedStatement* pStatement )
 	const int iMaxLength = 1;
 	mysql_stmt_attr_set( pStatement->GetStatement(), STMT_ATTR_UPDATE_MAX_LENGTH, &iMaxLength );
 
-	if( mysql_stmt_store_result( m_pStatement->GetStatement() ) == 0 )
-	{
-		m_pResultSet = mysql_stmt_result_metadata( m_pStatement->GetStatement() );
+	m_pResultSet = mysql_stmt_result_metadata( m_pStatement->GetStatement() );
 
+	if( m_pResultSet )
+	{
 		m_pFields = mysql_fetch_fields( m_pResultSet );
 
 		const int iFieldCount = GetFieldCount();
@@ -42,26 +42,43 @@ CASMySQLResultSet::CASMySQLResultSet( CASMySQLPreparedStatement* pStatement )
 			mysql_stmt_bind_result( m_pStatement->GetStatement(), m_pBinds );
 		}
 	}
-	else
+
+	if( mysql_stmt_store_result( m_pStatement->GetStatement() ) != 0 )
 	{
-		pStatement->GetConnection()->GetLogFunction()( "%s\n", mysql_error( m_pStatement->GetConnection()->GetConnection() ) );
+		pStatement->GetConnection()->GetLogFunction()( "MySQLResultSet::MySQLResultSet: %s\n", mysql_error( m_pStatement->GetConnection()->GetConnection() ) );
+
+		Destruct();
 	}
 }
 
 CASMySQLResultSet::~CASMySQLResultSet()
 {
+	Destruct();
+
+	m_pStatement->Release();
+}
+
+void CASMySQLResultSet::Destruct()
+{
 	if( m_pResultSet )
 	{
 		mysql_free_result( m_pResultSet );
+		m_pResultSet = nullptr;
 	}
-
-	delete[] m_pBinds;
 
 	mysql_stmt_free_result( m_pStatement->GetStatement() );
 
-	delete[] m_pVariables;
+	if( m_pBinds )
+	{
+		delete[] m_pBinds;
+		m_pBinds = nullptr;
+	}
 
-	m_pStatement->Release();
+	if( m_pVariables )
+	{
+		delete[] m_pVariables;
+		m_pVariables = nullptr;
+	}
 }
 
 bool CASMySQLResultSet::IsValid() const

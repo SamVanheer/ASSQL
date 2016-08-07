@@ -18,6 +18,11 @@ public:
 	CASMySQLResultSet( CASMySQLPreparedStatement* pStatement );
 	~CASMySQLResultSet();
 
+private:
+	void Destruct();
+
+public:
+
 	void AddRef() const
 	{
 		CASAtomicRefCountedBaseClass::AddRef();

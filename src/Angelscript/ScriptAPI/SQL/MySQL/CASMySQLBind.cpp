@@ -55,7 +55,13 @@ void CASMySQLBind::Set( enum_field_types type, MYSQL_BIND* pBind, const char* co
 		m_pBind->buffer_length = sizeof( double );
 		break;
 
-		//TODO time types - Solokiller
+	case MYSQL_TYPE_NEWDATE:
+	case MYSQL_TYPE_DATE:
+	case MYSQL_TYPE_TIME:
+	case MYSQL_TYPE_TIMESTAMP:
+	case MYSQL_TYPE_DATETIME:
+		m_pBind->buffer = &m_Time;
+		break;
 
 	default:
 	case MYSQL_TYPE_DECIMAL:

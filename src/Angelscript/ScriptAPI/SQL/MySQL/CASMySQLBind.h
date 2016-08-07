@@ -20,6 +20,8 @@ public:
 
 	MYSQL_BIND* m_pBind = nullptr;
 
+	MYSQL_TIME m_Time = {};
+
 	my_bool m_bIsNull = false;
 	my_bool m_bError = false;
 

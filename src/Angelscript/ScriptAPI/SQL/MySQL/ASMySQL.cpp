@@ -143,6 +143,18 @@ static void RegisterScriptMySQLPreparedStatement( asIScriptEngine& engine )
 		pszObjectName, "void BindString(int iIndex, const string& in szString)",
 		asMETHOD( CASMySQLPreparedStatement, BindString ), asCALL_THISCALL );
 
+	engine.RegisterObjectMethod(
+		pszObjectName, "void BindDate(int iIndex, const CDateTime& in date)",
+		asMETHOD( CASMySQLPreparedStatement, BindDate ), asCALL_THISCALL );
+
+	engine.RegisterObjectMethod(
+		pszObjectName, "void BindTime(int iIndex, const CTime& in time)",
+		asMETHOD( CASMySQLPreparedStatement, BindTime ), asCALL_THISCALL );
+
+	engine.RegisterObjectMethod(
+		pszObjectName, "void BindDateTime(int iIndex, const CDateTime& in dateTime)",
+		asMETHOD( CASMySQLPreparedStatement, BindDateTime ), asCALL_THISCALL );
+
 	engine.RegisterFuncdef( "void MySQLResultSetCallback(MySQLResultSet@ pResultSet)" );
 	engine.RegisterFuncdef( "void MySQLPreparedStatementCallback(MySQLPreparedStatement@ pStatement)" );
 

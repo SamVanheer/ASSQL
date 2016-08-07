@@ -1,6 +1,8 @@
 add_sources(
 	ASMySQL.h
 	ASMySQL.cpp
+	ASMySQLDateTime.h
+	ASMySQLDateTime.cpp
 	CASMySQLBind.h
 	CASMySQLBind.cpp
 	CASMySQLConnection.h

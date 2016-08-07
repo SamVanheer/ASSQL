@@ -1,6 +1,8 @@
 #include <cstdarg>
 #include <iostream>
 
+#include <mysql.h>
+
 #include <Angelscript/CASManager.h>
 #include <Angelscript/CASModule.h>
 #include <Angelscript/IASInitializer.h>
@@ -62,7 +64,7 @@ class CASSQL final
 {
 public:
 	CASSQL()
-		: m_ThreadPool( std::thread::hardware_concurrency(), &::SQLLogFunction )
+		: m_ThreadPool( 1, &::SQLLogFunction )
 	{
 	}
 
@@ -183,12 +185,21 @@ public:
 	bool AddScripts( CScriptBuilder& builder ) override
 	{
 		//Assumes the working directory is <repo>/working_dir
-		return builder.AddSectionFromFile( "../tests/test_DateTime.as" ) >= 0;
+		return builder.AddSectionFromFile( "../tests/test_MySQL.as" ) >= 0;
 	}
 };
 
 int main( int iArgc, char* pszArgV[] )
 {
+	if( mysql_library_init( 0, nullptr, nullptr ) )
+	{
+		std::cout << "Failed to initialize MySQL" << std::endl;
+
+		std::cin.get();
+
+		return EXIT_FAILURE;
+	}
+
 	CASManager manager;
 
 	bool bSuccess = false;
@@ -239,6 +250,8 @@ int main( int iArgc, char* pszArgV[] )
 	manager.Shutdown();
 
 	std::cout << "Finished running tests" << std::endl;
+
+	mysql_library_end();
 
 	std::cin.get();
 
