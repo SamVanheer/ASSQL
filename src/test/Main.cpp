@@ -13,6 +13,8 @@
 #include <Angelscript/util/CASBaseClass.h>
 #include <Angelscript/wrapper/ASCallable.h>
 
+#include <Angelscript/ScriptAPI/ASCDateTime.h>
+#include <Angelscript/ScriptAPI/ASCTime.h>
 #include <Angelscript/ScriptAPI/SQL/ASSQL.h>
 #include <Angelscript/ScriptAPI/SQL/CASSQLThreadPool.h>
 #include <Angelscript/ScriptAPI/SQL/SQLite/ASSQLite.h>
@@ -97,6 +99,36 @@ void Print( asIScriptGeneric* pArguments )
 	}
 }
 
+void ScriptAssert( const bool bCondition )
+{
+	if( bCondition )
+		return;
+
+	std::cout << "Assertion failed: ";
+
+	if( asIScriptContext* pContext = asGetActiveContext() )
+	{
+		if( auto pFunction = pContext->GetFunction() )
+		{
+			std::cout << "Section \"" << pFunction->GetScriptSectionName() << "\": " << pFunction->GetNamespace() << "::" << pFunction->GetName() << '(';
+
+			std::cout << ')';
+		}
+		else
+			std::cout << "Unknown section and function";
+
+		int iColumn;
+
+		const int iLineNumber = pContext->GetLineNumber( 0, &iColumn );
+
+		std::cout << std::endl << "Line " << iLineNumber << ", Column " << iColumn;
+	}
+	else
+		std::cout << "Unknown condition";
+
+	std::cout << std::endl;
+}
+
 class CASInitializer final : public IASInitializer
 {
 public:
@@ -115,6 +147,8 @@ public:
 
 		RegisterStdString( &engine );
 
+		RegisterScriptCTime( engine );
+		RegisterScriptCDateTime( engine );
 		RegisterScriptSQL( engine );
 		RegisterScriptSQLite( engine );
 		RegisterScriptMySQL( engine );
@@ -132,6 +166,7 @@ public:
 		engine.RegisterGlobalProperty( "CSQL SQL", &g_ASSQL );
 
 		as::RegisterVarArgsFunction( engine, "void", "Print", "const string& in szFormat", 0, 8, asFUNCTION( Print ) );
+		engine.RegisterGlobalFunction( "void Assert(const bool bCondition)", asFUNCTION( ScriptAssert ), asCALL_CDECL );
 
 		return true;
 	}
@@ -148,7 +183,7 @@ public:
 	bool AddScripts( CScriptBuilder& builder ) override
 	{
 		//Assumes the working directory is <repo>/working_dir
-		return builder.AddSectionFromFile( "../tests/test_SQLite.as" ) >= 0;
+		return builder.AddSectionFromFile( "../tests/test_DateTime.as" ) >= 0;
 	}
 };
 
