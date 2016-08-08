@@ -79,24 +79,6 @@ class Database
 	{
 		Print( "Inserted values\n" );
 		
-		/*
-		MySQLPreparedStatement@ pStmt2 = m_pConnection.CreatePreparedStatement( "INSERT INTO Test (ID, VALUE, STRING, date, time, datetime) VALUES(1, ?, ?, ?, ?, ?)" );
-		
-		Print( "Created statement: %1\n", pStmt2 !is null ? "yes" : "no" );
-		
-		if( pStmt2 !is null )
-		{
-			pStmt2.BindSigned32( 0, 10 );
-			pStmt2.BindString( 1, "Foo" );
-			pStmt2.BindDate( 2, DateTime::Now().GetDate() );
-			pStmt2.BindTime( 3, Time::Now() );
-			pStmt2.BindDateTime( 4, DateTime::Now() );
-			
-			pStmt2.ExecuteStatement( MySQLResultSetCallback( this.NullResultSetCallback ) );
-		}
-		*/
-		
-		
 		MySQLPreparedStatement@ pStmt2 = m_pConnection.CreatePreparedStatement( "SELECT * FROM Test" );
 		
 		if( pStmt2 !is null )
@@ -112,7 +94,13 @@ class Database
 		
 		while( pResultSet.Next() )
 		{
-			Print( "Key: %1, Value: %2, String: %3\n", pResultSet.GetSigned32( 0 ), pResultSet.GetSigned32( 1 ), pResultSet.GetString( 2 ) );
+			Print( "Key: %1, Value: %2, String: %3, Date: %4, Time: %5, DateTime: %6\n", 
+				pResultSet.GetSigned32( 0 ), 
+				pResultSet.GetSigned32( 1 ), 
+				pResultSet.GetString( 2 ),
+				pResultSet.GetDate( 3 ).StrDate(),
+				pResultSet.GetTime( 4 ).StrTime(),
+				pResultSet.GetDateTime( 5 ).StrTime() );
 		}
 	}
 }

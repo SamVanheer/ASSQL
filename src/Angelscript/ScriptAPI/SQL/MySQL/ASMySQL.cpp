@@ -77,6 +77,18 @@ static void RegisterScriptMySQLResultSet( asIScriptEngine& engine )
 	engine.RegisterObjectMethod(
 		pszObjectName, "string GetString(int iColumn ) const",
 		asMETHOD( CASMySQLResultSet, GetString ), asCALL_THISCALL );
+
+	engine.RegisterObjectMethod(
+		pszObjectName, "CDateTime GetDate(int iColumn ) const",
+		asMETHOD( CASMySQLResultSet, GetDate ), asCALL_THISCALL );
+
+	engine.RegisterObjectMethod(
+		pszObjectName, "CTime GetTime(int iColumn ) const",
+		asMETHOD( CASMySQLResultSet, GetTime ), asCALL_THISCALL );
+
+	engine.RegisterObjectMethod(
+		pszObjectName, "CDateTime GetDateTime(int iColumn ) const",
+		asMETHOD( CASMySQLResultSet, GetDateTime ), asCALL_THISCALL );
 }
 
 static void RegisterScriptMySQLPreparedStatement( asIScriptEngine& engine )

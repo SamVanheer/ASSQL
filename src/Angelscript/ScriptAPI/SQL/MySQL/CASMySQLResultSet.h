@@ -7,6 +7,9 @@
 
 #include <Angelscript/util/CASBaseClass.h>
 
+#include "Angelscript/ScriptAPI/CASDateTime.h"
+#include "Angelscript/ScriptAPI/CASTime.h"
+
 #include "../IASSQLASyncItem.h"
 
 class CASMySQLBind;
@@ -139,6 +142,27 @@ public:
 	*	@return A string.
 	*/
 	std::string GetString( int iColumn ) const;
+
+	/**
+	*	Gets a date instance.
+	*	@param iColumn Column to retrieve.
+	*	@return A date instance.
+	*/
+	CASDateTime GetDate( int iColumn ) const;
+
+	/**
+	*	Gets a time instance.
+	*	@param iColumn Column to retrieve.
+	*	@return A time instance.
+	*/
+	CASTime GetTime( int iColumn ) const;
+
+	/**
+	*	Gets a date time instance.
+	*	@param iColumn Column to retrieve.
+	*	@return A date time instance.
+	*/
+	CASDateTime GetDateTime( int iColumn ) const;
 
 private:
 	CASMySQLPreparedStatement* m_pStatement = nullptr;

@@ -1,6 +1,8 @@
 #include <cassert>
 #include <cstring>
 
+#include "ASMySQLDateTime.h"
+
 #include "CASMySQLBind.h"
 #include "CASMySQLConnection.h"
 #include "CASMySQLPreparedStatement.h"
@@ -207,4 +209,28 @@ std::string CASMySQLResultSet::GetString( int iColumn ) const
 	auto& buffer = m_pVariables[ iColumn ].m_Buffer;
 
 	return !buffer.empty() ? std::string( buffer.begin(), buffer.end() ) : "";
+}
+
+CASDateTime CASMySQLResultSet::GetDate( int iColumn ) const
+{
+	if( iColumn < 0 || iColumn >= GetFieldCount() )
+		return CASDateTime();
+
+	return CASDateTime_FromMySQLTime( m_pVariables[ iColumn ].m_Time );
+}
+
+CASTime CASMySQLResultSet::GetTime( int iColumn ) const
+{
+	if( iColumn < 0 || iColumn >= GetFieldCount() )
+		return CASDateTime();
+
+	return CASTime_FromMySQLTime( m_pVariables[ iColumn ].m_Time );
+}
+
+CASDateTime CASMySQLResultSet::GetDateTime( int iColumn ) const
+{
+	if( iColumn < 0 || iColumn >= GetFieldCount() )
+		return CASDateTime();
+
+	return CASDateTime_FromMySQLTime( m_pVariables[ iColumn ].m_Time );
 }
