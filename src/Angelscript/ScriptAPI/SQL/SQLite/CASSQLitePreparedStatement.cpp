@@ -64,7 +64,6 @@ void CASSQLitePreparedStatement::Execute()
 		case SQLITE_ROW:
 			if( m_pRowCallback )
 			{
-				m_bHandlingRow = true;
 				m_bCallbackInvoked = false;
 
 				CASSQLiteRow row( *this, iRowIndex++ );
@@ -76,8 +75,6 @@ void CASSQLitePreparedStatement::Execute()
 				{
 					std::this_thread::yield();
 				}
-
-				m_bHandlingRow = false;
 			}
 
 			continue;

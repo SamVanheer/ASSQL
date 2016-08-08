@@ -165,18 +165,12 @@ public:
 	*/
 	sqlite3_stmt* GetStatement() { return m_pStatement; }
 
-	/**
-	*	@return Whether this statement is handling a row.
-	*/
-	bool IsHandlingRow() const { return m_bHandlingRow; }
-
 private:
 	CASSQLiteConnection* m_pConnection = nullptr;
 	sqlite3_stmt* m_pStatement = nullptr;
 
 	std::atomic<bool> m_bExecuting = false;
 	std::atomic<bool> m_bCallbackInvoked = false;
-	std::atomic<bool> m_bHandlingRow = false;
 
 	asIScriptFunction* m_pRowCallback = nullptr;
 
