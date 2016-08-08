@@ -14,3 +14,13 @@ add_sources(
 	CASMySQLResultSet.h
 	CASMySQLResultSet.cpp
 )
+
+add_includes(
+	ASMySQL.h
+	ASMySQLDateTime.h
+	CASMySQLBind.h
+	CASMySQLConnection.h
+	CASMySQLPreparedStatement.h
+	CASMySQLQuery.h
+	CASMySQLResultSet.h
+)

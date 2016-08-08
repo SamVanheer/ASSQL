@@ -10,3 +10,11 @@ add_sources(
 	CASSQLiteQuery.h
 	CASSQLiteQuery.cpp
 )
+
+add_includes(
+	ASSQLite.h
+	ASSQLiteDataType.h
+	CASSQLiteConnection.h
+	CASSQLitePreparedStatement.h
+	CASSQLiteQuery.h
+)

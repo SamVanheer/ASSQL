@@ -9,4 +9,11 @@ add_sources(
 	CASTime.cpp
 )
 
+add_includes(
+	ASCDateTime.h
+	ASCTime.h
+	CASDateTime.h
+	CASTime.h
+)
+
 add_subdirectory( SQL )

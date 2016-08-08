@@ -218,6 +218,9 @@ set_target_properties( AngelscriptSQL PROPERTIES COMPILE_FLAGS "${LINUX_32BIT_FL
 #Create filters
 create_source_groups( "${CMAKE_SOURCE_DIR}" )
 
+install( TARGETS AngelscriptSQL DESTINATION lib )
+install_includes( "${CMAKE_SOURCE_DIR}/src" )
+
 clear_sources()
 
 #
