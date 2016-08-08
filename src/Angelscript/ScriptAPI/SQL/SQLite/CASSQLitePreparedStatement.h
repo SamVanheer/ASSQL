@@ -122,14 +122,34 @@ public:
 	*/
 	bool IsValid() const;
 
+	/**
+	*	Binds a null value.
+	*	@param uiIndex parameter to bind.
+	*/
 	void BindNull( uint32_t uiIndex );
 
+	/**
+	*	Binds a signed 32 bit int value.
+	*	@param uiIndex parameter to bind.
+	*/
 	void BindSigned32( uint32_t uiIndex, int32_t iValue );
 
+	/**
+	*	Binds a signed 64 bit int value.
+	*	@param uiIndex parameter to bind.
+	*/
 	void BindSigned64( uint32_t uiIndex, int64_t iValue );
 
+	/**
+	*	Binds a 64 bit float value.
+	*	@param uiIndex parameter to bind.
+	*/
 	void BindDouble( uint32_t uiIndex, double flValue );
 
+	/**
+	*	Binds a string value.
+	*	@param uiIndex parameter to bind.
+	*/
 	void BindString( uint32_t uiIndex, const std::string& szString );
 
 	/**
