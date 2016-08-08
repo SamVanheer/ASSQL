@@ -20,13 +20,25 @@ class CASDateTime;
 class CASTime;
 class CASMySQLConnection;
 
+/**
+*	MySQL prepared statement. Executes asynchronously.
+*/
 class CASMySQLPreparedStatement final : public IASSQLASyncCommand, public CASAtomicRefCountedBaseClass
 {
 protected:
 	friend class CASMySQLResultSet;
 
 public:
+	/**
+	*	Constructor.
+	*	@param pConnection Connection that created this statement.
+	*	@param pszStatement Statement string.
+	*/
 	CASMySQLPreparedStatement( CASMySQLConnection* pConnection, const char* const pszStatement );
+
+	/**
+	*	Destructor.
+	*/
 	~CASMySQLPreparedStatement();
 
 	void AddRef() const override final
@@ -163,8 +175,17 @@ public:
 	*/
 	void BindDateTime( uint32_t uiIndex, const CASDateTime& dateTime );
 
+	/**
+	*	Executes this statement.
+	*	@param pResultSetCallback Optional. Callback to invoke with the result set.
+	*	@param pCallback Optional. Callback to invoke after the statement has finished executing and has freed the result set.
+	*	@return Whether the statement was successfully queued up for execution.
+	*/
 	bool ExecuteStatement( asIScriptFunction* pResultSetCallback = nullptr, asIScriptFunction* pCallback = nullptr );
 
+	/**
+	*	@return The connection that created this statement.
+	*/
 	CASMySQLConnection* GetConnection() { return m_pConnection; }
 
 private:
