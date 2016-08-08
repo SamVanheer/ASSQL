@@ -2,8 +2,6 @@
 
 #include <Angelscript/util/ASUtil.h>
 
-#include "../ASSQL.h"
-
 #include "CASMySQLConnection.h"
 #include "CASMySQLPreparedStatement.h"
 #include "CASMySQLResultSet.h"
