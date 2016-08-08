@@ -18,36 +18,38 @@ CASMySQLResultSet::CASMySQLResultSet( CASMySQLPreparedStatement* pStatement )
 	const int iMaxLength = 1;
 	mysql_stmt_attr_set( pStatement->GetStatement(), STMT_ATTR_UPDATE_MAX_LENGTH, &iMaxLength );
 
-	m_pResultSet = mysql_stmt_result_metadata( m_pStatement->GetStatement() );
-
-	if( m_pResultSet )
-	{
-		m_pFields = mysql_fetch_fields( m_pResultSet );
-
-		const int iFieldCount = GetFieldCount();
-
-		if( iFieldCount > 0 )
-		{
-			m_pBinds = new MYSQL_BIND[ iFieldCount ];
-
-			memset( m_pBinds, 0, sizeof( MYSQL_BIND ) * iFieldCount );
-
-			m_pVariables = new CASMySQLBind[ iFieldCount ];
-
-			for( int iIndex = 0; iIndex < iFieldCount; ++iIndex )
-			{
-				m_pVariables[ iIndex ].SetOutput( m_pFields[ iIndex ], &m_pBinds[ iIndex ] );
-			}
-
-			mysql_stmt_bind_result( m_pStatement->GetStatement(), m_pBinds );
-		}
-	}
-
 	if( mysql_stmt_store_result( m_pStatement->GetStatement() ) != 0 )
 	{
 		pStatement->GetConnection()->GetLogFunction()( "MySQLResultSet::MySQLResultSet: %s\n", mysql_error( m_pStatement->GetConnection()->GetConnection() ) );
 
 		Destruct();
+	}
+	else
+	{
+		m_pResultSet = mysql_stmt_result_metadata( m_pStatement->GetStatement() );
+
+		if( m_pResultSet )
+		{
+			m_pFields = mysql_fetch_fields( m_pResultSet );
+
+			const int iFieldCount = GetFieldCount();
+
+			if( iFieldCount > 0 )
+			{
+				m_pBinds = new MYSQL_BIND[ iFieldCount ];
+
+				memset( m_pBinds, 0, sizeof( MYSQL_BIND ) * iFieldCount );
+
+				m_pVariables = new CASMySQLBind[ iFieldCount ];
+
+				for( int iIndex = 0; iIndex < iFieldCount; ++iIndex )
+				{
+					m_pVariables[ iIndex ].SetOutput( m_pFields[ iIndex ], &m_pBinds[ iIndex ] );
+				}
+
+				mysql_stmt_bind_result( m_pStatement->GetStatement(), m_pBinds );
+			}
+		}
 	}
 }
 
