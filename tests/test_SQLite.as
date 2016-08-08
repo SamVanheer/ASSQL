@@ -3,7 +3,7 @@ SQLiteConnection@ g_pConnection = null;
 
 void main()
 {
-	SQLConnection@ pConnection = SQL.CreateSQLiteConnection( "test_SQLite.sqlite" );
+	SQLiteConnection@ pConnection = SQL.CreateSQLiteConnection( "test_SQLite.sqlite" );
 	
 	if( pConnection !is null )
 	{

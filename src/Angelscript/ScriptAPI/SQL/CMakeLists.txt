@@ -7,7 +7,6 @@ add_sources(
 	CASSQLThreadQueue.cpp
 	IASSQLASyncCommand.h
 	IASSQLASyncItem.h
-	IASSQLConnection.h
 	IASSQLQuery.h
 )
 

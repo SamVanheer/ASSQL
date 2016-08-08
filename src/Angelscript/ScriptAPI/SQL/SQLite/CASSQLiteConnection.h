@@ -7,14 +7,12 @@
 
 #include "../CASSQLThreadPool.h"
 
-#include "../IASSQLConnection.h"
-
 #include "CASSQLitePreparedStatement.h"
 
 /**
 *	Angelscript SQLite connection.
 */
-class CASSQLiteConnection : public IASSQLConnection, public CASAtomicRefCountedBaseClass
+class CASSQLiteConnection : public CASAtomicRefCountedBaseClass
 {
 public:
 	CASSQLiteConnection( CASSQLThreadPool& pool, const char* const pszFilename );
@@ -25,22 +23,17 @@ public:
 	*/
 	~CASSQLiteConnection();
 
-	void AddRef() const override final
-	{
-		CASAtomicRefCountedBaseClass::AddRef();
-	}
-
-	void Release() const override final
+	void Release() const
 	{
 		if( InternalRelease() )
 			delete this;
 	}
 
-	bool IsOpen() const override;
+	bool IsOpen() const;
 
-	void Close() override;
+	void Close();
 
-	bool Query( const std::string& szQuery, asIScriptFunction* const pCallback ) override;
+	bool Query( const std::string& szQuery, asIScriptFunction* const pCallback );
 
 	/**
 	*	Creates a prepared statement.

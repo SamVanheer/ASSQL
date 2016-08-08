@@ -128,9 +128,21 @@ static void RegisterScriptSQLiteConnection( asIScriptEngine& engine )
 {
 	const char* const pszObjectName = "SQLiteConnection";
 
-	RegisterScriptSQLConnection( engine, pszObjectName );
+	engine.RegisterObjectType( pszObjectName, 0, asOBJ_REF );
 
-	as::RegisterCasts<IASSQLConnection, CASSQLiteConnection>( engine, "SQLConnection", pszObjectName );
+	as::RegisterRefCountedBaseClass<CASSQLiteConnection>( &engine, pszObjectName );
+
+	engine.RegisterObjectMethod(
+		pszObjectName, "bool IsOpen() const",
+		asMETHOD( CASSQLiteConnection, IsOpen ), asCALL_THISCALL );
+
+	engine.RegisterObjectMethod(
+		pszObjectName, "void Close()",
+		asMETHOD( CASSQLiteConnection, Close ), asCALL_THISCALL );
+
+	engine.RegisterObjectMethod(
+		pszObjectName, "bool Query(const string& in szQuery, SQLQueryCallback@ pCallback = null)",
+		asMETHOD( CASSQLiteConnection, Query ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
 		pszObjectName, "SQLitePreparedStatement@ CreatePreparedStatement(const string& in szStatement)",
