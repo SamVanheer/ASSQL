@@ -12,6 +12,9 @@ public:
 	CASMySQLBind() = default;
 	~CASMySQLBind();
 
+	CASMySQLBind( CASMySQLBind&& other ) = default;
+	CASMySQLBind& operator=( CASMySQLBind&& other ) = default;
+
 	void Set( enum_field_types type, MYSQL_BIND* pBind, const char* const pBuffer = nullptr, const size_t uiLength = 0 );
 
 	void SetOutput( const MYSQL_FIELD& field, MYSQL_BIND* pBind );

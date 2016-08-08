@@ -15,7 +15,7 @@ class CASMySQLPreparedStatement;
 class CASMySQLResultSet final : public IASSQLASyncItem, public CASAtomicRefCountedBaseClass
 {
 public:
-	CASMySQLResultSet( CASMySQLPreparedStatement* pStatement );
+	CASMySQLResultSet( CASMySQLPreparedStatement* pStatement, MYSQL_STMT* pMyStatement );
 	~CASMySQLResultSet();
 
 private:
@@ -33,6 +33,8 @@ public:
 		if( InternalRelease() )
 			delete this;
 	}
+
+	void CallbackInvoked() override;
 
 	/**
 	*	@return Whether this result set is valid.
@@ -140,6 +142,8 @@ public:
 
 private:
 	CASMySQLPreparedStatement* m_pStatement = nullptr;
+
+	MYSQL_STMT* m_pMyStatement = nullptr;
 
 	MYSQL_RES* m_pResultSet = nullptr;
 	MYSQL_FIELD* m_pFields = nullptr;

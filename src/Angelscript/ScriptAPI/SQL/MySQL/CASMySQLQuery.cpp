@@ -24,14 +24,19 @@ CASMySQLQuery::~CASMySQLQuery()
 
 void CASMySQLQuery::Execute()
 {
-	if( !m_pConnection->IsOpen() )
-		return;
+	MYSQL* pConn = m_pConnection->Open();
 
-	const int iResult = mysql_query( m_pConnection->GetConnection(), m_szQuery.c_str() );
+	if( !pConn )
+	{
+		//Open reports any errors.
+		return;
+	}
+
+	const int iResult = mysql_query( pConn, m_szQuery.c_str() );
 
 	if( iResult != 0 )
 	{
-		m_pConnection->GetThreadPool().GetThreadQueue().AddLogMessage( "MySQLQuery::Execute: %s\n", mysql_error( m_pConnection->GetConnection() ) );
+		m_pConnection->GetThreadPool().GetThreadQueue().AddLogMessage( "MySQLQuery::Execute: %s\n", mysql_error( pConn ) );
 	}
 	else
 	{
@@ -42,16 +47,18 @@ void CASMySQLQuery::Execute()
 
 		do
 		{
-			if( pResultSet = mysql_store_result( m_pConnection->GetConnection() ) )
+			if( pResultSet = mysql_store_result( pConn ) )
 				mysql_free_result( pResultSet );
 
-			iResult = mysql_next_result( m_pConnection->GetConnection() );
+			iResult = mysql_next_result( pConn );
 		}
 		while( iResult == 0 );
 
 		if( iResult > 0 )
-			m_pConnection->GetThreadPool().GetThreadQueue().AddLogMessage( "MySQLQuery::Execute: %s\n", mysql_error( m_pConnection->GetConnection() ) );
+			m_pConnection->GetThreadPool().GetThreadQueue().AddLogMessage( "MySQLQuery::Execute: %s\n", mysql_error( pConn ) );
 	}
+
+	m_pConnection->Close( pConn );
 }
 
 bool CASMySQLQuery::IsValid() const

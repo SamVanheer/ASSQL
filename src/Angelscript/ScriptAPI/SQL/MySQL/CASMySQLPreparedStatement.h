@@ -1,6 +1,7 @@
 #ifndef ANGELSCRIPT_SCRIPTAPI_SQL_MYSQL_CASMYSQLPREPAREDSTATEMENT_H
 #define ANGELSCRIPT_SCRIPTAPI_SQL_MYSQL_CASMYSQLPREPAREDSTATEMENT_H
 
+#include <atomic>
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -11,15 +12,19 @@
 
 #include "../IASSQLASyncCommand.h"
 
+#include "CASMySQLBind.h"
+
 class asIScriptFunction;
 
 class CASDateTime;
 class CASTime;
-class CASMySQLBind;
 class CASMySQLConnection;
 
 class CASMySQLPreparedStatement final : public IASSQLASyncCommand, public CASAtomicRefCountedBaseClass
 {
+protected:
+	friend class CASMySQLResultSet;
+
 public:
 	CASMySQLPreparedStatement( CASMySQLConnection* pConnection, const char* const pszStatement );
 	~CASMySQLPreparedStatement();
@@ -43,7 +48,7 @@ public:
 	bool IsValid() const;
 
 	/**
-	*	@return The parameter count.
+	*	@return The current parameter count. May not match the query's parameter count.
 	*/
 	int GetParamCount() const;
 
@@ -162,16 +167,25 @@ public:
 
 	CASMySQLConnection* GetConnection() { return m_pConnection; }
 
-	MYSQL_STMT* GetStatement() { return m_pStatement; }
+private:
+	/**
+	*	Checks if the bind list size is large enough for the given index. Resizes it if needed.
+	*	@return Whether the list could be resized.
+	*/
+	bool CheckBindListSize( int iIndex );
 
 private:
 	CASMySQLConnection* m_pConnection = nullptr;
-	MYSQL_STMT* m_pStatement = nullptr;
 
-	CASMySQLBind* m_pVariables = nullptr;
-	MYSQL_BIND* m_pBinds = nullptr;
+	std::string m_szStatement;
+
+	std::vector<MYSQL_BIND> m_Binds;
+	//Declare these after binds so they destruct first. They might access the binds - Solokiller
+	std::vector<CASMySQLBind> m_Variables;
 
 	asIScriptFunction* m_pCallback = nullptr;
+
+	std::atomic<bool> m_bHandledResultSet = false;
 
 private:
 	CASMySQLPreparedStatement( const CASMySQLPreparedStatement& ) = delete;

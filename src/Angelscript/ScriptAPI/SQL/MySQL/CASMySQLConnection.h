@@ -1,17 +1,17 @@
 #ifndef ANGELSCRIPT_SCRIPTAPI_SQL_MYSQL_CASMYSQLCONNECTION_H
 #define ANGELSCRIPT_SCRIPTAPI_SQL_MYSQL_CASMYSQLCONNECTION_H
 
+#include <string>
+
 #include <mysql.h>
 
 #include <Angelscript/util/CASBaseClass.h>
 
 #include "../CASSQLThreadPool.h"
 
-#include "../IASSQLConnection.h"
-
 class CASMySQLPreparedStatement;
 
-class CASMySQLConnection final : public IASSQLConnection, public CASAtomicRefCountedBaseClass
+class CASMySQLConnection final : public CASAtomicRefCountedBaseClass
 {
 public:
 	/**
@@ -24,22 +24,18 @@ public:
 						unsigned long clientflag );
 	~CASMySQLConnection();
 
-	void AddRef() const override final
-	{
-		CASAtomicRefCountedBaseClass::AddRef();
-	}
 
-	void Release() const override final
+	void Release() const
 	{
 		if( InternalRelease() )
 			delete this;
 	}
 
-	bool IsOpen() const override;
+	MYSQL* Open();
 
-	void Close() override;
+	void Close( MYSQL* pConnection );
 
-	bool Query( const std::string& szQuery, asIScriptFunction* const pCallback = nullptr ) override;
+	bool Query( const std::string& szQuery, asIScriptFunction* const pCallback = nullptr );
 
 	CASMySQLPreparedStatement* CreatePreparedStatement( const std::string& szStatement );
 
@@ -47,12 +43,20 @@ public:
 
 	ASSQLLogFunction GetLogFunction() { return m_ThreadPool.GetLogFunction(); }
 
-	MYSQL* GetConnection() { return m_pConnection; }
-
 private:
 	CASSQLThreadPool& m_ThreadPool;
 
-	MYSQL* m_pConnection = nullptr;
+	//TODO: encrypt this if possible - Solokiller
+	const std::string m_szHost;
+	const std::string m_szUser;
+	const std::string m_szPass;
+	const std::string m_szDatabase;
+
+	const unsigned int m_uiPort;
+
+	const std::string m_szUnixSocket;
+
+	const unsigned long m_uiClientFlag;
 
 private:
 	CASMySQLConnection( const CASMySQLConnection& ) = delete;

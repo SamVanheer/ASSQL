@@ -7,7 +7,7 @@ class Database
 	{
 		@m_pConnection = SQL.CreateMySQLConnection( "localhost", "root", "" );
 		
-		if( m_pConnection !is null && m_pConnection.IsOpen() )
+		if( m_pConnection !is null )
 		{
 			bool bSuccess = m_pConnection.Query(
 				"CREATE DATABASE IF NOT EXISTS TestDB;",
@@ -47,17 +47,24 @@ class Database
 	
 	private void CreatedTable( SQLQuery@ pQuery )
 	{
-		MySQLPreparedStatement@ pStmt = m_pConnection.CreatePreparedStatement( "INSERT INTO Test (ID, VALUE, STRING, date, time, datetime) VALUES(1, ?, ?, ?, ?, ?)" );
+		MySQLPreparedStatement@ pStmt = m_pConnection.CreatePreparedStatement( 
+		"INSERT INTO Test (ID, VALUE, STRING, date, time, datetime) "
+		"VALUES(?, ?, ?, ?, ?, ?), (?, ?, ?, ?, ?, ?)" );
 		
 		Print( "Created statement: %1\n", pStmt !is null ? "yes" : "no" );
 		
 		if( pStmt !is null )
 		{
-			pStmt.BindSigned32( 0, 10 );
-			pStmt.BindString( 1, "Foo" );
-			pStmt.BindDate( 2, DateTime::Now().GetDate() );
-			pStmt.BindTime( 3, Time::Now() );
-			pStmt.BindDateTime( 4, DateTime::Now() );
+			for( int iIndex = 0; iIndex < 2; ++iIndex )
+			{
+				Print( "Index: %1\n", iIndex + 1 );
+				pStmt.BindSigned32( ( iIndex * 6 ) + 0, iIndex + 1 );
+				pStmt.BindSigned32( ( iIndex * 6 ) + 1, 10 );
+				pStmt.BindString( ( iIndex * 6 ) + 2, "Foo" );
+				pStmt.BindDate( ( iIndex * 6 ) + 3, DateTime::Now().GetDate() );
+				pStmt.BindTime( ( iIndex * 6 ) + 4, Time::Now() );
+				pStmt.BindDateTime( ( iIndex * 6 ) + 5, DateTime::Now() );
+			}
 			
 			pStmt.ExecuteStatement( MySQLResultSetCallback( this.NullResultSetCallback ), MySQLPreparedStatementCallback( this.InsertedValues ) );
 		}
@@ -113,38 +120,6 @@ class Database
 Database g_Database;
 
 void main()
-{
-	SQLConnection@ pConnection = SQL.CreateMySQLConnection( "localhost", "root", "" );
-	
-	if( pConnection !is null )
-	{
-		Print( "Connection created\n" );
-		
-		if( pConnection.IsOpen() )
-		{
-			Print( "Connection is open\n" );
-			pConnection.Close();
-			
-			if( !pConnection.IsOpen() )
-			{
-				Print( "Connection closed\n" );
-			}
-			else
-			{
-				Print( "Connection was not closed\n" );
-			}
-		}
-		else
-		{
-			Print( "Connection was closed\n" );
-		}
-		
-		@pConnection = null;
-	}
-	else
-	{
-		Print( "Connection was null!\n" );
-	}
-	
+{	
 	g_Database.Connect();
 }

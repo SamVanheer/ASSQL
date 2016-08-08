@@ -7,26 +7,29 @@
 
 #include "CASMySQLResultSet.h"
 
-CASMySQLResultSet::CASMySQLResultSet( CASMySQLPreparedStatement* pStatement )
+CASMySQLResultSet::CASMySQLResultSet( CASMySQLPreparedStatement* pStatement, MYSQL_STMT* pMyStatement )
 {
 	assert( pStatement );
+	assert( pMyStatement );
 
 	m_pStatement = pStatement;
 
 	m_pStatement->AddRef();
 
-	const int iMaxLength = 1;
-	mysql_stmt_attr_set( pStatement->GetStatement(), STMT_ATTR_UPDATE_MAX_LENGTH, &iMaxLength );
+	m_pMyStatement = pMyStatement;
 
-	if( mysql_stmt_store_result( m_pStatement->GetStatement() ) != 0 )
+	const int iMaxLength = 1;
+	mysql_stmt_attr_set( m_pMyStatement, STMT_ATTR_UPDATE_MAX_LENGTH, &iMaxLength );
+
+	if( mysql_stmt_store_result( m_pMyStatement ) != 0 )
 	{
-		pStatement->GetConnection()->GetLogFunction()( "MySQLResultSet::MySQLResultSet: %s\n", mysql_error( m_pStatement->GetConnection()->GetConnection() ) );
+		pStatement->GetConnection()->GetLogFunction()( "MySQLResultSet::MySQLResultSet: %s\n", mysql_error( m_pMyStatement->mysql ) );
 
 		Destruct();
 	}
 	else
 	{
-		m_pResultSet = mysql_stmt_result_metadata( m_pStatement->GetStatement() );
+		m_pResultSet = mysql_stmt_result_metadata( m_pMyStatement );
 
 		if( m_pResultSet )
 		{
@@ -47,7 +50,7 @@ CASMySQLResultSet::CASMySQLResultSet( CASMySQLPreparedStatement* pStatement )
 					m_pVariables[ iIndex ].SetOutput( m_pFields[ iIndex ], &m_pBinds[ iIndex ] );
 				}
 
-				mysql_stmt_bind_result( m_pStatement->GetStatement(), m_pBinds );
+				mysql_stmt_bind_result( m_pMyStatement, m_pBinds );
 			}
 		}
 	}
@@ -68,7 +71,7 @@ void CASMySQLResultSet::Destruct()
 		m_pResultSet = nullptr;
 	}
 
-	mysql_stmt_free_result( m_pStatement->GetStatement() );
+	mysql_stmt_free_result( m_pMyStatement );
 
 	if( m_pBinds )
 	{
@@ -83,6 +86,11 @@ void CASMySQLResultSet::Destruct()
 	}
 }
 
+void CASMySQLResultSet::CallbackInvoked()
+{
+	m_pStatement->m_bHandledResultSet = true;
+}
+
 bool CASMySQLResultSet::IsValid() const
 {
 	return m_pResultSet != nullptr;
@@ -90,12 +98,12 @@ bool CASMySQLResultSet::IsValid() const
 
 int CASMySQLResultSet::GetFieldCount() const
 {
-	return mysql_stmt_field_count( m_pStatement->GetStatement() );
+	return mysql_stmt_field_count( m_pMyStatement );
 }
 
 bool CASMySQLResultSet::Next()
 {
-	return mysql_stmt_fetch( m_pStatement->GetStatement() ) == 0;
+	return mysql_stmt_fetch( m_pMyStatement ) == 0;
 }
 
 bool CASMySQLResultSet::IsNull( int iColumn ) const

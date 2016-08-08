@@ -12,35 +12,45 @@ CASMySQLConnection::CASMySQLConnection( CASSQLThreadPool& pool,
 										const char* const pszDatabase, const unsigned int uiPort, const char* const pszUnixSocket,
 										unsigned long clientflag )
 	: m_ThreadPool( pool )
+	, m_szHost( pszHost )
+	, m_szUser( pszUser )
+	, m_szPass( pszPassword )
+	, m_szDatabase( pszDatabase )
+	, m_uiPort( uiPort )
+	, m_szUnixSocket( pszUnixSocket )
+	, m_uiClientFlag( clientflag )
 {
-	m_pConnection = mysql_init( nullptr );
-
-	//Enable multiple statements in a query to allow for consistent API behavior with SQLite.
-	auto pResult = mysql_real_connect( m_pConnection, pszHost, pszUser, pszPassword, pszDatabase, uiPort, pszUnixSocket, clientflag | CLIENT_MULTI_STATEMENTS );
-
-	if( !pResult )
-	{
-		GetLogFunction()( "MySQLConnection::MySQLConnection: %s\n", mysql_error( m_pConnection ) );
-		Close();
-	}
 }
 
 CASMySQLConnection::~CASMySQLConnection()
 {
-	Close();
 }
 
-bool CASMySQLConnection::IsOpen() const
+MYSQL* CASMySQLConnection::Open()
 {
-	return m_pConnection != nullptr;
-}
+	MYSQL* pConnection = mysql_init( nullptr );
 
-void CASMySQLConnection::Close()
-{
-	if( m_pConnection )
+	//Enable multiple statements in a query to allow for consistent API behavior with SQLite.
+	auto pResult = mysql_real_connect(
+		pConnection,
+		m_szHost.c_str(), m_szUser.c_str(), m_szPass.c_str(), m_szDatabase.c_str(),
+		m_uiPort, m_szUnixSocket.c_str(), m_uiClientFlag | CLIENT_MULTI_STATEMENTS );
+
+	if( !pResult )
 	{
-		mysql_close( m_pConnection );
-		m_pConnection = nullptr;
+		GetThreadPool().GetThreadQueue().AddLogMessage( "MySQLConnection::MySQLConnection: %s\n", mysql_error( pConnection ) );
+		Close( pConnection );
+		pConnection = nullptr;
+	}
+
+	return pConnection;
+}
+
+void CASMySQLConnection::Close( MYSQL* pConnection )
+{
+	if( pConnection )
+	{
+		mysql_close( pConnection );
 	}
 }
 

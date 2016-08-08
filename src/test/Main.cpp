@@ -80,7 +80,7 @@ public:
 	{
 		//TODO: get all of this information from server config.
 		//TODO: return in callback
-		return new CASMySQLConnection( m_ThreadPool, szHost.c_str(), szUser.c_str(), szPassword.c_str(), nullptr, 3306, nullptr, 0 );
+		return new CASMySQLConnection( m_ThreadPool, szHost.c_str(), szUser.c_str(), szPassword.c_str(), "TestDB", 3306, "", 0 );
 	}
 
 private:

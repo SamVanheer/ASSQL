@@ -167,9 +167,13 @@ static void RegisterScriptMySQLConnection( asIScriptEngine& engine )
 {
 	const char* const pszObjectName = "MySQLConnection";
 
-	RegisterScriptSQLConnection( engine, pszObjectName );
+	engine.RegisterObjectType( pszObjectName, 0, asOBJ_REF );
 
-	as::RegisterCasts<IASSQLConnection, CASMySQLConnection>( engine, "SQLConnection", pszObjectName );
+	as::RegisterRefCountedBaseClass<CASMySQLConnection>( &engine, pszObjectName );
+
+	engine.RegisterObjectMethod(
+		pszObjectName, "bool Query(const string& in szQuery, SQLQueryCallback@ pCallback = null)",
+		asMETHOD( CASMySQLConnection, Query ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
 		pszObjectName, "MySQLPreparedStatement@ CreatePreparedStatement(const string& in szStatement)",
