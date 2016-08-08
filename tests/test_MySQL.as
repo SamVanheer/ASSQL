@@ -95,13 +95,14 @@ class Database
 		
 		while( pResultSet.Next() )
 		{
-			Print( "Key: %1, Value: %2, String: %3, Date: %4, Time: %5, DateTime: %6\n", 
+			Print( "Key: %1, Value: %2, String: %3, Date: %4, Time: %5, DateTime: %6, type: %7\n", 
 				pResultSet.GetSigned32( 0 ), 
 				pResultSet.GetSigned32( 1 ), 
 				pResultSet.GetString( 2 ),
 				pResultSet.GetDate( 3 ).StrDate(),
 				pResultSet.GetTime( 4 ).StrTime(),
-				pResultSet.GetDateTime( 5 ).StrTime() );
+				pResultSet.GetDateTime( 5 ).StrTime(),
+				MySQLFieldTypeToString( pResultSet.GetColumnType( 5 ) ) );
 		}
 	}
 }

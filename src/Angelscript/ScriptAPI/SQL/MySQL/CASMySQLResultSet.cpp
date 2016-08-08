@@ -108,6 +108,14 @@ bool CASMySQLResultSet::Next()
 	return mysql_stmt_fetch( m_pMyStatement ) == 0;
 }
 
+enum_field_types CASMySQLResultSet::GetColumnType( const uint32_t uiColumn ) const
+{
+	if( uiColumn >= GetFieldCount() )
+		return MAX_NO_FIELD_TYPES;
+
+	return m_pBinds[ uiColumn ].buffer_type;
+}
+
 bool CASMySQLResultSet::IsNull( uint32_t uiColumn ) const
 {
 	if( uiColumn >= GetFieldCount() )

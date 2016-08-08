@@ -9,7 +9,81 @@
 
 #include "ASMySQL.h"
 
-//TODO: date types enum - Solokiller
+static std::string MySQLFieldTypeToString( const enum_field_types type )
+{
+	switch( type )
+	{
+	case MYSQL_TYPE_DECIMAL:		return "DECIMAL";
+	case MYSQL_TYPE_TINY:			return "TINY";
+	case MYSQL_TYPE_SHORT:			return "SHORT";
+	case MYSQL_TYPE_LONG:			return "LONG";
+	case MYSQL_TYPE_FLOAT:			return "FLOAT";
+	case MYSQL_TYPE_DOUBLE:			return "DOUBLE";
+	case MYSQL_TYPE_NULL:			return "NULL";
+	case MYSQL_TYPE_TIMESTAMP:		return "TIMESTAMP";
+	case MYSQL_TYPE_LONGLONG:		return "LONGLONG";
+	case MYSQL_TYPE_INT24:			return "INT24";
+	case MYSQL_TYPE_DATE:			return "DATE";
+	case MYSQL_TYPE_TIME:			return "TIME";
+	case MYSQL_TYPE_DATETIME:		return "DATETIME";
+	case MYSQL_TYPE_YEAR:			return "YEAR";
+	case MYSQL_TYPE_NEWDATE:		return "NEWDATE";
+	case MYSQL_TYPE_VARCHAR:		return "VARCHAR";
+	case MYSQL_TYPE_BIT:			return "BIT";
+	case MYSQL_TYPE_NEWDECIMAL:		return "NEWDECIMAL";
+	case MYSQL_TYPE_ENUM:			return "ENUM";
+	case MYSQL_TYPE_SET:			return "SET";
+	case MYSQL_TYPE_TINY_BLOB:		return "TINY_BLOB";
+	case MYSQL_TYPE_MEDIUM_BLOB:	return "MEDIUM_BLOB";
+	case MYSQL_TYPE_LONG_BLOB:		return "LONG_BLOB";
+	case MYSQL_TYPE_BLOB:			return "BLOB";
+	case MYSQL_TYPE_VAR_STRING:		return "VAR_STRING";
+	case MYSQL_TYPE_STRING:			return "STRING";
+	case MYSQL_TYPE_GEOMETRY:		return "GEOMETRY";
+	case MAX_NO_FIELD_TYPES:		return "MAX_NO_FIELD_TYPES";
+	default:						return "UNKNOWN";
+	}
+}
+
+static void RegisterScriptMySQLFieldType( asIScriptEngine& engine )
+{
+	const char* const pszObjectName = "MySQLFieldType";
+
+	engine.RegisterEnum( pszObjectName );
+
+	engine.RegisterEnumValue( pszObjectName, "MYSQL_TYPE_DECIMAL", MYSQL_TYPE_DECIMAL );
+	engine.RegisterEnumValue( pszObjectName, "MYSQL_TYPE_TINY", MYSQL_TYPE_TINY );
+	engine.RegisterEnumValue( pszObjectName, "MYSQL_TYPE_SHORT", MYSQL_TYPE_SHORT );
+	engine.RegisterEnumValue( pszObjectName, "MYSQL_TYPE_LONG", MYSQL_TYPE_LONG );
+	engine.RegisterEnumValue( pszObjectName, "MYSQL_TYPE_FLOAT", MYSQL_TYPE_FLOAT );
+	engine.RegisterEnumValue( pszObjectName, "MYSQL_TYPE_DOUBLE", MYSQL_TYPE_DOUBLE );
+	engine.RegisterEnumValue( pszObjectName, "MYSQL_TYPE_NULL", MYSQL_TYPE_NULL );
+	engine.RegisterEnumValue( pszObjectName, "MYSQL_TYPE_TIMESTAMP", MYSQL_TYPE_TIMESTAMP );
+	engine.RegisterEnumValue( pszObjectName, "MYSQL_TYPE_LONGLONG", MYSQL_TYPE_LONGLONG );
+	engine.RegisterEnumValue( pszObjectName, "MYSQL_TYPE_INT24", MYSQL_TYPE_INT24 );
+	engine.RegisterEnumValue( pszObjectName, "MYSQL_TYPE_DATE", MYSQL_TYPE_DATE );
+	engine.RegisterEnumValue( pszObjectName, "MYSQL_TYPE_TIME", MYSQL_TYPE_TIME );
+	engine.RegisterEnumValue( pszObjectName, "MYSQL_TYPE_DATETIME", MYSQL_TYPE_DATETIME );
+	engine.RegisterEnumValue( pszObjectName, "MYSQL_TYPE_YEAR", MYSQL_TYPE_YEAR );
+	engine.RegisterEnumValue( pszObjectName, "MYSQL_TYPE_NEWDATE", MYSQL_TYPE_NEWDATE );
+	engine.RegisterEnumValue( pszObjectName, "MYSQL_TYPE_VARCHAR", MYSQL_TYPE_VARCHAR );
+	engine.RegisterEnumValue( pszObjectName, "MYSQL_TYPE_BIT", MYSQL_TYPE_BIT );
+	engine.RegisterEnumValue( pszObjectName, "MYSQL_TYPE_NEWDECIMAL", MYSQL_TYPE_NEWDECIMAL );
+	engine.RegisterEnumValue( pszObjectName, "MYSQL_TYPE_ENUM", MYSQL_TYPE_ENUM );
+	engine.RegisterEnumValue( pszObjectName, "MYSQL_TYPE_SET", MYSQL_TYPE_SET );
+	engine.RegisterEnumValue( pszObjectName, "MYSQL_TYPE_TINY_BLOB", MYSQL_TYPE_TINY_BLOB );
+	engine.RegisterEnumValue( pszObjectName, "MYSQL_TYPE_MEDIUM_BLOB", MYSQL_TYPE_MEDIUM_BLOB );
+	engine.RegisterEnumValue( pszObjectName, "MYSQL_TYPE_LONG_BLOB", MYSQL_TYPE_LONG_BLOB );
+	engine.RegisterEnumValue( pszObjectName, "MYSQL_TYPE_BLOB", MYSQL_TYPE_BLOB );
+	engine.RegisterEnumValue( pszObjectName, "MYSQL_TYPE_VAR_STRING", MYSQL_TYPE_VAR_STRING );
+	engine.RegisterEnumValue( pszObjectName, "MYSQL_TYPE_STRING", MYSQL_TYPE_STRING );
+	engine.RegisterEnumValue( pszObjectName, "MYSQL_TYPE_GEOMETRY", MYSQL_TYPE_GEOMETRY );
+	engine.RegisterEnumValue( pszObjectName, "MAX_NO_FIELD_TYPES", MAX_NO_FIELD_TYPES );
+
+	engine.RegisterGlobalFunction(
+		"string MySQLFieldTypeToString(const MySQLFieldType type)",
+		asFUNCTION( MySQLFieldTypeToString ), asCALL_CDECL );
+}
 
 static void RegisterScriptMySQLQuery( asIScriptEngine& engine )
 {
@@ -41,6 +115,10 @@ static void RegisterScriptMySQLResultSet( asIScriptEngine& engine )
 	engine.RegisterObjectMethod(
 		pszObjectName, "bool Next()",
 		asMETHOD( CASMySQLResultSet, Next ), asCALL_THISCALL );
+
+	engine.RegisterObjectMethod(
+		pszObjectName, "MySQLFieldType GetColumnType(const uint32 uiColumn) const",
+		asMETHOD( CASMySQLResultSet, GetColumnType ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
 		pszObjectName, "bool IsNull(uint32 uiColumn) const",
@@ -222,6 +300,7 @@ static void RegisterScriptMySQLConnection( asIScriptEngine& engine )
 
 void RegisterScriptMySQL( asIScriptEngine& engine )
 {
+	RegisterScriptMySQLFieldType( engine );
 	RegisterScriptMySQLQuery( engine );
 	RegisterScriptMySQLResultSet( engine );
 	RegisterScriptMySQLPreparedStatement( engine );

@@ -72,6 +72,13 @@ public:
 	bool Next();
 
 	/**
+	*	Gets the type of the given column. Returns MAX_NO_FIELD_TYPES if the column is invalid.
+	*	@param uiColumn Column to check.
+	*	@return Field type.
+	*/
+	enum_field_types GetColumnType( const uint32_t uiColumn ) const;
+
+	/**
 	*	@param uiColumn Column to check.
 	*	@return Whether the given column is null.
 	*/
