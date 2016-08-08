@@ -5,7 +5,7 @@ class Database
 	
 	void Connect()
 	{
-		@m_pConnection = SQL.CreateMySQLConnection( "localhost", "root", "" );
+		@m_pConnection = SQL.CreateMySQLConnection( "localhost", "root", "", "TestDB" );
 		
 		if( m_pConnection !is null )
 		{
@@ -20,6 +20,7 @@ class Database
 	
 	private void CreatedDB( MySQLQuery@ pQuery )
 	{
+		//This has no effect due to connections being per-query.
 		bool bSuccess = m_pConnection.Query(
 			"USE TestDB;",
 			MySQLQueryCallback( this.SelectedDB )

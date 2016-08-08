@@ -76,10 +76,10 @@ public:
 		return new CASSQLiteConnection( m_ThreadPool, szFilename.c_str() );
 	}
 
-	CASMySQLConnection* CreateMySQLConnection( const std::string& szHost, const std::string& szUser, const std::string& szPassword )
+	CASMySQLConnection* CreateMySQLConnection( const std::string& szHost, const std::string& szUser, const std::string& szPassword, const std::string& szDatabase = "" )
 	{
 		//TODO: get all of this information from server config.
-		return new CASMySQLConnection( m_ThreadPool, szHost.c_str(), szUser.c_str(), szPassword.c_str(), "TestDB", 3306, "", 0 );
+		return new CASMySQLConnection( m_ThreadPool, szHost.c_str(), szUser.c_str(), szPassword.c_str(), szDatabase.c_str(), 3306, "", 0 );
 	}
 
 private:
@@ -160,13 +160,18 @@ public:
 			asMETHOD( CASSQL, CreateSQLiteConnection ), asCALL_THISCALL );
 
 		engine.RegisterObjectMethod(
-			"CSQL", "MySQLConnection@ CreateMySQLConnection(const string& in szHost, const string& in szUser, const string& in szPassword)",
+			"CSQL", "MySQLConnection@ CreateMySQLConnection(const string& in szHost, const string& in szUser, const string& in szPassword, const string& in szDatabase = \"\")",
 			asMETHOD( CASSQL, CreateMySQLConnection ), asCALL_THISCALL );
 
 		engine.RegisterGlobalProperty( "CSQL SQL", &g_ASSQL );
 
-		as::RegisterVarArgsFunction( engine, "void", "Print", "const string& in szFormat", 0, 8, asFUNCTION( Print ) );
-		engine.RegisterGlobalFunction( "void Assert(const bool bCondition)", asFUNCTION( ScriptAssert ), asCALL_CDECL );
+		as::RegisterVarArgsFunction( 
+			engine, "void", "Print", "const string& in szFormat", 
+			0, 8, asFUNCTION( Print ) );
+
+		engine.RegisterGlobalFunction( 
+			"void Assert(const bool bCondition)", 
+			asFUNCTION( ScriptAssert ), asCALL_CDECL );
 
 		return true;
 	}
