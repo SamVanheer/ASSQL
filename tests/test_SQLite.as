@@ -89,7 +89,7 @@ void main()
 	}
 }
 
-void QueryCallback( SQLQuery@ pQuery )
+void QueryCallback( SQLiteQuery@ pQuery )
 {
 	Print( "Query callback invoked\n" );
 }

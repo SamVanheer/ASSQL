@@ -7,14 +7,14 @@
 
 #include <Angelscript/util/CASBaseClass.h>
 
-#include "../IASSQLQuery.h"
+#include "../IASSQLASyncCommand.h"
 
 class CASSQLiteConnection;
 
 /**
 *	SQLite query. Executes queries without processing any results.
 */
-class CASSQLiteQuery final : public IASSQLQuery, public CASAtomicRefCountedBaseClass
+class CASSQLiteQuery final : public IASSQLASyncCommand, public CASAtomicRefCountedBaseClass
 {
 public:
 	/**
@@ -42,7 +42,7 @@ public:
 
 	void Execute() override;
 
-	bool IsValid() const override { return true; }
+	bool IsValid() const { return true; }
 
 private:
 	CASSQLiteConnection* m_pConnection = nullptr;

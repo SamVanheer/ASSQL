@@ -11,24 +11,24 @@ class Database
 		{
 			bool bSuccess = m_pConnection.Query(
 				"CREATE DATABASE IF NOT EXISTS TestDB;",
-				SQLQueryCallback( this.CreatedDB )
+				MySQLQueryCallback( this.CreatedDB )
 			);
 			
 			Print( "Created database query: %1\n", bSuccess ? "yes" : "no" );
 		}
 	}
 	
-	private void CreatedDB( SQLQuery@ pQuery )
+	private void CreatedDB( MySQLQuery@ pQuery )
 	{
 		bool bSuccess = m_pConnection.Query(
 			"USE TestDB;",
-			SQLQueryCallback( this.SelectedDB )
+			MySQLQueryCallback( this.SelectedDB )
 		);
 		
 		Print( "Selected database query: %1\n", bSuccess ? "yes" : "no" );
 	}
 	
-	private void SelectedDB( SQLQuery@ pQuery )
+	private void SelectedDB( MySQLQuery@ pQuery )
 	{
 		bool bSuccess = m_pConnection.Query( 
 			"CREATE TABLE IF NOT EXISTS Test("
@@ -39,13 +39,13 @@ class Database
 			"time TIME NOT NULL,"
 			"datetime DATETIME NOT NULL"
 			")",
-			SQLQueryCallback( this.CreatedTable )
+			MySQLQueryCallback( this.CreatedTable )
 		);
 		
 		Print( "Created query: %1\n", bSuccess ? "yes" : "no" );
 	}
 	
-	private void CreatedTable( SQLQuery@ pQuery )
+	private void CreatedTable( MySQLQuery@ pQuery )
 	{
 		MySQLPreparedStatement@ pStmt = m_pConnection.CreatePreparedStatement( 
 		"INSERT INTO Test (ID, VALUE, STRING, date, time, datetime) "

@@ -7,14 +7,14 @@
 
 #include <Angelscript/util/CASBaseClass.h>
 
-#include "../IASSQLQuery.h"
+#include "../IASSQLASyncCommand.h"
 
 class CASMySQLConnection;
 
 /**
 *	MySQL query. Executes asynchronously.
 */
-class CASMySQLQuery final : public IASSQLQuery, public CASAtomicRefCountedBaseClass
+class CASMySQLQuery final : public IASSQLASyncCommand, public CASAtomicRefCountedBaseClass
 {
 public:
 	/**
@@ -42,7 +42,7 @@ public:
 
 	void Execute() override;
 
-	bool IsValid() const override;
+	bool IsValid() const;
 
 	/**
 	*	@return The connection that created this query.

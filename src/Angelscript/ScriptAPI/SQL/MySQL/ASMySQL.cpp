@@ -3,10 +3,28 @@
 #include <Angelscript/util/ASUtil.h>
 
 #include "CASMySQLConnection.h"
+#include "CASMySQLQuery.h"
 #include "CASMySQLPreparedStatement.h"
 #include "CASMySQLResultSet.h"
 
 #include "ASMySQL.h"
+
+//TODO: date types enum - Solokiller
+
+static void RegisterScriptMySQLQuery( asIScriptEngine& engine )
+{
+	const char* const pszObjectName = "MySQLQuery";
+
+	engine.RegisterObjectType( pszObjectName, 0, asOBJ_REF );
+
+	as::RegisterRefCountedBaseClass<CASMySQLQuery>( &engine, pszObjectName );
+
+	engine.RegisterObjectMethod(
+		pszObjectName, "bool IsValid() const",
+		asMETHOD( CASMySQLQuery, IsValid ), asCALL_THISCALL );
+
+	engine.RegisterFuncdef( "void MySQLQueryCallback(MySQLQuery@ pQuery)" );
+}
 
 static void RegisterScriptMySQLResultSet( asIScriptEngine& engine )
 {
@@ -186,7 +204,7 @@ static void RegisterScriptMySQLConnection( asIScriptEngine& engine )
 	as::RegisterRefCountedBaseClass<CASMySQLConnection>( &engine, pszObjectName );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "bool Query(const string& in szQuery, SQLQueryCallback@ pCallback = null)",
+		pszObjectName, "bool Query(const string& in szQuery, MySQLQueryCallback@ pCallback = null)",
 		asMETHOD( CASMySQLConnection, Query ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
@@ -196,6 +214,7 @@ static void RegisterScriptMySQLConnection( asIScriptEngine& engine )
 
 void RegisterScriptMySQL( asIScriptEngine& engine )
 {
+	RegisterScriptMySQLQuery( engine );
 	RegisterScriptMySQLResultSet( engine );
 	RegisterScriptMySQLPreparedStatement( engine );
 	RegisterScriptMySQLConnection( engine );

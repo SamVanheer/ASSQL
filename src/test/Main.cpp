@@ -150,7 +150,6 @@ public:
 
 		RegisterScriptCTime( engine );
 		RegisterScriptCDateTime( engine );
-		RegisterScriptSQL( engine );
 		RegisterScriptSQLite( engine );
 		RegisterScriptMySQL( engine );
 
@@ -184,7 +183,7 @@ public:
 	bool AddScripts( CScriptBuilder& builder ) override
 	{
 		//Assumes the working directory is <repo>/working_dir
-		return builder.AddSectionFromFile( "../tests/test_SQLite.as" ) >= 0;
+		return builder.AddSectionFromFile( "../tests/test_MySQL.as" ) >= 0;
 	}
 };
 

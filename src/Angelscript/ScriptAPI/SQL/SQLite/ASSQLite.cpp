@@ -9,6 +9,7 @@
 
 #include "CASSQLiteConnection.h"
 #include "CASSQLitePreparedStatement.h"
+#include "CASSQLiteQuery.h"
 
 #include "ASSQLite.h"
 
@@ -41,6 +42,21 @@ static void RegisterScriptSQLDataType( asIScriptEngine& engine )
 	engine.RegisterGlobalFunction(
 		"SQLiteDataType StringToSQLiteDataType(const string& in szString)",
 		asFUNCTION( ASScriptStringToSQLiteDataType ), asCALL_CDECL );
+}
+
+static void RegisterScriptSQLiteQuery( asIScriptEngine& engine )
+{
+	const char* const pszObjectName = "SQLiteQuery";
+
+	engine.RegisterObjectType( pszObjectName, 0, asOBJ_REF );
+
+	as::RegisterRefCountedBaseClass<CASSQLiteQuery>( &engine, pszObjectName );
+
+	engine.RegisterObjectMethod(
+		pszObjectName, "bool IsValid() const",
+		asMETHOD( CASSQLiteQuery, IsValid ), asCALL_THISCALL );
+
+	engine.RegisterFuncdef( "void SQLiteQueryCallback(SQLiteQuery@ pQuery)" );
 }
 
 static void RegisterScriptSQLiteRow( asIScriptEngine& engine )
@@ -141,7 +157,7 @@ static void RegisterScriptSQLiteConnection( asIScriptEngine& engine )
 		asMETHOD( CASSQLiteConnection, Close ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "bool Query(const string& in szQuery, SQLQueryCallback@ pCallback = null)",
+		pszObjectName, "bool Query(const string& in szQuery, SQLiteQueryCallback@ pCallback = null)",
 		asMETHOD( CASSQLiteConnection, Query ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
@@ -151,6 +167,7 @@ static void RegisterScriptSQLiteConnection( asIScriptEngine& engine )
 
 void RegisterScriptSQLite( asIScriptEngine& engine )
 {
+	RegisterScriptSQLiteQuery( engine );
 	RegisterScriptSQLDataType( engine );
 	RegisterScriptSQLiteRow( engine );
 	RegisterScriptSQLitePreparedStatement( engine );
