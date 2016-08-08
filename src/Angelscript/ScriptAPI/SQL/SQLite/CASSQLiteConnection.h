@@ -49,10 +49,19 @@ public:
 	*/
 	CASSQLitePreparedStatement* CreatePreparedStatement( const std::string& szStatement );
 
+	/**
+	*	@return The thread pool used by this connection.
+	*/
 	CASSQLThreadPool& GetThreadPool() { return m_ThreadPool; }
 
+	/**
+	*	@return The log function used by this connection.
+	*/
 	ASSQLLogFunction GetLogFunction() { return m_ThreadPool.GetLogFunction(); }
 
+	/**
+	*	@return The SQLite connection.
+	*/
 	sqlite3* GetConnection() { return m_pConnection; }
 
 private:

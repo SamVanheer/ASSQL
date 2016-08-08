@@ -11,10 +11,22 @@
 
 class CASSQLiteConnection;
 
+/**
+*	SQLite query. Executes queries without processing any results.
+*/
 class CASSQLiteQuery final : public IASSQLQuery, public CASAtomicRefCountedBaseClass
 {
 public:
+	/**
+	*	Constructor.
+	*	@param pConnection The connection that created this query.
+	*	@param pszQuery Query to execute.
+	*/
 	CASSQLiteQuery( CASSQLiteConnection* pConnection, const char* const pszQuery );
+
+	/**
+	*	Destructor.
+	*/
 	~CASSQLiteQuery();
 
 	void AddRef() const override final

@@ -13,10 +13,16 @@
 
 class CASSQLiteConnection;
 
+/**
+*	SQLite prepared statement.
+*/
 class CASSQLitePreparedStatement final : public IASSQLASyncCommand, public CASAtomicRefCountedBaseClass
 {
 public:
 
+	/**
+	*	SQLite prepared statement row.
+	*/
 	class CASSQLiteRow final : public IASSQLASyncCommand
 	{
 	public:
@@ -86,7 +92,16 @@ public:
 	friend class CASSQLiteRow;
 
 public:
+	/**
+	*	Constructor.
+	*	@param pConnection Connection that created this statement.
+	*	@param pszStatement Statement string.
+	*/
 	CASSQLitePreparedStatement( CASSQLiteConnection* pConnection, const char* const pszStatement );
+
+	/**
+	*	Destructor.
+	*/
 	~CASSQLitePreparedStatement();
 
 	void AddRef() const override final
@@ -102,6 +117,9 @@ public:
 
 	void Execute() override;
 
+	/**
+	*	@return Whether this statement is valid.
+	*/
 	bool IsValid() const;
 
 	void BindNull( int iIndex );
@@ -114,10 +132,22 @@ public:
 
 	void BindString( int iIndex, const std::string& szString );
 
+	/**
+	*	Executes this statement.
+	*	@param pRowCallback Optional. Callback to invoke when a row is being handled.
+	*	@param pCallback Optional. Callback to invoke when the statement has finished execution and the results have been processed.
+	*	@return Whether the statement was successfully queued for execution.
+	*/
 	bool ExecuteStatement( asIScriptFunction* pRowCallback = nullptr, asIScriptFunction* pCallback = nullptr );
 
+	/**
+	*	@return The SQLite statement.
+	*/
 	sqlite3_stmt* GetStatement() { return m_pStatement; }
 
+	/**
+	*	@return Whether this statement is handling a row.
+	*/
 	bool IsHandlingRow() const { return m_bHandlingRow; }
 
 private:
