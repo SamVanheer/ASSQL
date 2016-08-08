@@ -188,6 +188,11 @@ public:
 	*/
 	CASMySQLConnection* GetConnection() { return m_pConnection; }
 
+	/**
+	*	@return Whether this statement is currently executing.
+	*/
+	bool IsExecuting() const { return m_bExecuting; }
+
 private:
 	/**
 	*	Checks if the bind list size is large enough for the given index. Resizes it if needed.
@@ -206,6 +211,7 @@ private:
 
 	asIScriptFunction* m_pCallback = nullptr;
 
+	std::atomic<bool> m_bExecuting = false;
 	std::atomic<bool> m_bHandledResultSet = false;
 
 private:

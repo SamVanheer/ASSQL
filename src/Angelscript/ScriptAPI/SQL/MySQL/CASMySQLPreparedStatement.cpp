@@ -34,105 +34,108 @@ CASMySQLPreparedStatement::~CASMySQLPreparedStatement()
 
 void CASMySQLPreparedStatement::Execute()
 {
-	MYSQL* pConn = m_pConnection->Open();
+	assert( m_bExecuting );
 
-	if( !pConn )
+	if( MYSQL* pConn = m_pConnection->Open() )
 	{
-		//Open reports any errors.
-		return;
-	}
+		bool bSuccess = true;
 
-	bool bSuccess = true;
+		MYSQL_STMT* pStatement = mysql_stmt_init( pConn );
 
-	MYSQL_STMT* pStatement = mysql_stmt_init( pConn );
-
-	if( pStatement )
-	{
-		if( mysql_stmt_prepare( pStatement, m_szStatement.c_str(), m_szStatement.length() ) != 0 )
+		if( pStatement )
 		{
-			m_pConnection->GetThreadPool().GetThreadQueue().AddLogMessage( "MySQLPreparedStatement::Execute: Error preparing statement: %s\n", mysql_error( pConn ) );
+			if( mysql_stmt_prepare( pStatement, m_szStatement.c_str(), m_szStatement.length() ) != 0 )
+			{
+				m_pConnection->GetThreadPool().GetThreadQueue().AddLogMessage( "MySQLPreparedStatement::Execute: Error preparing statement: %s\n", mysql_error( pConn ) );
 
-			bSuccess = false;
+				bSuccess = false;
+			}
+			else
+			{
+				const size_t uiParamCount = static_cast<size_t>( mysql_stmt_param_count( pStatement ) );
+
+				if( uiParamCount != m_Binds.size() )
+				{
+					m_pConnection->GetThreadPool().GetThreadQueue().AddLogMessage( 
+						"MySQLPreparedStatement::Execute: Incorrect number of parameters!\nExpected %u, got %u\n", uiParamCount, m_Binds.size() );
+				
+					bSuccess = false;
+				}
+			}
 		}
 		else
 		{
-			const size_t uiParamCount = static_cast<size_t>( mysql_stmt_param_count( pStatement ) );
+			m_pConnection->GetThreadPool().GetThreadQueue().AddLogMessage( "MySQLPreparedStatement::Execute: Error creating statement: %s\n", mysql_error( pConn ) );
 
-			if( uiParamCount != m_Binds.size() )
+			bSuccess = false;
+		}
+
+		if( bSuccess && !m_Binds.empty() && mysql_stmt_bind_param( pStatement, m_Binds.data() ) )
+		{
+			m_pConnection->GetThreadPool().GetThreadQueue().AddLogMessage( "MySQLPreparedStatement::Execute: Error binding parameters: %s\n", mysql_error( pConn ) );
+
+			bSuccess = false;
+		}
+
+		if( bSuccess && mysql_stmt_execute( pStatement ) )
+		{
+			m_pConnection->GetThreadPool().GetThreadQueue().AddLogMessage( "MySQLPreparedStatement::Execute: Error executing statement: %s\n", mysql_error( pConn ) );
+		
+			bSuccess = false;
+		}
+
+		if( bSuccess )
+		{
+			auto pResultSet = new CASMySQLResultSet( this, pStatement );
+
+			if( pResultSet->IsValid() )
 			{
-				m_pConnection->GetThreadPool().GetThreadQueue().AddLogMessage( 
-					"MySQLPreparedStatement::Execute: Incorrect number of parameters!\nExpected %u, got %u\n", uiParamCount, m_Binds.size() );
-				
+				if( m_pCallback )
+				{
+					//Should be false here.
+					assert( !m_bHandledResultSet );
+
+					bSuccess = m_pConnection->GetThreadPool().GetThreadQueue().AddItem( pResultSet, m_pCallback );
+
+					//Block until the set has been handled.
+					while( !m_bHandledResultSet )
+					{
+						std::this_thread::yield();
+					}
+
+					//Reset it. - Solokiller
+					m_bHandledResultSet = false;
+				}
+			}
+			else
 				bSuccess = false;
+
+			pResultSet->Release();
+		}
+
+		if( m_pCallback )
+		{
+			m_pCallback->Release();
+
+			m_pCallback = nullptr;
+		}
+
+		if( pStatement )
+		{
+			if( mysql_stmt_close( pStatement ) )
+			{
+				m_pConnection->GetThreadPool().GetThreadQueue().AddLogMessage( "MySQLPreparedStatement::Execute: Error closing statement: %s\n", mysql_error( pConn ) );
 			}
 		}
+
+		m_pConnection->Close( pConn );
 	}
 	else
 	{
-		m_pConnection->GetThreadPool().GetThreadQueue().AddLogMessage( "MySQLPreparedStatement::Execute: Error creating statement: %s\n", mysql_error( pConn ) );
-
-		bSuccess = false;
+		//Open reports any errors.
 	}
 
-	if( bSuccess && !m_Binds.empty() && mysql_stmt_bind_param( pStatement, m_Binds.data() ) )
-	{
-		m_pConnection->GetThreadPool().GetThreadQueue().AddLogMessage( "MySQLPreparedStatement::Execute: Error binding parameters: %s\n", mysql_error( pConn ) );
-
-		bSuccess = false;
-	}
-
-	if( bSuccess && mysql_stmt_execute( pStatement ) )
-	{
-		m_pConnection->GetThreadPool().GetThreadQueue().AddLogMessage( "MySQLPreparedStatement::Execute: Error executing statement: %s\n", mysql_error( pConn ) );
-		
-		bSuccess = false;
-	}
-
-	if( bSuccess )
-	{
-		auto pResultSet = new CASMySQLResultSet( this, pStatement );
-
-		if( pResultSet->IsValid() )
-		{
-			if( m_pCallback )
-			{
-				//Should be false here.
-				assert( !m_bHandledResultSet );
-
-				bSuccess = m_pConnection->GetThreadPool().GetThreadQueue().AddItem( pResultSet, m_pCallback );
-
-				//Block until the set has been handled.
-				while( !m_bHandledResultSet )
-				{
-					std::this_thread::yield();
-				}
-
-				//Reset it. - Solokiller
-				m_bHandledResultSet = false;
-			}
-		}
-		else
-			bSuccess = false;
-
-		pResultSet->Release();
-	}
-
-	if( m_pCallback )
-	{
-		m_pCallback->Release();
-
-		m_pCallback = nullptr;
-	}
-
-	if( pStatement )
-	{
-		if( mysql_stmt_close( pStatement ) )
-		{
-			m_pConnection->GetThreadPool().GetThreadQueue().AddLogMessage( "MySQLPreparedStatement::Execute:Error closing statement: %s\n", mysql_error( pConn ) );
-		}
-	}
-
-	m_pConnection->Close( pConn );
+	m_bExecuting = false;
 }
 
 bool CASMySQLPreparedStatement::IsValid() const
@@ -318,10 +321,17 @@ void CASMySQLPreparedStatement::BindDateTime( uint32_t uiIndex, const CASDateTim
 
 bool CASMySQLPreparedStatement::ExecuteStatement( asIScriptFunction* pResultSetCallback, asIScriptFunction* pCallback )
 {
+	if( m_bExecuting )
+	{
+		m_pConnection->GetLogFunction()( "MySQLPreparedStatement::ExecuteStatement: Statement is already being executed!\n" );
+		return false;
+	}
+
 	bool bSuccess = false;
 
 	if( m_pConnection->GetThreadPool().AddItem( this, pCallback ) )
 	{
+		m_bExecuting = true;
 		m_pCallback = pResultSetCallback;
 		bSuccess = true;
 	}
