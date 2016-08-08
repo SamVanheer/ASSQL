@@ -79,7 +79,6 @@ public:
 	CASMySQLConnection* CreateMySQLConnection( const std::string& szHost, const std::string& szUser, const std::string& szPassword )
 	{
 		//TODO: get all of this information from server config.
-		//TODO: return in callback
 		return new CASMySQLConnection( m_ThreadPool, szHost.c_str(), szUser.c_str(), szPassword.c_str(), "TestDB", 3306, "", 0 );
 	}
 

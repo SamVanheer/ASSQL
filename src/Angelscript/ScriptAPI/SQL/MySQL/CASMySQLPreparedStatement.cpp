@@ -145,136 +145,136 @@ int CASMySQLPreparedStatement::GetParamCount() const
 	return m_Binds.size();
 }
 
-void CASMySQLPreparedStatement::BindNull( int iIndex )
+void CASMySQLPreparedStatement::BindNull( uint32_t uiIndex )
 {
-	if( !CheckBindListSize( iIndex ) )
+	if( !CheckBindListSize( uiIndex ) )
 		return;
 
-	m_Variables[ iIndex ].Set( MYSQL_TYPE_NULL, &m_Binds[ iIndex ] );
+	m_Variables[ uiIndex ].Set( MYSQL_TYPE_NULL, &m_Binds[ uiIndex ] );
 }
 
-void CASMySQLPreparedStatement::BindBoolean( int iIndex, bool bValue )
+void CASMySQLPreparedStatement::BindBoolean( uint32_t uiIndex, bool bValue )
 {
-	if( !CheckBindListSize( iIndex ) )
+	if( !CheckBindListSize( uiIndex ) )
 		return;
 
-	m_Variables[ iIndex ].Set( MYSQL_TYPE_TINY, &m_Binds[ iIndex ] );
-	m_Variables[ iIndex ].m_uiVal64 = bValue;
+	m_Variables[ uiIndex ].Set( MYSQL_TYPE_TINY, &m_Binds[ uiIndex ] );
+	m_Variables[ uiIndex ].m_uiVal64 = bValue;
 }
 
-void CASMySQLPreparedStatement::BindSigned8( int iIndex, int8_t iValue )
+void CASMySQLPreparedStatement::BindSigned8( uint32_t uiIndex, int8_t iValue )
 {
-	if( !CheckBindListSize( iIndex ) )
+	if( !CheckBindListSize( uiIndex ) )
 		return;
 
-	m_Variables[ iIndex ].Set( MYSQL_TYPE_TINY, &m_Binds[ iIndex ] );
-	m_Variables[ iIndex ].m_iVal64 = iValue;
+	m_Variables[ uiIndex ].Set( MYSQL_TYPE_TINY, &m_Binds[ uiIndex ] );
+	m_Variables[ uiIndex ].m_iVal64 = iValue;
 }
 
-void CASMySQLPreparedStatement::BindUnsigned8( int iIndex, uint8_t uiValue )
+void CASMySQLPreparedStatement::BindUnsigned8( uint32_t uiIndex, uint8_t uiValue )
 {
-	if( !CheckBindListSize( iIndex ) )
+	if( !CheckBindListSize( uiIndex ) )
 		return;
 
-	m_Variables[ iIndex ].Set( MYSQL_TYPE_TINY, &m_Binds[ iIndex ] );
-	m_Variables[ iIndex ].m_uiVal64 = uiValue;
+	m_Variables[ uiIndex ].Set( MYSQL_TYPE_TINY, &m_Binds[ uiIndex ] );
+	m_Variables[ uiIndex ].m_uiVal64 = uiValue;
 
-	m_Binds[ iIndex ].is_unsigned = true;
+	m_Binds[ uiIndex ].is_unsigned = true;
 }
 
-void CASMySQLPreparedStatement::BindSigned16( int iIndex, int16_t iValue )
+void CASMySQLPreparedStatement::BindSigned16( uint32_t uiIndex, int16_t iValue )
 {
-	if( !CheckBindListSize( iIndex ) )
+	if( !CheckBindListSize( uiIndex ) )
 		return;
 
-	m_Variables[ iIndex ].Set( MYSQL_TYPE_SHORT, &m_Binds[ iIndex ] );
-	m_Variables[ iIndex ].m_iVal64 = iValue;
+	m_Variables[ uiIndex ].Set( MYSQL_TYPE_SHORT, &m_Binds[ uiIndex ] );
+	m_Variables[ uiIndex ].m_iVal64 = iValue;
 }
 
-void CASMySQLPreparedStatement::BindUnsigned16( int iIndex, uint16_t uiValue )
+void CASMySQLPreparedStatement::BindUnsigned16( uint32_t uiIndex, uint16_t uiValue )
 {
-	if( !CheckBindListSize( iIndex ) )
+	if( !CheckBindListSize( uiIndex ) )
 		return;
 
-	m_Variables[ iIndex ].Set( MYSQL_TYPE_SHORT, &m_Binds[ iIndex ] );
-	m_Variables[ iIndex ].m_uiVal64 = uiValue;
+	m_Variables[ uiIndex ].Set( MYSQL_TYPE_SHORT, &m_Binds[ uiIndex ] );
+	m_Variables[ uiIndex ].m_uiVal64 = uiValue;
 
-	m_Binds[ iIndex ].is_unsigned = true;
+	m_Binds[ uiIndex ].is_unsigned = true;
 }
 
-void CASMySQLPreparedStatement::BindSigned32( int iIndex, int32_t iValue )
+void CASMySQLPreparedStatement::BindSigned32( uint32_t uiIndex, int32_t iValue )
 {
-	if( !CheckBindListSize( iIndex ) )
+	if( !CheckBindListSize( uiIndex ) )
 		return;
 
-	m_Variables[ iIndex ].Set( MYSQL_TYPE_LONG, &m_Binds[ iIndex ] );
-	m_Variables[ iIndex ].m_iVal64 = iValue;
+	m_Variables[ uiIndex ].Set( MYSQL_TYPE_LONG, &m_Binds[ uiIndex ] );
+	m_Variables[ uiIndex ].m_iVal64 = iValue;
 }
 
-void CASMySQLPreparedStatement::BindUnsigned32( int iIndex, uint32_t uiValue )
+void CASMySQLPreparedStatement::BindUnsigned32( uint32_t uiIndex, uint32_t uiValue )
 {
-	if( !CheckBindListSize( iIndex ) )
+	if( !CheckBindListSize( uiIndex ) )
 		return;
 
-	m_Variables[ iIndex ].Set( MYSQL_TYPE_LONG, &m_Binds[ iIndex ] );
-	m_Variables[ iIndex ].m_uiVal64 = uiValue;
+	m_Variables[ uiIndex ].Set( MYSQL_TYPE_LONG, &m_Binds[ uiIndex ] );
+	m_Variables[ uiIndex ].m_uiVal64 = uiValue;
 
-	m_Binds[ iIndex ].is_unsigned = true;
+	m_Binds[ uiIndex ].is_unsigned = true;
 }
 
-void CASMySQLPreparedStatement::BindSigned64( int iIndex, int64_t iValue )
+void CASMySQLPreparedStatement::BindSigned64( uint32_t uiIndex, int64_t iValue )
 {
-	if( !CheckBindListSize( iIndex ) )
+	if( !CheckBindListSize( uiIndex ) )
 		return;
 
-	m_Variables[ iIndex ].Set( MYSQL_TYPE_LONGLONG, &m_Binds[ iIndex ] );
-	m_Variables[ iIndex ].m_iVal64 = iValue;
+	m_Variables[ uiIndex ].Set( MYSQL_TYPE_LONGLONG, &m_Binds[ uiIndex ] );
+	m_Variables[ uiIndex ].m_iVal64 = iValue;
 }
 
-void CASMySQLPreparedStatement::BindUnsigned64( int iIndex, uint64_t uiValue )
+void CASMySQLPreparedStatement::BindUnsigned64( uint32_t uiIndex, uint64_t uiValue )
 {
-	if( !CheckBindListSize( iIndex ) )
+	if( !CheckBindListSize( uiIndex ) )
 		return;
 
-	m_Variables[ iIndex ].Set( MYSQL_TYPE_LONGLONG, &m_Binds[ iIndex ] );
-	m_Variables[ iIndex ].m_uiVal64 = uiValue;
+	m_Variables[ uiIndex ].Set( MYSQL_TYPE_LONGLONG, &m_Binds[ uiIndex ] );
+	m_Variables[ uiIndex ].m_uiVal64 = uiValue;
 
-	m_Binds[ iIndex ].is_unsigned = true;
+	m_Binds[ uiIndex ].is_unsigned = true;
 }
 
-void CASMySQLPreparedStatement::BindFloat( int iIndex, float flValue )
+void CASMySQLPreparedStatement::BindFloat( uint32_t uiIndex, float flValue )
 {
-	if( !CheckBindListSize( iIndex ) )
+	if( !CheckBindListSize( uiIndex ) )
 		return;
 
-	m_Variables[ iIndex ].Set( MYSQL_TYPE_FLOAT, &m_Binds[ iIndex ] );
-	m_Variables[ iIndex ].m_flValue32[ 0 ] = flValue;
+	m_Variables[ uiIndex ].Set( MYSQL_TYPE_FLOAT, &m_Binds[ uiIndex ] );
+	m_Variables[ uiIndex ].m_flValue32[ 0 ] = flValue;
 }
 
-void CASMySQLPreparedStatement::BindDouble( int iIndex, double flValue )
+void CASMySQLPreparedStatement::BindDouble( uint32_t uiIndex, double flValue )
 {
-	if( !CheckBindListSize( iIndex ) )
+	if( !CheckBindListSize( uiIndex ) )
 		return;
 
-	m_Variables[ iIndex ].Set( MYSQL_TYPE_DOUBLE, &m_Binds[ iIndex ] );
-	m_Variables[ iIndex ].m_flValue64 = flValue;
+	m_Variables[ uiIndex ].Set( MYSQL_TYPE_DOUBLE, &m_Binds[ uiIndex ] );
+	m_Variables[ uiIndex ].m_flValue64 = flValue;
 }
 
-void CASMySQLPreparedStatement::BindString( int iIndex, const std::string& szString )
+void CASMySQLPreparedStatement::BindString( uint32_t uiIndex, const std::string& szString )
 {
-	if( !CheckBindListSize( iIndex ) )
+	if( !CheckBindListSize( uiIndex ) )
 		return;
 
-	m_Variables[ iIndex ].Set( MYSQL_TYPE_STRING, &m_Binds[ iIndex ], szString.data(), szString.length() );
+	m_Variables[ uiIndex ].Set( MYSQL_TYPE_STRING, &m_Binds[ uiIndex ], szString.data(), szString.length() );
 }
 
-void CASMySQLPreparedStatement::BindDate( int iIndex, const CASDateTime& date )
+void CASMySQLPreparedStatement::BindDate( uint32_t uiIndex, const CASDateTime& date )
 {
-	if( !CheckBindListSize( iIndex ) )
+	if( !CheckBindListSize( uiIndex ) )
 		return;
 
-	auto& var = m_Variables[ iIndex ];
-	auto& bind = m_Binds[ iIndex ];
+	auto& var = m_Variables[ uiIndex ];
+	auto& bind = m_Binds[ uiIndex ];
 
 	var.Set( MYSQL_TYPE_DATE, &bind );
 
@@ -284,13 +284,13 @@ void CASMySQLPreparedStatement::BindDate( int iIndex, const CASDateTime& date )
 	bind.buffer_length = sizeof( MYSQL_TIME );
 }
 
-void CASMySQLPreparedStatement::BindTime( int iIndex, const CASTime& time )
+void CASMySQLPreparedStatement::BindTime( uint32_t uiIndex, const CASTime& time )
 {
-	if( !CheckBindListSize( iIndex ) )
+	if( !CheckBindListSize( uiIndex ) )
 		return;
 
-	auto& var = m_Variables[ iIndex ];
-	auto& bind = m_Binds[ iIndex ];
+	auto& var = m_Variables[ uiIndex ];
+	auto& bind = m_Binds[ uiIndex ];
 
 	var.Set( MYSQL_TYPE_TIME, &bind );
 
@@ -300,13 +300,13 @@ void CASMySQLPreparedStatement::BindTime( int iIndex, const CASTime& time )
 	bind.buffer_length = sizeof( MYSQL_TIME );
 }
 
-void CASMySQLPreparedStatement::BindDateTime( int iIndex, const CASDateTime& dateTime )
+void CASMySQLPreparedStatement::BindDateTime( uint32_t uiIndex, const CASDateTime& dateTime )
 {
-	if( !CheckBindListSize( iIndex ) )
+	if( !CheckBindListSize( uiIndex ) )
 		return;
 
-	auto& var = m_Variables[ iIndex ];
-	auto& bind = m_Binds[ iIndex ];
+	auto& var = m_Variables[ uiIndex ];
+	auto& bind = m_Binds[ uiIndex ];
 
 	var.Set( MYSQL_TYPE_DATETIME, &bind );
 
@@ -337,15 +337,11 @@ bool CASMySQLPreparedStatement::ExecuteStatement( asIScriptFunction* pResultSetC
 	return bSuccess;
 }
 
-bool CASMySQLPreparedStatement::CheckBindListSize( int iIndex )
+bool CASMySQLPreparedStatement::CheckBindListSize( uint32_t uiIndex )
 {
 	const size_t uiOldSize = m_Binds.size();
 
-	//TODO: use unsigned indices - Solokiller
-	if( iIndex < 0 )
-		return false;
-
-	const size_t uiRequestedCount = static_cast<size_t>( iIndex ) + 1;
+	const size_t uiRequestedCount = uiIndex + 1;
 
 	if( uiRequestedCount < uiOldSize )
 		return true;

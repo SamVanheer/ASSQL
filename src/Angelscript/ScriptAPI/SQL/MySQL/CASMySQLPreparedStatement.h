@@ -56,112 +56,112 @@ public:
 	*	Binds a null parameter.
 	*	@param iIndex Parameter index.
 	*/
-	void BindNull( int iIndex );
+	void BindNull( uint32_t uiIndex );
 
 	/**
 	*	Binds a boolean.
 	*	@param iIndex Parameter index.
 	*	@param bValue Value.
 	*/
-	void BindBoolean( int iIndex, bool bValue );
+	void BindBoolean( uint32_t uiIndex, bool bValue );
 
 	/**
 	*	Binds an 8 bit signed integer.
 	*	@param iIndex Parameter index.
 	*	@param iValue Value.
 	*/
-	void BindSigned8( int iIndex, int8_t iValue );
+	void BindSigned8( uint32_t uiIndex, int8_t iValue );
 
 	/**
 	*	Binds an 8 bit unsigned integer.
 	*	@param iIndex Parameter index.
 	*	@param uiValue Value.
 	*/
-	void BindUnsigned8( int iIndex, uint8_t uiValue );
+	void BindUnsigned8( uint32_t uiIndex, uint8_t uiValue );
 
 	/**
 	*	Binds a 16 bit signed integer.
 	*	@param iIndex Parameter index.
 	*	@param iValue Value.
 	*/
-	void BindSigned16( int iIndex, int16_t iValue );
+	void BindSigned16( uint32_t uiIndex, int16_t iValue );
 
 	/**
 	*	Binds a 16 bit unsigned integer.
 	*	@param iIndex Parameter index.
 	*	@param uiValue Value.
 	*/
-	void BindUnsigned16( int iIndex, uint16_t uiValue );
+	void BindUnsigned16( uint32_t uiIndex, uint16_t uiValue );
 
 	/**
 	*	Binds a 32 bit signed integer.
 	*	@param iIndex Parameter index.
 	*	@param iValue Value.
 	*/
-	void BindSigned32( int iIndex, int32_t iValue );
+	void BindSigned32( uint32_t uiIndex, int32_t iValue );
 
 	/**
 	*	Binds a 32 bit unsigned integer.
 	*	@param iIndex Parameter index.
 	*	@param uiValue Value.
 	*/
-	void BindUnsigned32( int iIndex, uint32_t uiValue );
+	void BindUnsigned32( uint32_t uiIndex, uint32_t uiValue );
 
 	/**
 	*	Binds a 64 bit signed integer.
 	*	@param iIndex Parameter index.
 	*	@param iValue Value.
 	*/
-	void BindSigned64( int iIndex, int64_t iValue );
+	void BindSigned64( uint32_t uiIndex, int64_t iValue );
 
 	/**
 	*	Binds a 64 bit unsigned integer.
 	*	@param iIndex Parameter index.
 	*	@param uiValue Value.
 	*/
-	void BindUnsigned64( int iIndex, uint64_t uiValue );
+	void BindUnsigned64( uint32_t uiIndex, uint64_t uiValue );
 
 	/**
 	*	Binds a 32 bit float.
 	*	@param iIndex Parameter index.
 	*	@param flValue Value.
 	*/
-	void BindFloat( int iIndex, float flValue );
+	void BindFloat( uint32_t uiIndex, float flValue );
 
 	/**
 	*	Binds a 64 bit float.
 	*	@param iIndex Parameter index.
 	*	@param flValue Value.
 	*/
-	void BindDouble( int iIndex, double flValue );
+	void BindDouble( uint32_t uiIndex, double flValue );
 
 	/**
 	*	Binds a string.
 	*	@param iIndex Parameter index.
 	*	@param szString String.
 	*/
-	void BindString( int iIndex, const std::string& szString );
+	void BindString( uint32_t uiIndex, const std::string& szString );
 
 	/**
 	*	Binds a date instance.
 	*	@param iIndex Parameter index.
 	*	@param date Date instance.
 	*/
-	void BindDate( int iIndex, const CASDateTime& date );
+	void BindDate( uint32_t uiIndex, const CASDateTime& date );
 
 	/**
 	*	Binds a time instance.
 	*	@param iIndex Parameter index.
 	*	@param time Time instance.
 	*/
-	void BindTime( int iIndex, const CASTime& time );
+	void BindTime( uint32_t uiIndex, const CASTime& time );
 
 	/**
 	*	Binds a date time instance.
 	*	@param iIndex Parameter index.
 	*	@param dateTime Date time instance.
 	*/
-	void BindDateTime( int iIndex, const CASDateTime& dateTime );
+	void BindDateTime( uint32_t uiIndex, const CASDateTime& dateTime );
 
 	bool ExecuteStatement( asIScriptFunction* pResultSetCallback = nullptr, asIScriptFunction* pCallback = nullptr );
 
@@ -172,7 +172,7 @@ private:
 	*	Checks if the bind list size is large enough for the given index. Resizes it if needed.
 	*	@return Whether the list could be resized.
 	*/
-	bool CheckBindListSize( int iIndex );
+	bool CheckBindListSize( uint32_t uiIndex );
 
 private:
 	CASMySQLConnection* m_pConnection = nullptr;

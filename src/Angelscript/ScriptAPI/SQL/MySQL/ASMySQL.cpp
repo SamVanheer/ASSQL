@@ -108,63 +108,63 @@ static void RegisterScriptMySQLPreparedStatement( asIScriptEngine& engine )
 		asMETHOD( CASMySQLPreparedStatement, BindNull ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "void BindBoolean(int iIndex, bool bValue)",
+		pszObjectName, "void BindBoolean(uint uiIndex, bool bValue)",
 		asMETHOD( CASMySQLPreparedStatement, BindBoolean ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "void BindSigned8(int iIndex, int8 iValue)",
+		pszObjectName, "void BindSigned8(uint uiIndex, int8 iValue)",
 		asMETHOD( CASMySQLPreparedStatement, BindSigned8 ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "void BindUnsigned8(int iIndex, uint8 uiValue)",
+		pszObjectName, "void BindUnsigned8(uint uiIndex, uint8 uiValue)",
 		asMETHOD( CASMySQLPreparedStatement, BindUnsigned8 ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "void BindSigned16(int iIndex, int16 iValue)",
+		pszObjectName, "void BindSigned16(uint uiIndex, int16 iValue)",
 		asMETHOD( CASMySQLPreparedStatement, BindSigned16 ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "void BindUnsigned16(int iIndex, uint16 uiValue)",
+		pszObjectName, "void BindUnsigned16(uint uiIndex, uint16 uiValue)",
 		asMETHOD( CASMySQLPreparedStatement, BindUnsigned16 ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "void BindSigned32(int iIndex, int32 iValue)",
+		pszObjectName, "void BindSigned32(uint uiIndex, int32 iValue)",
 		asMETHOD( CASMySQLPreparedStatement, BindSigned32 ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "void BindUnsigned32(int iIndex, uint32 uiValue)",
+		pszObjectName, "void BindUnsigned32(uint uiIndex, uint32 uiValue)",
 		asMETHOD( CASMySQLPreparedStatement, BindUnsigned32 ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "void BindSigned64(int iIndex, int64 iValue)",
+		pszObjectName, "void BindSigned64(uint uiIndex, int64 iValue)",
 		asMETHOD( CASMySQLPreparedStatement, BindSigned64 ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "void BindUnsigned64(int iIndex, uint64 uiValue)",
+		pszObjectName, "void BindUnsigned64(uint uiIndex, uint64 uiValue)",
 		asMETHOD( CASMySQLPreparedStatement, BindUnsigned64 ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "void BindFloat(int iIndex, float flValue)",
+		pszObjectName, "void BindFloat(uint uiIndex, float flValue)",
 		asMETHOD( CASMySQLPreparedStatement, BindFloat ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "void BindDouble(int iIndex, double flValue)",
+		pszObjectName, "void BindDouble(uint uiIndex, double flValue)",
 		asMETHOD( CASMySQLPreparedStatement, BindDouble ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "void BindString(int iIndex, const string& in szString)",
+		pszObjectName, "void BindString(uint uiIndex, const string& in szString)",
 		asMETHOD( CASMySQLPreparedStatement, BindString ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "void BindDate(int iIndex, const CDateTime& in date)",
+		pszObjectName, "void BindDate(uint uiIndex, const CDateTime& in date)",
 		asMETHOD( CASMySQLPreparedStatement, BindDate ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "void BindTime(int iIndex, const CTime& in time)",
+		pszObjectName, "void BindTime(uint uiIndex, const CTime& in time)",
 		asMETHOD( CASMySQLPreparedStatement, BindTime ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "void BindDateTime(int iIndex, const CDateTime& in dateTime)",
+		pszObjectName, "void BindDateTime(uint uiIndex, const CDateTime& in dateTime)",
 		asMETHOD( CASMySQLPreparedStatement, BindDateTime ), asCALL_THISCALL );
 
 	engine.RegisterFuncdef( "void MySQLResultSetCallback(MySQLResultSet@ pResultSet)" );
