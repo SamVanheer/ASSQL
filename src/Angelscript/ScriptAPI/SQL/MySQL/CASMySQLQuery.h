@@ -11,10 +11,22 @@
 
 class CASMySQLConnection;
 
+/**
+*	MySQL query. Executes asynchronously.
+*/
 class CASMySQLQuery final : public IASSQLQuery, public CASAtomicRefCountedBaseClass
 {
 public:
+	/**
+	*	Constructor.
+	*	@param pConnection The connection that created this query.
+	*	@param pszQuery Query string.
+	*/
 	CASMySQLQuery( CASMySQLConnection* pConnection, const char* const pszQuery );
+
+	/**
+	*	Destructor.
+	*/
 	~CASMySQLQuery();
 
 	void AddRef() const override final
@@ -32,6 +44,9 @@ public:
 
 	bool IsValid() const override;
 
+	/**
+	*	@return The connection that created this query.
+	*/
 	CASMySQLConnection* GetConnection() { return m_pConnection; }
 
 private:

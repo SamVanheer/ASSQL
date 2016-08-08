@@ -62,115 +62,115 @@ public:
 	/**
 	*	@return The current parameter count. May not match the query's parameter count.
 	*/
-	int GetParamCount() const;
+	uint32_t GetParamCount() const;
 
 	/**
 	*	Binds a null parameter.
-	*	@param iIndex Parameter index.
+	*	@param uiIndex Parameter index.
 	*/
 	void BindNull( uint32_t uiIndex );
 
 	/**
 	*	Binds a boolean.
-	*	@param iIndex Parameter index.
+	*	@param uiIndex Parameter index.
 	*	@param bValue Value.
 	*/
 	void BindBoolean( uint32_t uiIndex, bool bValue );
 
 	/**
 	*	Binds an 8 bit signed integer.
-	*	@param iIndex Parameter index.
+	*	@param uiIndex Parameter index.
 	*	@param iValue Value.
 	*/
 	void BindSigned8( uint32_t uiIndex, int8_t iValue );
 
 	/**
 	*	Binds an 8 bit unsigned integer.
-	*	@param iIndex Parameter index.
+	*	@param uiIndex Parameter index.
 	*	@param uiValue Value.
 	*/
 	void BindUnsigned8( uint32_t uiIndex, uint8_t uiValue );
 
 	/**
 	*	Binds a 16 bit signed integer.
-	*	@param iIndex Parameter index.
+	*	@param uiIndex Parameter index.
 	*	@param iValue Value.
 	*/
 	void BindSigned16( uint32_t uiIndex, int16_t iValue );
 
 	/**
 	*	Binds a 16 bit unsigned integer.
-	*	@param iIndex Parameter index.
+	*	@param uiIndex Parameter index.
 	*	@param uiValue Value.
 	*/
 	void BindUnsigned16( uint32_t uiIndex, uint16_t uiValue );
 
 	/**
 	*	Binds a 32 bit signed integer.
-	*	@param iIndex Parameter index.
+	*	@param uiIndex Parameter index.
 	*	@param iValue Value.
 	*/
 	void BindSigned32( uint32_t uiIndex, int32_t iValue );
 
 	/**
 	*	Binds a 32 bit unsigned integer.
-	*	@param iIndex Parameter index.
+	*	@param uiIndex Parameter index.
 	*	@param uiValue Value.
 	*/
 	void BindUnsigned32( uint32_t uiIndex, uint32_t uiValue );
 
 	/**
 	*	Binds a 64 bit signed integer.
-	*	@param iIndex Parameter index.
+	*	@param uiIndex Parameter index.
 	*	@param iValue Value.
 	*/
 	void BindSigned64( uint32_t uiIndex, int64_t iValue );
 
 	/**
 	*	Binds a 64 bit unsigned integer.
-	*	@param iIndex Parameter index.
+	*	@param uiIndex Parameter index.
 	*	@param uiValue Value.
 	*/
 	void BindUnsigned64( uint32_t uiIndex, uint64_t uiValue );
 
 	/**
 	*	Binds a 32 bit float.
-	*	@param iIndex Parameter index.
+	*	@param uiIndex Parameter index.
 	*	@param flValue Value.
 	*/
 	void BindFloat( uint32_t uiIndex, float flValue );
 
 	/**
 	*	Binds a 64 bit float.
-	*	@param iIndex Parameter index.
+	*	@param uiIndex Parameter index.
 	*	@param flValue Value.
 	*/
 	void BindDouble( uint32_t uiIndex, double flValue );
 
 	/**
 	*	Binds a string.
-	*	@param iIndex Parameter index.
+	*	@param uiIndex Parameter index.
 	*	@param szString String.
 	*/
 	void BindString( uint32_t uiIndex, const std::string& szString );
 
 	/**
 	*	Binds a date instance.
-	*	@param iIndex Parameter index.
+	*	@param uiIndex Parameter index.
 	*	@param date Date instance.
 	*/
 	void BindDate( uint32_t uiIndex, const CASDateTime& date );
 
 	/**
 	*	Binds a time instance.
-	*	@param iIndex Parameter index.
+	*	@param uiIndex Parameter index.
 	*	@param time Time instance.
 	*/
 	void BindTime( uint32_t uiIndex, const CASTime& time );
 
 	/**
 	*	Binds a date time instance.
-	*	@param iIndex Parameter index.
+	*	@param uiIndex Parameter index.
 	*	@param dateTime Date time instance.
 	*/
 	void BindDateTime( uint32_t uiIndex, const CASDateTime& dateTime );

@@ -1,6 +1,7 @@
 #ifndef ANGELSCRIPT_SCRIPTAPI_SQL_MYSQL_CASMYSQLRESULTSET_H
 #define ANGELSCRIPT_SCRIPTAPI_SQL_MYSQL_CASMYSQLRESULTSET_H
 
+#include <cstdint>
 #include <string>
 
 #include <mysql.h>
@@ -15,13 +16,28 @@
 class CASMySQLBind;
 class CASMySQLPreparedStatement;
 
+/**
+*	MySQL result set.
+*/
 class CASMySQLResultSet final : public IASSQLASyncItem, public CASAtomicRefCountedBaseClass
 {
 public:
+	/**
+	*	Constructor.
+	*	@param pStatement The statement that produced this result.
+	*	@param pMyStatement. The MySQL statement that produced this result.
+	*/
 	CASMySQLResultSet( CASMySQLPreparedStatement* pStatement, MYSQL_STMT* pMyStatement );
+
+	/**
+	*	Destructor.
+	*/
 	~CASMySQLResultSet();
 
 private:
+	/**
+	*	Cleans up the result set.
+	*/
 	void Destruct();
 
 public:
@@ -47,7 +63,7 @@ public:
 	/**
 	*	@return The number of fields in a single row.
 	*/
-	int GetFieldCount() const;
+	uint32_t GetFieldCount() const;
 
 	/**
 	*	Fetches the next row.
@@ -56,113 +72,114 @@ public:
 	bool Next();
 
 	/**
+	*	@param uiColumn Column to check.
 	*	@return Whether the given column is null.
 	*/
-	bool IsNull( int iColumn ) const;
+	bool IsNull( uint32_t uiColumn ) const;
 
 	/**
-	*	@param iColumn Column to retrieve.
+	*	@param uiColumn Column to retrieve.
 	*	@return A boolean.
 	*/
-	bool GetBoolean( int iColumn ) const;
+	bool GetBoolean( uint32_t uiColumn ) const;
 
 	/**
 	*	Gets a signed 8 bit integer.
-	*	@param iColumn Column to retrieve.
+	*	@param uiColumn Column to retrieve.
 	*	@return An integer.
 	*/
-	int8_t GetSigned8( int iColumn ) const;
+	int8_t GetSigned8( uint32_t uiColumn ) const;
 
 	/**
 	*	Gets a signed 8 bit integer.
-	*	@param iColumn Column to retrieve.
+	*	@param uiColumn Column to retrieve.
 	*	@return An integer.
 	*/
-	uint8_t GetUnsigned8( int iColumn ) const;
+	uint8_t GetUnsigned8( uint32_t uiColumn ) const;
 
 	/**
 	*	Gets a signed 16 bit integer.
-	*	@param iColumn Column to retrieve.
+	*	@param uiColumn Column to retrieve.
 	*	@return An integer.
 	*/
-	int16_t GetSigned16( int iColumn ) const;
+	int16_t GetSigned16( uint32_t uiColumn ) const;
 
 	/**
 	*	Gets a signed 16 bit integer.
-	*	@param iColumn Column to retrieve.
+	*	@param uiColumn Column to retrieve.
 	*	@return An integer.
 	*/
-	uint16_t GetUnsigned16( int iColumn ) const;
+	uint16_t GetUnsigned16( uint32_t uiColumn ) const;
 
 	/**
 	*	Gets a signed 32 bit integer.
-	*	@param iColumn Column to retrieve.
+	*	@param uiColumn Column to retrieve.
 	*	@return An integer.
 	*/
-	int32_t GetSigned32( int iColumn ) const;
+	int32_t GetSigned32( uint32_t uiColumn ) const;
 
 	/**
 	*	Gets a signed 32 bit integer.
-	*	@param iColumn Column to retrieve.
+	*	@param uiColumn Column to retrieve.
 	*	@return An integer.
 	*/
-	uint32_t GetUnsigned32( int iColumn ) const;
+	uint32_t GetUnsigned32( uint32_t uiColumn ) const;
 
 	/**
 	*	Gets a signed 64 bit integer.
-	*	@param iColumn Column to retrieve.
+	*	@param uiColumn Column to retrieve.
 	*	@return An integer.
 	*/
-	int64_t GetSigned64( int iColumn ) const;
+	int64_t GetSigned64( uint32_t uiColumn ) const;
 
 	/**
 	*	Gets a signed 64 bit integer.
-	*	@param iColumn Column to retrieve.
+	*	@param uiColumn Column to retrieve.
 	*	@return An integer.
 	*/
-	uint64_t GetUnsigned64( int iColumn ) const;
+	uint64_t GetUnsigned64( uint32_t uiColumn ) const;
 
 	/**
 	*	Gets a 32 bit float.
-	*	@param iColumn Column to retrieve.
+	*	@param uiColumn Column to retrieve.
 	*	@return A float.
 	*/
-	float GetFloat( int iColumn ) const;
+	float GetFloat( uint32_t uiColumn ) const;
 
 	/**
 	*	Gets a 64 bit float.
-	*	@param iColumn Column to retrieve.
+	*	@param uiColumn Column to retrieve.
 	*	@return A double.
 	*/
-	double GetDouble( int iColumn ) const;
+	double GetDouble( uint32_t uiColumn ) const;
 
 	/**
 	*	Gets a string.
-	*	@param iColumn Column to retrieve.
+	*	@param uiColumn Column to retrieve.
 	*	@return A string.
 	*/
-	std::string GetString( int iColumn ) const;
+	std::string GetString( uint32_t uiColumn ) const;
 
 	/**
 	*	Gets a date instance.
-	*	@param iColumn Column to retrieve.
+	*	@param uiColumn Column to retrieve.
 	*	@return A date instance.
 	*/
-	CASDateTime GetDate( int iColumn ) const;
+	CASDateTime GetDate( uint32_t uiColumn ) const;
 
 	/**
 	*	Gets a time instance.
-	*	@param iColumn Column to retrieve.
+	*	@param uiColumn Column to retrieve.
 	*	@return A time instance.
 	*/
-	CASTime GetTime( int iColumn ) const;
+	CASTime GetTime( uint32_t uiColumn ) const;
 
 	/**
 	*	Gets a date time instance.
-	*	@param iColumn Column to retrieve.
+	*	@param uiColumn Column to retrieve.
 	*	@return A date time instance.
 	*/
-	CASDateTime GetDateTime( int iColumn ) const;
+	CASDateTime GetDateTime( uint32_t uiColumn ) const;
 
 private:
 	CASMySQLPreparedStatement* m_pStatement = nullptr;

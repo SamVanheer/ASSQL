@@ -98,9 +98,9 @@ bool CASMySQLResultSet::IsValid() const
 	return m_pResultSet != nullptr;
 }
 
-int CASMySQLResultSet::GetFieldCount() const
+uint32_t CASMySQLResultSet::GetFieldCount() const
 {
-	return mysql_stmt_field_count( m_pMyStatement );
+	return static_cast<uint32_t>( mysql_stmt_field_count( m_pMyStatement ) );
 }
 
 bool CASMySQLResultSet::Next()
@@ -108,129 +108,132 @@ bool CASMySQLResultSet::Next()
 	return mysql_stmt_fetch( m_pMyStatement ) == 0;
 }
 
-bool CASMySQLResultSet::IsNull( int iColumn ) const
+bool CASMySQLResultSet::IsNull( uint32_t uiColumn ) const
 {
-	return m_pVariables[ iColumn ].m_bIsNull != 0;
+	if( uiColumn >= GetFieldCount() )
+		return true;
+
+	return m_pVariables[ uiColumn ].m_bIsNull != 0;
 }
 
-bool CASMySQLResultSet::GetBoolean( int iColumn ) const
+bool CASMySQLResultSet::GetBoolean( uint32_t uiColumn ) const
 {
-	if( iColumn < 0 || iColumn >= GetFieldCount() )
+	if( uiColumn >= GetFieldCount() )
 		return 0;
 
-	return m_pVariables[ iColumn ].m_uiVal64 != 0;
+	return m_pVariables[ uiColumn ].m_uiVal64 != 0;
 }
 
-int8_t CASMySQLResultSet::GetSigned8( int iColumn ) const
+int8_t CASMySQLResultSet::GetSigned8( uint32_t uiColumn ) const
 {
-	if( iColumn < 0 || iColumn >= GetFieldCount() )
+	if( uiColumn >= GetFieldCount() )
 		return 0;
 
-	return static_cast<int8_t>( m_pVariables[ iColumn ].m_iVal64 );
+	return static_cast<int8_t>( m_pVariables[ uiColumn ].m_iVal64 );
 }
 
-uint8_t CASMySQLResultSet::GetUnsigned8( int iColumn ) const
+uint8_t CASMySQLResultSet::GetUnsigned8( uint32_t uiColumn ) const
 {
-	if( iColumn < 0 || iColumn >= GetFieldCount() )
+	if( uiColumn >= GetFieldCount() )
 		return 0;
 
-	return static_cast<uint8_t>( m_pVariables[ iColumn ].m_uiVal64 );
+	return static_cast<uint8_t>( m_pVariables[ uiColumn ].m_uiVal64 );
 }
 
-int16_t CASMySQLResultSet::GetSigned16( int iColumn ) const
+int16_t CASMySQLResultSet::GetSigned16( uint32_t uiColumn ) const
 {
-	if( iColumn < 0 || iColumn >= GetFieldCount() )
+	if( uiColumn >= GetFieldCount() )
 		return 0;
 
-	return static_cast<int16_t>( m_pVariables[ iColumn ].m_iVal64 );
+	return static_cast<int16_t>( m_pVariables[ uiColumn ].m_iVal64 );
 }
 
-uint16_t CASMySQLResultSet::GetUnsigned16( int iColumn ) const
+uint16_t CASMySQLResultSet::GetUnsigned16( uint32_t uiColumn ) const
 {
-	if( iColumn < 0 || iColumn >= GetFieldCount() )
+	if( uiColumn >= GetFieldCount() )
 		return 0;
 
-	return static_cast<uint16_t>( m_pVariables[ iColumn ].m_uiVal64 );
+	return static_cast<uint16_t>( m_pVariables[ uiColumn ].m_uiVal64 );
 }
 
-int32_t CASMySQLResultSet::GetSigned32( int iColumn ) const
+int32_t CASMySQLResultSet::GetSigned32( uint32_t uiColumn ) const
 {
-	if( iColumn < 0 || iColumn >= GetFieldCount() )
+	if( uiColumn >= GetFieldCount() )
 		return 0;
 
-	return static_cast<int32_t>( m_pVariables[ iColumn ].m_iVal64 );
+	return static_cast<int32_t>( m_pVariables[ uiColumn ].m_iVal64 );
 }
 
-uint32_t CASMySQLResultSet::GetUnsigned32( int iColumn ) const
+uint32_t CASMySQLResultSet::GetUnsigned32( uint32_t uiColumn ) const
 {
-	if( iColumn < 0 || iColumn >= GetFieldCount() )
+	if( uiColumn >= GetFieldCount() )
 		return 0;
 
-	return static_cast<uint32_t>( m_pVariables[ iColumn ].m_uiVal64 );
+	return static_cast<uint32_t>( m_pVariables[ uiColumn ].m_uiVal64 );
 }
 
-int64_t CASMySQLResultSet::GetSigned64( int iColumn ) const
+int64_t CASMySQLResultSet::GetSigned64( uint32_t uiColumn ) const
 {
-	if( iColumn < 0 || iColumn >= GetFieldCount() )
+	if( uiColumn >= GetFieldCount() )
 		return 0;
 
-	return m_pVariables[ iColumn ].m_iVal64;
+	return m_pVariables[ uiColumn ].m_iVal64;
 }
 
-uint64_t CASMySQLResultSet::GetUnsigned64( int iColumn ) const
+uint64_t CASMySQLResultSet::GetUnsigned64( uint32_t uiColumn ) const
 {
-	if( iColumn < 0 || iColumn >= GetFieldCount() )
+	if( uiColumn >= GetFieldCount() )
 		return 0;
 
-	return m_pVariables[ iColumn ].m_uiVal64;
+	return m_pVariables[ uiColumn ].m_uiVal64;
 }
 
-float CASMySQLResultSet::GetFloat( int iColumn ) const
+float CASMySQLResultSet::GetFloat( uint32_t uiColumn ) const
 {
-	if( iColumn < 0 || iColumn >= GetFieldCount() )
+	if( uiColumn >= GetFieldCount() )
 		return 0;
 
-	return m_pVariables[ iColumn ].m_flValue32[ 0 ];
+	return m_pVariables[ uiColumn ].m_flValue32[ 0 ];
 }
 
-double CASMySQLResultSet::GetDouble( int iColumn ) const
+double CASMySQLResultSet::GetDouble( uint32_t uiColumn ) const
 {
-	if( iColumn < 0 || iColumn >= GetFieldCount() )
+	if( uiColumn >= GetFieldCount() )
 		return 0;
 
-	return m_pVariables[ iColumn ].m_flValue64;
+	return m_pVariables[ uiColumn ].m_flValue64;
 }
 
-std::string CASMySQLResultSet::GetString( int iColumn ) const
+std::string CASMySQLResultSet::GetString( uint32_t uiColumn ) const
 {
-	if( iColumn < 0 || iColumn >= GetFieldCount() )
+	if( uiColumn >= GetFieldCount() )
 		return "";
 
-	auto& buffer = m_pVariables[ iColumn ].m_Buffer;
+	auto& buffer = m_pVariables[ uiColumn ].m_Buffer;
 
 	return !buffer.empty() ? std::string( buffer.begin(), buffer.end() ) : "";
 }
 
-CASDateTime CASMySQLResultSet::GetDate( int iColumn ) const
+CASDateTime CASMySQLResultSet::GetDate( uint32_t uiColumn ) const
 {
-	if( iColumn < 0 || iColumn >= GetFieldCount() )
+	if( uiColumn >= GetFieldCount() )
 		return CASDateTime();
 
-	return CASDateTime_FromMySQLTime( m_pVariables[ iColumn ].m_Time );
+	return CASDateTime_FromMySQLTime( m_pVariables[ uiColumn ].m_Time );
 }
 
-CASTime CASMySQLResultSet::GetTime( int iColumn ) const
+CASTime CASMySQLResultSet::GetTime( uint32_t uiColumn ) const
 {
-	if( iColumn < 0 || iColumn >= GetFieldCount() )
+	if( uiColumn >= GetFieldCount() )
 		return CASDateTime();
 
-	return CASTime_FromMySQLTime( m_pVariables[ iColumn ].m_Time );
+	return CASTime_FromMySQLTime( m_pVariables[ uiColumn ].m_Time );
 }
 
-CASDateTime CASMySQLResultSet::GetDateTime( int iColumn ) const
+CASDateTime CASMySQLResultSet::GetDateTime( uint32_t uiColumn ) const
 {
-	if( iColumn < 0 || iColumn >= GetFieldCount() )
+	if( uiColumn >= GetFieldCount() )
 		return CASDateTime();
 
-	return CASDateTime_FromMySQLTime( m_pVariables[ iColumn ].m_Time );
+	return CASDateTime_FromMySQLTime( m_pVariables[ uiColumn ].m_Time );
 }

@@ -19,7 +19,7 @@ static void RegisterScriptMySQLResultSet( asIScriptEngine& engine )
 	as::RegisterRefCountedBaseClass<CASMySQLResultSet>( &engine, pszObjectName );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "int GetFieldCount() const",
+		pszObjectName, "uint32 GetFieldCount() const",
 		asMETHOD( CASMySQLResultSet, GetFieldCount ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
@@ -27,67 +27,67 @@ static void RegisterScriptMySQLResultSet( asIScriptEngine& engine )
 		asMETHOD( CASMySQLResultSet, Next ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "bool IsNull(int iColumn) const",
+		pszObjectName, "bool IsNull(uint32 uiColumn) const",
 		asMETHOD( CASMySQLResultSet, IsNull ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "bool GetBoolean(int iColumn) const",
+		pszObjectName, "bool GetBoolean(uint32 uiColumn) const",
 		asMETHOD( CASMySQLResultSet, GetBoolean ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "int8 GetSigned8(int iColumn) const",
+		pszObjectName, "int8 GetSigned8(uint32 uiColumn) const",
 		asMETHOD( CASMySQLResultSet, GetSigned8 ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "uint8 GetUnsigned8(int iColumn) const",
+		pszObjectName, "uint8 GetUnsigned8(uint32 uiColumn) const",
 		asMETHOD( CASMySQLResultSet, GetUnsigned8 ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "int16 GetSigned16(int iColumn) const",
+		pszObjectName, "int16 GetSigned16(uint32 uiColumn) const",
 		asMETHOD( CASMySQLResultSet, GetSigned16 ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "uint16 GetUnsigned16(int iColumn) const",
+		pszObjectName, "uint16 GetUnsigned16(uint32 uiColumn) const",
 		asMETHOD( CASMySQLResultSet, GetUnsigned16 ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "int32 GetSigned32(int iColumn) const",
+		pszObjectName, "int32 GetSigned32(uint32 uiColumn) const",
 		asMETHOD( CASMySQLResultSet, GetSigned32 ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "uint32 GetUnsigned32(int iColumn) const",
+		pszObjectName, "uint32 GetUnsigned32(uint32 uiColumn) const",
 		asMETHOD( CASMySQLResultSet, GetUnsigned32 ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "int64 GetSigned64(int iColumn) const",
+		pszObjectName, "int64 GetSigned64(uint32 uiColumn) const",
 		asMETHOD( CASMySQLResultSet, GetSigned64 ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "uint64 GetUnsigned64(int iColumn) const",
+		pszObjectName, "uint64 GetUnsigned64(uint32 uiColumn) const",
 		asMETHOD( CASMySQLResultSet, GetUnsigned64 ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "float GetFloat(int iColumn) const",
+		pszObjectName, "float GetFloat(uint32 uiColumn) const",
 		asMETHOD( CASMySQLResultSet, GetFloat ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "double GetDouble(int iColumn) const",
+		pszObjectName, "double GetDouble(uint32 uiColumn) const",
 		asMETHOD( CASMySQLResultSet, GetDouble ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "string GetString(int iColumn ) const",
+		pszObjectName, "string GetString(uint32 uiColumn) const",
 		asMETHOD( CASMySQLResultSet, GetString ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "CDateTime GetDate(int iColumn ) const",
+		pszObjectName, "CDateTime GetDate(uint32 uiColumn) const",
 		asMETHOD( CASMySQLResultSet, GetDate ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "CTime GetTime(int iColumn ) const",
+		pszObjectName, "CTime GetTime(uint32 uiColumn) const",
 		asMETHOD( CASMySQLResultSet, GetTime ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "CDateTime GetDateTime(int iColumn ) const",
+		pszObjectName, "CDateTime GetDateTime(uint32 uiColumn) const",
 		asMETHOD( CASMySQLResultSet, GetDateTime ), asCALL_THISCALL );
 }
 
@@ -104,7 +104,11 @@ static void RegisterScriptMySQLPreparedStatement( asIScriptEngine& engine )
 		asMETHOD( CASMySQLPreparedStatement, IsValid ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "void BindNull(int iIndex)",
+		pszObjectName, "uint32 GetParamCount() const",
+		asMETHOD( CASMySQLPreparedStatement, GetParamCount ), asCALL_THISCALL );
+
+	engine.RegisterObjectMethod(
+		pszObjectName, "void BindNull(uint32 uiIndex)",
 		asMETHOD( CASMySQLPreparedStatement, BindNull ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(

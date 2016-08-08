@@ -140,9 +140,9 @@ bool CASMySQLPreparedStatement::IsValid() const
 	return !m_szStatement.empty();
 }
 
-int CASMySQLPreparedStatement::GetParamCount() const
+uint32_t CASMySQLPreparedStatement::GetParamCount() const
 {
-	return m_Binds.size();
+	return static_cast<uint32_t>( m_Binds.size() );
 }
 
 void CASMySQLPreparedStatement::BindNull( uint32_t uiIndex )

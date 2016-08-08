@@ -102,4 +102,6 @@ void CASMySQLBind::Clear()
 {
 	m_Buffer.clear();
 	m_pBind = nullptr;
+
+	memset( &m_Time, 0, sizeof( MYSQL_TIME ) );
 }

@@ -6,6 +6,9 @@
 
 #include <mysql.h>
 
+/**
+*	Stores MYSQL_BIND information and variables to point to.
+*/
 class CASMySQLBind final
 {
 public:
@@ -15,10 +18,25 @@ public:
 	CASMySQLBind( CASMySQLBind&& other ) = default;
 	CASMySQLBind& operator=( CASMySQLBind&& other ) = default;
 
+	/**
+	*	Sets the underlying value type. Configures bind settings, allocates the buffer for variable length data.
+	*	@param type Field type.
+	*	@param pBind Bind to set up.
+	*	@param pBuffer Buffer to copy into the internal buffer.
+	*	@param uiLength Length of the buffer, in bytes.
+	*/
 	void Set( enum_field_types type, MYSQL_BIND* pBind, const char* const pBuffer = nullptr, const size_t uiLength = 0 );
 
+	/**
+	*	Sets this bind as an output.
+	*	@param field Field to configure for.
+	*	@param pBind Bind to set up.
+	*/
 	void SetOutput( const MYSQL_FIELD& field, MYSQL_BIND* pBind );
 
+	/**
+	*	Clears this bind.
+	*/
 	void Clear();
 
 	MYSQL_BIND* m_pBind = nullptr;
