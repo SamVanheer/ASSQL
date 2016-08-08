@@ -26,9 +26,9 @@ public:
 	class CASSQLiteRow final : public IASSQLASyncCommand
 	{
 	public:
-		CASSQLiteRow( CASSQLitePreparedStatement& statement, const int iRowIndex )
+		CASSQLiteRow( CASSQLitePreparedStatement& statement, const uint32_t uiRowIndex )
 			: m_Statement( statement )
-			, m_iRowIndex( iRowIndex )
+			, m_uiRowIndex( uiRowIndex )
 		{
 		}
 
@@ -43,46 +43,46 @@ public:
 		/**
 		*	@return The row index.
 		*/
-		int GetRowIndex() const;
+		uint32_t GetRowIndex() const;
 
 		/**
 		*	@return The column count.
 		*/
-		int GetColumnCount() const;
+		uint32_t GetColumnCount() const;
 
 		/**
 		*	@return The type of the given column. Invalid column indices are always null.
 		*/
-		int GetColumnType( const int iColumn ) const;
+		int GetColumnType( const uint32_t uiColumn ) const;
 
 		/**
 		*	@return Whether the given column is null. Invalid column indices are always null.
 		*/
-		bool IsColumnNull( const int iColumn ) const;
+		bool IsColumnNull( const uint32_t uiColumn ) const;
 
 		/**
 		*	@return A column integer.
 		*/
-		int32_t GetSigned32( int iColumn ) const;
+		int32_t GetSigned32( uint32_t uiColumn ) const;
 
 		/**
 		*	@return A column 64 bit integer.
 		*/
-		int64_t GetSigned64( int iColumn ) const;
+		int64_t GetSigned64( uint32_t uiColumn ) const;
 
 		/**
 		*	@return A column double.
 		*/
-		double GetDouble( int iColumn ) const;
+		double GetDouble( uint32_t uiColumn ) const;
 
 		/**
 		*	@return A column string.
 		*/
-		std::string GetString( int iColumn ) const;
+		std::string GetString( uint32_t uiColumn ) const;
 
 	private:
 		CASSQLitePreparedStatement& m_Statement;
-		const int m_iRowIndex;
+		const uint32_t m_uiRowIndex;
 
 	private:
 		CASSQLiteRow( const CASSQLiteRow& ) = delete;
@@ -122,15 +122,15 @@ public:
 	*/
 	bool IsValid() const;
 
-	void BindNull( int iIndex );
+	void BindNull( uint32_t uiIndex );
 
-	void BindSigned32( int iIndex, int32_t iValue );
+	void BindSigned32( uint32_t uiIndex, int32_t iValue );
 
-	void BindSigned64( int iIndex, int64_t iValue );
+	void BindSigned64( uint32_t uiIndex, int64_t iValue );
 
-	void BindDouble( int iIndex, double flValue );
+	void BindDouble( uint32_t uiIndex, double flValue );
 
-	void BindString( int iIndex, const std::string& szString );
+	void BindString( uint32_t uiIndex, const std::string& szString );
 
 	/**
 	*	Executes this statement.

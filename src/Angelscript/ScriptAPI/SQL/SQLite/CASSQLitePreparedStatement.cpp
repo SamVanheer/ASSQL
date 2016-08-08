@@ -103,9 +103,9 @@ bool CASSQLitePreparedStatement::IsValid() const
 	return m_pStatement != nullptr;
 }
 
-void CASSQLitePreparedStatement::BindNull( int iIndex )
+void CASSQLitePreparedStatement::BindNull( uint32_t uiIndex )
 {
-	const int iResult = sqlite3_bind_null( m_pStatement, iIndex );
+	const int iResult = sqlite3_bind_null( m_pStatement, uiIndex );
 
 	if( SQLITE_OK != iResult )
 	{
@@ -113,9 +113,9 @@ void CASSQLitePreparedStatement::BindNull( int iIndex )
 	}
 }
 
-void CASSQLitePreparedStatement::BindSigned32( int iIndex, int32_t iValue )
+void CASSQLitePreparedStatement::BindSigned32( uint32_t uiIndex, int32_t iValue )
 {
-	const int iResult = sqlite3_bind_int( m_pStatement, iIndex, iValue );
+	const int iResult = sqlite3_bind_int( m_pStatement, uiIndex, iValue );
 
 	if( SQLITE_OK != iResult )
 	{
@@ -123,9 +123,9 @@ void CASSQLitePreparedStatement::BindSigned32( int iIndex, int32_t iValue )
 	}
 }
 
-void CASSQLitePreparedStatement::BindSigned64( int iIndex, int64_t iValue )
+void CASSQLitePreparedStatement::BindSigned64( uint32_t uiIndex, int64_t iValue )
 {
-	const int iResult = sqlite3_bind_int64( m_pStatement, iIndex, iValue );
+	const int iResult = sqlite3_bind_int64( m_pStatement, uiIndex, iValue );
 
 	if( SQLITE_OK != iResult )
 	{
@@ -133,9 +133,9 @@ void CASSQLitePreparedStatement::BindSigned64( int iIndex, int64_t iValue )
 	}
 }
 
-void CASSQLitePreparedStatement::BindDouble( int iIndex, double flValue )
+void CASSQLitePreparedStatement::BindDouble( uint32_t uiIndex, double flValue )
 {
-	const int iResult = sqlite3_bind_double( m_pStatement, iIndex, flValue );
+	const int iResult = sqlite3_bind_double( m_pStatement, uiIndex, flValue );
 
 	if( SQLITE_OK != iResult )
 	{
@@ -143,7 +143,7 @@ void CASSQLitePreparedStatement::BindDouble( int iIndex, double flValue )
 	}
 }
 
-void CASSQLitePreparedStatement::BindString( int iIndex, const std::string& szString )
+void CASSQLitePreparedStatement::BindString( uint32_t uiIndex, const std::string& szString )
 {
 	const size_t uiLength = szString.length();
 
@@ -151,7 +151,7 @@ void CASSQLitePreparedStatement::BindString( int iIndex, const std::string& szSt
 
 	strcpy( pszString, szString.c_str() );
 
-	const int iResult = sqlite3_bind_text( m_pStatement, iIndex, pszString, -1, ::operator delete[] );
+	const int iResult = sqlite3_bind_text( m_pStatement, uiIndex, pszString, -1, ::operator delete[] );
 
 	if( SQLITE_OK != iResult )
 	{
@@ -190,74 +190,74 @@ void CASSQLitePreparedStatement::CASSQLiteRow::CallbackInvoked()
 	m_Statement.m_bCallbackInvoked = true;
 }
 
-int CASSQLitePreparedStatement::CASSQLiteRow::GetRowIndex() const
+uint32_t CASSQLitePreparedStatement::CASSQLiteRow::GetRowIndex() const
 {
-	return m_iRowIndex;
+	return m_uiRowIndex;
 }
 
-int CASSQLitePreparedStatement::CASSQLiteRow::GetColumnCount() const
+uint32_t CASSQLitePreparedStatement::CASSQLiteRow::GetColumnCount() const
 {
 	return sqlite3_column_count( m_Statement.GetStatement() );
 }
 
-int CASSQLitePreparedStatement::CASSQLiteRow::GetColumnType( const int iColumn ) const
+int CASSQLitePreparedStatement::CASSQLiteRow::GetColumnType( const uint32_t uiColumn ) const
 {
-	if( iColumn < 0 || iColumn >= GetColumnCount() )
+	if( uiColumn >= GetColumnCount() )
 	{
 		return SQLITE_NULL;
 	}
 
-	return sqlite3_column_type( m_Statement.GetStatement(), iColumn );
+	return sqlite3_column_type( m_Statement.GetStatement(), uiColumn );
 }
 
-bool CASSQLitePreparedStatement::CASSQLiteRow::IsColumnNull( const int iColumn ) const
+bool CASSQLitePreparedStatement::CASSQLiteRow::IsColumnNull( const uint32_t uiColumn ) const
 {
-	if( iColumn < 0 || iColumn >= GetColumnCount() )
+	if( uiColumn >= GetColumnCount() )
 	{
 		return true;
 	}
 
-	return sqlite3_column_type( m_Statement.GetStatement(), iColumn ) == SQLITE_NULL;
+	return sqlite3_column_type( m_Statement.GetStatement(), uiColumn ) == SQLITE_NULL;
 }
 
-int32_t CASSQLitePreparedStatement::CASSQLiteRow::GetSigned32( int iColumn ) const
+int32_t CASSQLitePreparedStatement::CASSQLiteRow::GetSigned32( uint32_t uiColumn ) const
 {
-	if( iColumn < 0 || iColumn >= GetColumnCount() )
+	if( uiColumn >= GetColumnCount() )
 	{
 		return 0;
 	}
 
-	return sqlite3_column_int( m_Statement.GetStatement(), iColumn );
+	return sqlite3_column_int( m_Statement.GetStatement(), uiColumn );
 }
 
-int64_t CASSQLitePreparedStatement::CASSQLiteRow::GetSigned64( int iColumn ) const
+int64_t CASSQLitePreparedStatement::CASSQLiteRow::GetSigned64( uint32_t uiColumn ) const
 {
-	if( iColumn < 0 || iColumn >= GetColumnCount() )
+	if( uiColumn >= GetColumnCount() )
 	{
 		return 0;
 	}
 
-	return sqlite3_column_int64( m_Statement.GetStatement(), iColumn );
+	return sqlite3_column_int64( m_Statement.GetStatement(), uiColumn );
 }
 
-double CASSQLitePreparedStatement::CASSQLiteRow::GetDouble( int iColumn ) const
+double CASSQLitePreparedStatement::CASSQLiteRow::GetDouble( uint32_t uiColumn ) const
 {
-	if( iColumn < 0 || iColumn >= GetColumnCount() )
+	if( uiColumn >= GetColumnCount() )
 	{
 		return 0;
 	}
 
-	return sqlite3_column_double( m_Statement.GetStatement(), iColumn );
+	return sqlite3_column_double( m_Statement.GetStatement(), uiColumn );
 }
 
-std::string CASSQLitePreparedStatement::CASSQLiteRow::GetString( int iColumn ) const
+std::string CASSQLitePreparedStatement::CASSQLiteRow::GetString( uint32_t uiColumn ) const
 {
-	if( iColumn < 0 || iColumn >= GetColumnCount() )
+	if( uiColumn >= GetColumnCount() )
 	{
 		return "";
 	}
 
-	const unsigned char* pszString = sqlite3_column_text( m_Statement.GetStatement(), iColumn );
+	const unsigned char* pszString = sqlite3_column_text( m_Statement.GetStatement(), uiColumn );
 
 	if( pszString )
 		return reinterpret_cast<const char*>( pszString );
