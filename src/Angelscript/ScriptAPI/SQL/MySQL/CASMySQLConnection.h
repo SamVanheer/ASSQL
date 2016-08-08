@@ -1,6 +1,8 @@
 #ifndef ANGELSCRIPT_SCRIPTAPI_SQL_MYSQL_CASMYSQLCONNECTION_H
 #define ANGELSCRIPT_SCRIPTAPI_SQL_MYSQL_CASMYSQLCONNECTION_H
 
+#include <atomic>
+#include <mutex>
 #include <string>
 
 #include <mysql.h>
@@ -16,6 +18,9 @@ class CASMySQLPreparedStatement;
 */
 class CASMySQLConnection final : public CASAtomicRefCountedBaseClass
 {
+public:
+	static const int DEFAULT_TIMEOUT = 60;
+
 public:
 	/**
 	*	Constructor.
@@ -82,6 +87,32 @@ public:
 	*/
 	ASSQLLogFunction GetLogFunction() { return m_ThreadPool.GetLogFunction(); }
 
+	/**
+	*	@return The current timeout setting.
+	*/
+	int GetTimeoutTime() const { return m_iTimeout; }
+
+	/**
+	*	Sets the timeout setting.
+	*	@param iTimeout Time until queries time out. Must be larger than 0.
+	*/
+	void SetTimeoutTime( const int iTimeout )
+	{
+		if( iTimeout > 0 )
+			m_iTimeout = iTimeout;
+	}
+
+	/**
+	*	@return The character set that is currently in use, or an empty string if the default is in use.
+	*/
+	std::string GetCharSet() const;
+
+	/**
+	*	Sets the character set to use.
+	*	@param szCharSet Character set.
+	*/
+	void SetCharSet( const std::string& szCharSet );
+
 private:
 	CASSQLThreadPool& m_ThreadPool;
 
@@ -96,6 +127,13 @@ private:
 	const std::string m_szUnixSocket;
 
 	const unsigned long m_uiClientFlag;
+
+	std::atomic<int> m_iTimeout = DEFAULT_TIMEOUT;
+
+	//Mutex for mutable non-atomic connection data.
+	mutable std::mutex m_DataMutex;
+
+	std::string m_szCharSet;
 
 private:
 	CASMySQLConnection( const CASMySQLConnection& ) = delete;

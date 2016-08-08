@@ -210,6 +210,14 @@ static void RegisterScriptMySQLConnection( asIScriptEngine& engine )
 	engine.RegisterObjectMethod(
 		pszObjectName, "MySQLPreparedStatement@ CreatePreparedStatement(const string& in szStatement)",
 		asMETHOD( CASMySQLConnection, CreatePreparedStatement ), asCALL_THISCALL );
+
+	engine.RegisterObjectMethod(
+		pszObjectName, "string GetCharSet() const",
+		asMETHOD( CASMySQLConnection, GetCharSet ), asCALL_THISCALL );
+
+	engine.RegisterObjectMethod(
+		pszObjectName, "void SetCharSet(const string& in szCharSet)",
+		asMETHOD( CASMySQLConnection, SetCharSet ), asCALL_THISCALL );
 }
 
 void RegisterScriptMySQL( asIScriptEngine& engine )

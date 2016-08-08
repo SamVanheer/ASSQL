@@ -28,7 +28,20 @@ CASMySQLConnection::~CASMySQLConnection()
 
 MYSQL* CASMySQLConnection::Open()
 {
+	//Data is immutable by the main thread during this operation.
+	std::lock_guard<std::mutex> lock( m_DataMutex );
+
 	MYSQL* pConnection = mysql_init( nullptr );
+
+	const int iTimeout = m_iTimeout;
+
+	mysql_options( pConnection, MYSQL_OPT_CONNECT_TIMEOUT, &iTimeout );
+	mysql_options( pConnection, MYSQL_OPT_READ_TIMEOUT, &iTimeout );
+	mysql_options( pConnection, MYSQL_OPT_WRITE_TIMEOUT, &iTimeout );
+
+	//Automatically reconnect to the server.
+	const my_bool my_true = true;
+	mysql_options( pConnection, MYSQL_OPT_RECONNECT, &my_true );
 
 	//Enable multiple statements in a query to allow for consistent API behavior with SQLite.
 	auto pResult = mysql_real_connect(
@@ -36,7 +49,12 @@ MYSQL* CASMySQLConnection::Open()
 		m_szHost.c_str(), m_szUser.c_str(), m_szPass.c_str(), m_szDatabase.c_str(),
 		m_uiPort, m_szUnixSocket.c_str(), m_uiClientFlag | CLIENT_MULTI_STATEMENTS );
 
-	if( !pResult )
+	if( pResult )
+	{
+		if( !m_szCharSet.empty() )
+			mysql_set_character_set( pConnection, m_szCharSet.c_str() );
+	}
+	else
 	{
 		GetThreadPool().GetThreadQueue().AddLogMessage( "MySQLConnection::MySQLConnection: %s\n", mysql_error( pConnection ) );
 		Close( pConnection );
@@ -83,4 +101,18 @@ CASMySQLPreparedStatement* CASMySQLConnection::CreatePreparedStatement( const st
 	pStatement->Release();
 
 	return nullptr;
+}
+
+std::string CASMySQLConnection::GetCharSet() const
+{
+	std::lock_guard<std::mutex> lock( m_DataMutex );
+
+	return m_szCharSet;
+}
+
+void CASMySQLConnection::SetCharSet( const std::string& szCharSet )
+{
+	std::lock_guard<std::mutex> lock( m_DataMutex );
+
+	m_szCharSet = szCharSet;
 }
