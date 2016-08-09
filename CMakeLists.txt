@@ -195,11 +195,11 @@ include_directories(
 	external/SQLite/include
 )
 
-add_library( libsqlite3 SHARED ${PREP_SRCS} )
+add_library( sqlite3 SHARED ${PREP_SRCS} )
 
-set_target_properties( libsqlite3 PROPERTIES COMPILE_FLAGS "${LINUX_32BIT_FLAG}" LINK_FLAGS "${SQL_LINK_FLAGS} ${LINUX_32BIT_FLAG}" )
+set_target_properties( sqlite3 PROPERTIES COMPILE_FLAGS "${LINUX_32BIT_FLAG}" LINK_FLAGS "${SQL_LINK_FLAGS} ${LINUX_32BIT_FLAG}" )
 
-install( TARGETS libsqlite3 DESTINATION lib )
+install( TARGETS sqlite3 DESTINATION lib )
 install_includes( "${CMAKE_SOURCE_DIR}/src" )
 
 clear_sources()
@@ -236,7 +236,7 @@ if( WIN32 )
 	find_library( MARIADB "mariadbclient${CMAKE_STATIC_LIBRARY_SUFFIX}" PATHS external/MariaDB/lib )
 	set( PTHREAD "" )
 else()
-	set( SQLITE3 "libsqlite3" )
+	set( SQLITE3 "sqlite3" )
 	find_library( MARIADB "${CMAKE_SHARED_LIBRARY_PREFIX}mariadb.so.2" PATHS external/MariaDB/lib )
 	set( PTHREAD "pthread" )
 endif()
