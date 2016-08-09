@@ -21,6 +21,13 @@ CASSQLThreadQueue::~CASSQLThreadQueue()
 	Clear();
 }
 
+size_t CASSQLThreadQueue::GetQueueSize() const
+{
+	std::lock_guard<std::mutex> guard( m_Mutex );
+
+	return m_Queue.size();
+}
+
 bool CASSQLThreadQueue::AddItem( IASSQLASyncItem* pItem, asIScriptFunction* pCallback )
 {
 	assert( pItem );

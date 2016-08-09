@@ -38,6 +38,11 @@ public:
 	ASSQLLogFunction GetLogFunction() const { return m_pLogFunction; }
 
 	/**
+	*	@return The number of items in the queue.
+	*/
+	size_t GetQueueSize() const;
+
+	/**
 	*	Adds an item to the queue.
 	*	@param pItem Item to add. The item's reference counting shall be thread-safe.
 	*	@param pCallback Callback to invoke after completion.
@@ -66,7 +71,7 @@ public:
 private:
 	ASSQLLogFunction m_pLogFunction;
 
-	std::mutex m_Mutex;
+	mutable std::mutex m_Mutex;
 
 	Queue_t m_Queue;
 

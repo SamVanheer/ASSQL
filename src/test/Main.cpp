@@ -235,9 +235,11 @@ int main( int iArgc, char* pszArgV[] )
 				{
 					bDidWork = g_ASSQL.GetThreadPool().ProcessQueue( *ctx.GetContext() );
 				}
-				while( bDidWork || g_ASSQL.GetThreadPool().ThreadsActive() );
+				while( bDidWork || g_ASSQL.GetThreadPool().ThreadsActive() || g_ASSQL.GetThreadPool().GetThreadQueue().GetQueueSize() > 0 );
 
 				g_ASSQL.GetThreadPool().Stop( true );
+
+				std::cout << g_ASSQL.GetThreadPool().GetThreadQueue().GetQueueSize() << " items left in the queue" << std::endl;
 			}
 			else
 			{
