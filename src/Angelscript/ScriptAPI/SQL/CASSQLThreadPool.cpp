@@ -24,6 +24,10 @@ bool CASSQLThreadPool::AddItem( IASSQLASyncCommand* pCommand, asIScriptFunction*
 	if( !pCommand )
 		return false;
 
+	//Never add anything if the pool doesn't have any threads.
+	if( m_Pool.size() == 0 )
+		return false;
+
 	pCommand->AddRef();
 
 	if( pCallback )
