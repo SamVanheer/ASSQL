@@ -180,6 +180,35 @@ if( NOT WIN32 )
 
 endif()
 
+if( NOT WIN32 )
+#
+#Begin SQLite library
+#
+
+MESSAGE( STATUS "Adding SQLite3 library" )
+
+add_subdirectory( external/SQLite )
+
+preprocess_sources()
+
+include_directories(
+	external/SQLite/include
+)
+
+add_library( libsqlite3 SHARED ${PREP_SRCS} )
+
+set_target_properties( libsqlite3 PROPERTIES COMPILE_FLAGS "${LINUX_32BIT_FLAG}" LINK_FLAGS "${SQL_LINK_FLAGS} ${LINUX_32BIT_FLAG}" )
+
+install( TARGETS libsqlite3 DESTINATION lib )
+install_includes( "${CMAKE_SOURCE_DIR}/src" )
+
+clear_sources()
+
+#
+#End SQLite library
+#
+endif()
+
 #
 #Begin SQL library
 #
@@ -202,8 +231,15 @@ target_compile_definitions( AngelscriptSQL PRIVATE
 	_CRT_SECURE_NO_WARNINGS
 )
 
-find_library( SQLITE3 "sqlite3${CMAKE_STATIC_LIBRARY_SUFFIX}" PATHS external/SQLite/lib )
-find_library( MARIADB "mariadbclient${CMAKE_STATIC_LIBRARY_SUFFIX}" PATHS external/MariaDB/lib )
+if( WIN32 )
+	find_library( SQLITE3 "sqlite3${CMAKE_STATIC_LIBRARY_SUFFIX}" PATHS external/SQLite/lib )
+	find_library( MARIADB "mariadbclient${CMAKE_STATIC_LIBRARY_SUFFIX}" PATHS external/MariaDB/lib )
+	set( PTHREAD "" )
+else()
+	set( SQLITE3 "libsqlite3" )
+	find_library( MARIADB "${CMAKE_SHARED_LIBRARY_PREFIX}mariadb.so.2" PATHS external/MariaDB/lib )
+	set( PTHREAD "pthread" )
+endif()
 
 #Link with SQL dependencies
 target_link_libraries( AngelscriptSQL 
@@ -211,6 +247,7 @@ target_link_libraries( AngelscriptSQL
 	"${ANGELSCRIPTUTILS}"
 	"${SQLITE3}"
 	"${MARIADB}"
+	"${PTHREAD}"
 )
 
 set_target_properties( AngelscriptSQL PROPERTIES COMPILE_FLAGS "${LINUX_32BIT_FLAG}" LINK_FLAGS "${SQL_LINK_FLAGS} ${LINUX_32BIT_FLAG}" )
@@ -267,6 +304,13 @@ add_custom_command( TARGET AngelscriptSQLTest POST_BUILD
 add_custom_command( TARGET AngelscriptSQLTest POST_BUILD
 	COMMAND ${CMAKE_COMMAND} -E copy_if_different
 	"${CMAKE_CURRENT_SOURCE_DIR}/external/MariaDB/lib/libmariadb.dll"
+	$<TARGET_FILE_DIR:AngelscriptSQLTest>
+)
+
+#Copy the mariadb library so the exe can get to it
+add_custom_command( TARGET AngelscriptSQLTest POST_BUILD
+	COMMAND ${CMAKE_COMMAND} -E copy_if_different
+	"${CMAKE_CURRENT_SOURCE_DIR}/external/MariaDB/lib/libmariadb.so.2"
 	$<TARGET_FILE_DIR:AngelscriptSQLTest>
 )
 
