@@ -115,13 +115,6 @@ void CASMySQLPreparedStatement::Execute()
 			pResultSet->Release();
 		}
 
-		if( m_pCallback )
-		{
-			m_pCallback->Release();
-
-			m_pCallback = nullptr;
-		}
-
 		if( pStatement )
 		{
 			if( mysql_stmt_close( pStatement ) )
@@ -135,6 +128,13 @@ void CASMySQLPreparedStatement::Execute()
 	else
 	{
 		//Open reports any errors.
+	}
+
+	if( m_pCallback )
+	{
+		m_pCallback->Release();
+
+		m_pCallback = nullptr;
 	}
 
 	m_bExecuting = false;
