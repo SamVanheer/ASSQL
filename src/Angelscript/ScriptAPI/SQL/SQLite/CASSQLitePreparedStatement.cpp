@@ -1,4 +1,5 @@
 #include <cassert>
+#include <cstring>
 #include <thread>
 
 #include "../CASSQLThreadPool.h"
@@ -9,6 +10,8 @@
 #include "CASSQLitePreparedStatement.h"
 
 CASSQLitePreparedStatement::CASSQLitePreparedStatement( CASSQLiteConnection* pConnection, const char* const pszStatement )
+	: m_bExecuting( false )
+	, m_bCallbackInvoked( false )
 {
 	assert( pConnection );
 	assert( pszStatement );

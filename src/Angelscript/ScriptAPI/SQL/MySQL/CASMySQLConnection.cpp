@@ -19,6 +19,7 @@ CASMySQLConnection::CASMySQLConnection( CASSQLThreadPool& pool,
 	, m_uiPort( uiPort )
 	, m_szUnixSocket( pszUnixSocket )
 	, m_uiClientFlag( clientflag )
+	, m_iTimeout( DEFAULT_TIMEOUT )
 {
 }
 

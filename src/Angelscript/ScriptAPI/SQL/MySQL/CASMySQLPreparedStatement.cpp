@@ -16,6 +16,8 @@
 #include "CASMySQLPreparedStatement.h"
 
 CASMySQLPreparedStatement::CASMySQLPreparedStatement( CASMySQLConnection* pConnection, const char* const pszStatement )
+	: m_bExecuting( false )
+	, m_bHandledResultSet( false )
 {
 	assert( pConnection );
 	assert( pszStatement );

@@ -211,8 +211,8 @@ private:
 
 	asIScriptFunction* m_pCallback = nullptr;
 
-	std::atomic<bool> m_bExecuting = false;
-	std::atomic<bool> m_bHandledResultSet = false;
+	std::atomic<bool> m_bExecuting;
+	std::atomic<bool> m_bHandledResultSet;
 
 private:
 	CASMySQLPreparedStatement( const CASMySQLPreparedStatement& ) = delete;

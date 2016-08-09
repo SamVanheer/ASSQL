@@ -169,8 +169,8 @@ private:
 	CASSQLiteConnection* m_pConnection = nullptr;
 	sqlite3_stmt* m_pStatement = nullptr;
 
-	std::atomic<bool> m_bExecuting = false;
-	std::atomic<bool> m_bCallbackInvoked = false;
+	std::atomic<bool> m_bExecuting;
+	std::atomic<bool> m_bCallbackInvoked;
 
 	asIScriptFunction* m_pRowCallback = nullptr;
 

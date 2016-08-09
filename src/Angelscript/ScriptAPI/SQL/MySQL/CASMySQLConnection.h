@@ -128,7 +128,7 @@ private:
 
 	const unsigned long m_uiClientFlag;
 
-	std::atomic<int> m_iTimeout = DEFAULT_TIMEOUT;
+	std::atomic<int> m_iTimeout;
 
 	//Mutex for mutable non-atomic connection data.
 	mutable std::mutex m_DataMutex;
