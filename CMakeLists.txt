@@ -165,6 +165,11 @@ else()
 	set( LINUX_32BIT_FLAG "" )
 endif()
 
+#Debug builds should have a distinct name.
+if( NOT CMAKE_DEBUG_POSTFIX )
+  set( CMAKE_DEBUG_POSTFIX d )
+endif()
+
 #C++14 support
 set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y" )
 
