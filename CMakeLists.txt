@@ -172,11 +172,16 @@ set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y" )
 find_library( ANGELSCRIPTLIB Angelscript PATHS external/Angelscript/lib/ )
 find_library( ANGELSCRIPTUTILS AngelscriptUtils PATHS external/Angelscript/lib/ )
 
+find_library( ANGELSCRIPTLIBD Angelscriptd PATHS external/Angelscript/lib/ )
+find_library( ANGELSCRIPTUTILSD AngelscriptUtilsd PATHS external/Angelscript/lib/ )
+
 if( NOT WIN32 )
 
 	#This mucking about is needed because CMake can't figure out how to handle libraries not named lib<name>.a
 	set( ANGELSCRIPTLIB "-l:\"${ANGELSCRIPTLIB}\"" )
 	set( ANGELSCRIPTUTILS "-l:\"${ANGELSCRIPTUTILS}\"" )
+	set( ANGELSCRIPTLIBD "-l:\"${ANGELSCRIPTLIBD}\"" )
+	set( ANGELSCRIPTUTILSD "-l:\"${ANGELSCRIPTUTILSD}\"" )
 
 endif()
 
@@ -243,8 +248,10 @@ endif()
 
 #Link with SQL dependencies
 target_link_libraries( AngelscriptSQL 
-	"${ANGELSCRIPTLIB}"
-	"${ANGELSCRIPTUTILS}"
+	optimized "${ANGELSCRIPTLIB}"
+	optimized "${ANGELSCRIPTUTILS}"
+	debug "${ANGELSCRIPTLIBD}"
+	debug "${ANGELSCRIPTUTILSD}"
 	"${SQLITE3}"
 	"${MARIADB}"
 	"${PTHREAD}"
