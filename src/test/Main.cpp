@@ -153,6 +153,8 @@ public:
 		RegisterScriptSQLite( engine );
 		RegisterScriptMySQL( engine );
 
+		RegisterScriptEventAPI( engine );
+
 		engine.RegisterObjectType( "CSQL", 0, asOBJ_REF | asOBJ_NOCOUNT );
 
 		engine.RegisterObjectMethod( 
