@@ -60,15 +60,15 @@ bool CASTime::SetMillisecond( uint16_t uiMillisecond )
 	return true;
 }
 
-bool CASTime::Set( uint8_t uiHour, uint8_t uiMinute, uint8_t uiSecond, uint16_t uiMilliseconds )
+bool CASTime::Set( uint8_t uiHour, uint8_t uiMinute, uint8_t uiSecond, uint16_t uiMillisecond )
 {
-	if( uiHour >= 24 || uiMinute >= 60 || uiSecond >= 60 || uiMilliseconds >= 1000 )
+	if( uiHour >= 24 || uiMinute >= 60 || uiSecond >= 60 || uiMillisecond >= 1000 )
 		return false;
 
 	m_uiHour			= uiHour;
 	m_uiMinute			= uiMinute;
 	m_uiSecond			= uiSecond;
-	m_uiMillisecond		= uiMilliseconds;
+	m_uiMillisecond		= uiMillisecond;
 
 	return true;
 }

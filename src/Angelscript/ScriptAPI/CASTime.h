@@ -105,7 +105,7 @@ public:
 	*	@param uiMillisecond Millisecond to set.
 	*	@return Whether the given time is valid.
 	*/
-	bool Set( uint8_t uiHour, uint8_t uiMinute, uint8_t uiSecond, uint16_t uiMilliseconds );
+	bool Set( uint8_t uiHour, uint8_t uiMinute, uint8_t uiSecond, uint16_t uiMillisecond );
 
 	/**
 	*	Sets the time from a string.

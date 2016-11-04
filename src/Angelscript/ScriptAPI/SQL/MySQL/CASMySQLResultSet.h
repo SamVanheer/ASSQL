@@ -25,7 +25,7 @@ public:
 	/**
 	*	Constructor.
 	*	@param pStatement The statement that produced this result.
-	*	@param pMyStatement. The MySQL statement that produced this result.
+	*	@param pMyStatement The MySQL statement that produced this result.
 	*/
 	CASMySQLResultSet( CASMySQLPreparedStatement* pStatement, MYSQL_STMT* pMyStatement );
 
