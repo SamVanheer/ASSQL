@@ -47,6 +47,9 @@ Temporary Items
 .apdisk
 
 bin_*/*
+docs/*
 
 #Exclude the working dir of the test project
 working_dir/*
+
+Doxyfile
