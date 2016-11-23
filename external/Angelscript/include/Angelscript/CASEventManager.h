@@ -9,7 +9,7 @@
 
 #include "CASEvent.h"
 
-class CASManager;
+class asIScriptEngine;
 class CASModule;
 
 /**
@@ -19,7 +19,7 @@ class CASModule;
 */
 
 /**
-*	Manages the list of events.
+*	Manages a list of global events.
 *	Can store a maximum of UINT32_MAX events.
 */
 class CASEventManager final
@@ -30,14 +30,20 @@ private:
 public:
 	/**
 	*	Constructor.
-	*	@param manager Manager.
+	*	@param engine Engine.
+	*	@param pszNamespace Namespace to register events in. Can be an empty string, in which case no namespace is used.
 	*/
-	CASEventManager( CASManager& manager );
+	CASEventManager( asIScriptEngine& engine, const char* const pszNamespace = "" );
 
 	/**
 	*	Destructor.
 	*/
 	~CASEventManager();
+
+	/**
+	*	@return The script engine.
+	*/
+	asIScriptEngine& GetEngine() { return m_Engine; }
 
 	/**
 	*	@return The number of events.
@@ -88,7 +94,9 @@ public:
 	void DumpHookedFunctions() const;
 
 private:
-	CASManager& m_Manager;
+	asIScriptEngine& m_Engine;
+
+	std::string m_szNamespace;
 
 	Events_t m_Events;
 

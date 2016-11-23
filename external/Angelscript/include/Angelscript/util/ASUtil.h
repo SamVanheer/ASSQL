@@ -14,6 +14,10 @@
 
 #include "Angelscript/util/ContextUtils.h"
 
+#include "ASLogging.h"
+
+#include "Platform.h"
+
 class CScriptAny;
 
 /**
@@ -37,7 +41,7 @@ const char* PrimitiveTypeIdToString( const int iTypeId );
 *	@param iTypeId Type Id.
 *	@return true if it is void, false otherwise.
 */
-inline constexpr bool IsVoid( const int iTypeId )
+inline bool IsVoid( const int iTypeId )
 {
 	return asTYPEID_VOID == iTypeId;
 }
@@ -47,7 +51,7 @@ inline constexpr bool IsVoid( const int iTypeId )
 *	@param iTypeId Type Id.
 *	@return true if it is a primitive type, false otherwise.
 */
-inline constexpr bool IsPrimitive( const int iTypeId )
+inline bool IsPrimitive( const int iTypeId )
 {
 	return asTYPEID_BOOL <= iTypeId && iTypeId <= asTYPEID_DOUBLE;
 }
@@ -57,7 +61,7 @@ inline constexpr bool IsPrimitive( const int iTypeId )
 *	@param iTypeId Type Id.
 *	@return true if it is an enum type, false otherwise.
 */
-inline constexpr bool IsEnum( const int iTypeId )
+inline bool IsEnum( const int iTypeId )
 {
 	return ( iTypeId > asTYPEID_DOUBLE && ( iTypeId & asTYPEID_MASK_OBJECT ) == 0 );
 }
@@ -67,7 +71,7 @@ inline constexpr bool IsEnum( const int iTypeId )
 *	@param iTypeId Type Id.
 *	@return true if it is an integer type, false otherwise.
 */
-inline constexpr bool IsInteger( const int iTypeId )
+inline bool IsInteger( const int iTypeId )
 {
 	return ( ( iTypeId >= asTYPEID_INT8 ) && ( iTypeId <= asTYPEID_UINT64 ) );
 }
@@ -77,7 +81,7 @@ inline constexpr bool IsInteger( const int iTypeId )
 *	@param iTypeId Type Id.
 *	@return true if it is a float type, false otherwise.
 */
-inline constexpr bool IsFloat( const int iTypeId )
+inline bool IsFloat( const int iTypeId )
 {
 	return ( ( iTypeId >= asTYPEID_FLOAT ) && ( iTypeId <= asTYPEID_DOUBLE ) );
 }
@@ -87,7 +91,7 @@ inline constexpr bool IsFloat( const int iTypeId )
 *	@param iTypeId Type Id.
 *	@return true if it is a primitive type, false otherwise.
 */
-inline constexpr bool IsObject( const int iTypeId )
+inline bool IsObject( const int iTypeId )
 {
 	return ( iTypeId & asTYPEID_MASK_OBJECT ) != 0;
 }
@@ -513,8 +517,7 @@ inline asIScriptFunction* FindFunction(
 
 			if( pFunction->GetParam( uiParamIndex, &iTypeId, &uiFlags ) < 0 )
 			{
-				//TODO
-				//gASLog()->Warning( ASLOG_CRITICAL, "CScheduler::FindFunction: Failed to retrieve parameter %u for function %s!\n", uiParamIndex, pFunction->GetName() );
+				as::Critical( "as::FindFunction: Failed to retrieve parameter %u for function %s!\n", uiParamIndex, pFunction->GetName() );
 				break;
 			}
 
@@ -545,9 +548,8 @@ inline asIScriptFunction* FindFunction(
 					//Change the type to match
 					if( !arg.Set( iTypeId, arg.GetArgumentType(), value, false ) )
 					{
-					//TODO
-					//gASLog()->Error( ASLOG_CRITICAL, "CScheduler: Failed to convert enum value!\n" );
-					break;
+						as::Critical( "as::FindFunction: Failed to convert enum value!\n" );
+						break;
 					}
 					*/
 				}
@@ -686,8 +688,7 @@ bool RegisterCasts( asIScriptEngine& engine, const char* const pszBaseType, cons
 		}
 		else
 		{
-			//TODO
-			//gASLog()->Error( ASLOG_CRITICAL, "Failed to format string for implicit cast for class '%s'!\n", pszSubType );
+			as::Critical( "as::RegisterCasts: Failed to format string for implicit cast for class '%s'!\n", pszSubType );
 			return false;
 		}
 
@@ -702,8 +703,7 @@ bool RegisterCasts( asIScriptEngine& engine, const char* const pszBaseType, cons
 		}
 		else
 		{
-			//TODO
-			//gASLog()->Error( ASLOG_CRITICAL, "Failed to format string for explicit cast for class '%s'!\n", pszSubType );
+			as::Critical( "as::RegisterCasts: Failed to format string for explicit cast for class '%s'!\n", pszSubType );
 			return false;
 		}
 	}
