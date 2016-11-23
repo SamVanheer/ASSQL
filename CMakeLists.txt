@@ -173,6 +173,8 @@ endif()
 #C++14 support
 set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y" )
 
+set( AS_STRING_OBJNAME "string" CACHE STRING "The name of the object type used to represent strings" )
+
 #Find shared dependencies
 find_library( ANGELSCRIPTLIB Angelscript PATHS external/Angelscript/lib/ )
 find_library( ANGELSCRIPTUTILS AngelscriptUtils PATHS external/Angelscript/lib/ )
@@ -238,6 +240,10 @@ include_directories(
 add_library( AngelscriptSQL STATIC ${PREP_SRCS} )
 
 target_compile_definitions( AngelscriptSQL PRIVATE
+	AS_STRING_OBJNAME="${AS_STRING_OBJNAME}"
+)
+
+target_compile_definitions( AngelscriptSQL PRIVATE
 	_CRT_SECURE_NO_WARNINGS
 )
 
@@ -288,6 +294,7 @@ add_executable( AngelscriptSQLTest ${PREP_SRCS} )
 
 target_compile_definitions( AngelscriptSQLTest PRIVATE
 	_CRT_SECURE_NO_WARNINGS
+	AS_STRING_OBJNAME="${AS_STRING_OBJNAME}"
 )
 
 target_link_libraries( AngelscriptSQLTest

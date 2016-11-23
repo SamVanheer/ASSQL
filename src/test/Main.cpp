@@ -158,17 +158,19 @@ public:
 		engine.RegisterObjectType( "CSQL", 0, asOBJ_REF | asOBJ_NOCOUNT );
 
 		engine.RegisterObjectMethod( 
-			"CSQL", "SQLiteConnection@ CreateSQLiteConnection(const string& in szFilename)", 
+			"CSQL", "SQLiteConnection@ CreateSQLiteConnection(const " AS_STRING_OBJNAME "& in szFilename)",
 			asMETHOD( CASSQL, CreateSQLiteConnection ), asCALL_THISCALL );
 
 		engine.RegisterObjectMethod(
-			"CSQL", "MySQLConnection@ CreateMySQLConnection(const string& in szHost, const string& in szUser, const string& in szPassword, const string& in szDatabase = \"\")",
+			"CSQL", "MySQLConnection@ CreateMySQLConnection("
+			"const " AS_STRING_OBJNAME "& in szHost, const " AS_STRING_OBJNAME "& in szUser,"
+			"const " AS_STRING_OBJNAME "& in szPassword, const " AS_STRING_OBJNAME "& in szDatabase = \"\")",
 			asMETHOD( CASSQL, CreateMySQLConnection ), asCALL_THISCALL );
 
 		engine.RegisterGlobalProperty( "CSQL SQL", &g_ASSQL );
 
 		as::RegisterVarArgsFunction( 
-			engine, "void", "Print", "const string& in szFormat", 
+			engine, "void", "Print", "const " AS_STRING_OBJNAME "& in szFormat",
 			0, 8, asFUNCTION( Print ) );
 
 		engine.RegisterGlobalFunction( 

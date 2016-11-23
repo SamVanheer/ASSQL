@@ -56,7 +56,7 @@ void RegisterScriptCTime( asIScriptEngine& engine )
 
 	engine.RegisterObjectBehaviour(
 		pszObjectName,
-		asBEHAVE_CONSTRUCT, "void CTime(const string& in szString)",
+		asBEHAVE_CONSTRUCT, "void CTime(const " AS_STRING_OBJNAME "& in szString)",
 		asFUNCTION( StringConstructCTime ), asCALL_CDECL_OBJFIRST );
 
 	engine.RegisterObjectBehaviour(
@@ -105,7 +105,7 @@ void RegisterScriptCTime( asIScriptEngine& engine )
 		asMETHODPR( CASTime, Set, ( uint8_t, uint8_t, uint8_t, uint16_t ), bool ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "bool Set(const string& in szString)",
+		pszObjectName, "bool Set(const " AS_STRING_OBJNAME "& in szString)",
 		asMETHODPR( CASTime, Set, ( const std::string& ), bool ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
@@ -129,7 +129,7 @@ void RegisterScriptCTime( asIScriptEngine& engine )
 		asMETHOD( CASTime, TimeDifference ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "string StrTime(const bool bWithMillisecond = false) const",
+		pszObjectName, AS_STRING_OBJNAME " StrTime(const bool bWithMillisecond = false) const",
 		asMETHOD( CASTime, StrTime ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(

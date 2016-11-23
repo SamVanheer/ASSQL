@@ -36,11 +36,11 @@ static void RegisterScriptSQLDataType( asIScriptEngine& engine )
 	engine.RegisterEnumValue( pszObjectName, "SQLITE_BLOB", static_cast<int>( SQLITE_BLOB ) );
 
 	engine.RegisterGlobalFunction(
-		"string SQLiteDataTypeToString(const SQLiteDataType type)",
+		AS_STRING_OBJNAME " SQLiteDataTypeToString(const SQLiteDataType type)",
 		asFUNCTION( ASScriptSQLiteDataTypeToString ), asCALL_CDECL );
 
 	engine.RegisterGlobalFunction(
-		"SQLiteDataType StringToSQLiteDataType(const string& in szString)",
+		"SQLiteDataType StringToSQLiteDataType(const " AS_STRING_OBJNAME "& in szString)",
 		asFUNCTION( ASScriptStringToSQLiteDataType ), asCALL_CDECL );
 }
 
@@ -95,7 +95,7 @@ static void RegisterScriptSQLiteRow( asIScriptEngine& engine )
 		asMETHOD( CASSQLitePreparedStatement::CASSQLiteRow, GetDouble ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "string GetString(const uint32 uiColumn) const",
+		pszObjectName, AS_STRING_OBJNAME " GetString(const uint32 uiColumn) const",
 		asMETHOD( CASSQLitePreparedStatement::CASSQLiteRow, GetString ), asCALL_THISCALL );
 
 	engine.RegisterFuncdef( "void SQLiteRowCallback(SQLiteRow@ pRow)" );
@@ -130,7 +130,7 @@ static void RegisterScriptSQLitePreparedStatement( asIScriptEngine& engine )
 		asMETHOD( CASSQLitePreparedStatement, BindDouble ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "void BindString(uint32 uiIndex, const string& in szString)",
+		pszObjectName, "void BindString(uint32 uiIndex, const " AS_STRING_OBJNAME "& in szString)",
 		asMETHOD( CASSQLitePreparedStatement, BindString ), asCALL_THISCALL );
 
 	engine.RegisterFuncdef( "void SQLitePreparedStatementCallback(SQLitePreparedStatement@ pStatement)" );
@@ -157,11 +157,11 @@ static void RegisterScriptSQLiteConnection( asIScriptEngine& engine )
 		asMETHOD( CASSQLiteConnection, Close ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "bool Query(const string& in szQuery, SQLiteQueryCallback@ pCallback = null)",
+		pszObjectName, "bool Query(const " AS_STRING_OBJNAME "& in szQuery, SQLiteQueryCallback@ pCallback = null)",
 		asMETHOD( CASSQLiteConnection, Query ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "SQLitePreparedStatement@ CreatePreparedStatement(const string& in szStatement)",
+		pszObjectName, "SQLitePreparedStatement@ CreatePreparedStatement(const " AS_STRING_OBJNAME "& in szStatement)",
 		asMETHOD( CASSQLiteConnection, CreatePreparedStatement ), asCALL_THISCALL );
 }
 

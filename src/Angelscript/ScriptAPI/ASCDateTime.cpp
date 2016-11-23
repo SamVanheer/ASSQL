@@ -55,7 +55,7 @@ void RegisterScriptCDateTime( asIScriptEngine& engine )
 
 	engine.RegisterObjectBehaviour(
 		pszObjectName,
-		asBEHAVE_CONSTRUCT, "void CDateTime(const string& in szString)",
+		asBEHAVE_CONSTRUCT, "void CDateTime(const " AS_STRING_OBJNAME "& in szString)",
 		asFUNCTION( StringConstructCDateTime ), asCALL_CDECL_OBJFIRST );
 
 	engine.RegisterObjectBehaviour(
@@ -141,7 +141,7 @@ void RegisterScriptCDateTime( asIScriptEngine& engine )
 		asMETHODPR( CASDateTime, Set, ( uint16_t, uint8_t, uint8_t, uint8_t, uint8_t, uint8_t, uint16_t ), bool ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "bool Set(const string& in szString)",
+		pszObjectName, "bool Set(const " AS_STRING_OBJNAME "& in szString)",
 		asMETHODPR( CASDateTime, Set, ( const std::string& ), bool ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
@@ -185,11 +185,11 @@ void RegisterScriptCDateTime( asIScriptEngine& engine )
 		asMETHOD( CASDateTime, GetTime ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "string StrTime(const bool bWithMillisecond = false) const",
+		pszObjectName, AS_STRING_OBJNAME " StrTime(const bool bWithMillisecond = false) const",
 		asMETHOD( CASDateTime, StrTime ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "string StrDate() const",
+		pszObjectName, AS_STRING_OBJNAME " StrDate() const",
 		asMETHOD( CASDateTime, StrDate ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(

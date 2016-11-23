@@ -81,7 +81,7 @@ static void RegisterScriptMySQLFieldType( asIScriptEngine& engine )
 	engine.RegisterEnumValue( pszObjectName, "MAX_NO_FIELD_TYPES", MAX_NO_FIELD_TYPES );
 
 	engine.RegisterGlobalFunction(
-		"string MySQLFieldTypeToString(const MySQLFieldType type)",
+		AS_STRING_OBJNAME " MySQLFieldTypeToString(const MySQLFieldType type)",
 		asFUNCTION( MySQLFieldTypeToString ), asCALL_CDECL );
 }
 
@@ -169,7 +169,7 @@ static void RegisterScriptMySQLResultSet( asIScriptEngine& engine )
 		asMETHOD( CASMySQLResultSet, GetDouble ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "string GetString(uint32 uiColumn) const",
+		pszObjectName, AS_STRING_OBJNAME " GetString(uint32 uiColumn) const",
 		asMETHOD( CASMySQLResultSet, GetString ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
@@ -250,7 +250,7 @@ static void RegisterScriptMySQLPreparedStatement( asIScriptEngine& engine )
 		asMETHOD( CASMySQLPreparedStatement, BindDouble ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "void BindString(uint uiIndex, const string& in szString)",
+		pszObjectName, "void BindString(uint uiIndex, const " AS_STRING_OBJNAME "& in szString)",
 		asMETHOD( CASMySQLPreparedStatement, BindString ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
@@ -282,19 +282,19 @@ static void RegisterScriptMySQLConnection( asIScriptEngine& engine )
 	as::RegisterRefCountedBaseClass<CASMySQLConnection>( &engine, pszObjectName );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "bool Query(const string& in szQuery, MySQLQueryCallback@ pCallback = null)",
+		pszObjectName, "bool Query(const " AS_STRING_OBJNAME "& in szQuery, MySQLQueryCallback@ pCallback = null)",
 		asMETHOD( CASMySQLConnection, Query ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "MySQLPreparedStatement@ CreatePreparedStatement(const string& in szStatement)",
+		pszObjectName, "MySQLPreparedStatement@ CreatePreparedStatement(const " AS_STRING_OBJNAME "& in szStatement)",
 		asMETHOD( CASMySQLConnection, CreatePreparedStatement ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "string GetCharSet() const",
+		pszObjectName, AS_STRING_OBJNAME " GetCharSet() const",
 		asMETHOD( CASMySQLConnection, GetCharSet ), asCALL_THISCALL );
 
 	engine.RegisterObjectMethod(
-		pszObjectName, "void SetCharSet(const string& in szCharSet)",
+		pszObjectName, "void SetCharSet(const " AS_STRING_OBJNAME "& in szCharSet)",
 		asMETHOD( CASMySQLConnection, SetCharSet ), asCALL_THISCALL );
 }
 
