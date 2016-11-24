@@ -68,10 +68,10 @@ bool CASSQLThreadQueue::ProcessQueue( asIScriptContext& context )
 	{
 		std::lock_guard<std::mutex> guard( m_LogMutex );
 
-		const std::string szString = m_LogMessages.str();
-
-		if( !szString.empty() )
+		//This avoids allocating a string if it's empty.
+		if( m_LogMessages.rdbuf()->in_avail() )
 		{
+			const std::string szString = m_LogMessages.str();
 			m_pLogFunction( "%s", szString.c_str() );
 			m_LogMessages.str( "" );
 		}
