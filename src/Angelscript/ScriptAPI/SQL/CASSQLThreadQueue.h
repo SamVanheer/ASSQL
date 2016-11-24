@@ -22,6 +22,7 @@ class CASSQLThreadQueue final
 private:
 	struct CASSQLItem final
 	{
+		SQLQueryResult::SQLQueryResult result;
 		IASSQLASyncItem* pItem;
 		asIScriptFunction* pCallback;
 	};
@@ -44,10 +45,11 @@ public:
 
 	/**
 	*	Adds an item to the queue.
+	*	@param result Query result.
 	*	@param pItem Item to add. The item's reference counting shall be thread-safe.
 	*	@param pCallback Callback to invoke after completion.
 	*/
-	bool AddItem( IASSQLASyncItem* pItem, asIScriptFunction* pCallback );
+	bool AddItem( SQLQueryResult::SQLQueryResult result, IASSQLASyncItem* pItem, asIScriptFunction* pCallback );
 
 	/**
 	*	Clears all items from the queue.

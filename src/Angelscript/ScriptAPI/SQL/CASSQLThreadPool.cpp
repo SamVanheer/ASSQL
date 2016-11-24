@@ -50,12 +50,12 @@ void CASSQLThreadPool::Stop( const bool bWait )
 
 void CASSQLThreadPool::ExecuteItem( int iID, CASSQLThreadPool* pPool, CASSQLCommand command )
 {
-	command.pCommand->Execute();
+	const auto result = command.pCommand->Execute();
 
 	if( command.pCallback )
 	{
 		//Post the command for processing by the callback.
-		pPool->m_Queue.AddItem( command.pCommand, command.pCallback );
+		pPool->m_Queue.AddItem( result, command.pCommand, command.pCallback );
 
 		command.pCallback->Release();
 	}

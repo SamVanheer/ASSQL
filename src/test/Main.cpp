@@ -150,6 +150,7 @@ public:
 
 		RegisterScriptCTime( engine );
 		RegisterScriptCDateTime( engine );
+		RegisterScriptSQLCommon( engine );
 		RegisterScriptSQLite( engine );
 		RegisterScriptMySQL( engine );
 

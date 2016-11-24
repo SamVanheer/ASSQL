@@ -89,18 +89,24 @@ void main()
 	}
 }
 
-void QueryCallback( SQLiteQuery@ pQuery )
+void QueryCallback( SQLQueryResult::SQLQueryResult result, SQLiteQuery@ pQuery )
 {
+	Print( "Query result: %1\n", SQLQueryResult::ToString( result ) );
+	
 	Print( "Query callback invoked\n" );
 }
 
-void StmtCallback( SQLitePreparedStatement@ pStmt )
+void StmtCallback( SQLQueryResult::SQLQueryResult result, SQLitePreparedStatement@ pStmt )
 {
+	Print( "Query result: %1\n", SQLQueryResult::ToString( result ) );
+	
 	Print( "Statement callback invoked\n" );
 }
 
-void RowCallback( SQLiteRow@ pRow )
+void RowCallback( SQLQueryResult::SQLQueryResult result, SQLiteRow@ pRow )
 {
+	Print( "Query result: %1\n", SQLQueryResult::ToString( result ) );
+	
 	Print( "Statement 2 row callback invoked, Row %1, ID %2, value %3, text %4, 64 bit integer %5, Optional %6\n", 
 		pRow.GetRowIndex(), 
 		pRow.GetSigned32( 0 ), 

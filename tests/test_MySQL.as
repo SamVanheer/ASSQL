@@ -18,8 +18,10 @@ class Database
 		}
 	}
 	
-	private void CreatedDB( MySQLQuery@ pQuery )
+	private void CreatedDB( SQLQueryResult::SQLQueryResult result, MySQLQuery@ pQuery )
 	{
+		Print( "Query result: %1\n", SQLQueryResult::ToString( result ) );
+	
 		//This has no effect due to connections being per-query.
 		bool bSuccess = m_pConnection.Query(
 			"USE TestDB;",
@@ -29,8 +31,10 @@ class Database
 		Print( "Selected database query: %1\n", bSuccess ? "yes" : "no" );
 	}
 	
-	private void SelectedDB( MySQLQuery@ pQuery )
+	private void SelectedDB( SQLQueryResult::SQLQueryResult result, MySQLQuery@ pQuery )
 	{
+		Print( "Query result: %1\n", SQLQueryResult::ToString( result ) );
+	
 		bool bSuccess = m_pConnection.Query( 
 			"CREATE TABLE IF NOT EXISTS Test("
 			"ID INT PRIMARY KEY NOT NULL,"
@@ -46,8 +50,10 @@ class Database
 		Print( "Created query: %1\n", bSuccess ? "yes" : "no" );
 	}
 	
-	private void CreatedTable( MySQLQuery@ pQuery )
+	private void CreatedTable( SQLQueryResult::SQLQueryResult result, MySQLQuery@ pQuery )
 	{
+		Print( "Query result: %1\n", SQLQueryResult::ToString( result ) );
+	
 		MySQLPreparedStatement@ pStmt = m_pConnection.CreatePreparedStatement( 
 		"INSERT INTO Test (ID, VALUE, STRING, date, time, datetime) "
 		"VALUES(?, ?, ?, ?, ?, ?), (?, ?, ?, ?, ?, ?)" );
@@ -71,13 +77,17 @@ class Database
 		}
 	}
 	
-	private void NullResultSetCallback( MySQLResultSet@ pSet )
+	private void NullResultSetCallback( SQLQueryResult::SQLQueryResult result, MySQLResultSet@ pSet )
 	{
+		Print( "Query result: %1\n", SQLQueryResult::ToString( result ) );
+	
 		Print( "null result set callback\n" );
 	}
 	
-	private void InsertedValues( MySQLPreparedStatement@ pStmt )
+	private void InsertedValues( SQLQueryResult::SQLQueryResult result, MySQLPreparedStatement@ pStmt )
 	{
+		Print( "Query result: %1\n", SQLQueryResult::ToString( result ) );
+	
 		Print( "Inserted values\n" );
 		
 		MySQLPreparedStatement@ pStmt2 = m_pConnection.CreatePreparedStatement( "SELECT * FROM Test" );
@@ -89,8 +99,10 @@ class Database
 		
 	}
 	
-	private void Stmt2Callback( MySQLResultSet@ pResultSet )
+	private void Stmt2Callback( SQLQueryResult::SQLQueryResult result, MySQLResultSet@ pResultSet )
 	{
+		Print( "Query result: %1\n", SQLQueryResult::ToString( result ) );
+	
 		Print( "Statement 2 row callback invoked\n" );
 		
 		while( pResultSet.Next() )

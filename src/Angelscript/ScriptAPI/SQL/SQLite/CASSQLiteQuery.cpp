@@ -23,7 +23,7 @@ CASSQLiteQuery::~CASSQLiteQuery()
 	m_pConnection = nullptr;
 }
 
-void CASSQLiteQuery::Execute()
+SQLQueryResult::SQLQueryResult CASSQLiteQuery::Execute()
 {
 	char* pszError;
 	sqlite3_exec( m_pConnection->GetConnection(), m_szQuery.c_str(), nullptr, nullptr, &pszError );
@@ -33,4 +33,6 @@ void CASSQLiteQuery::Execute()
 		m_pConnection->GetLogFunction()( "Error: %s\n", pszError );
 		sqlite3_free( pszError );
 	}
+
+	return pszError ? SQLQueryResult::FAILED : SQLQueryResult::SUCCESS;
 }

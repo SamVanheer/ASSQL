@@ -52,7 +52,7 @@ public:
 			delete this;
 	}
 
-	void Execute() override;
+	SQLQueryResult::SQLQueryResult Execute() override;
 
 	/**
 	*	@return Whether the statement is valid.

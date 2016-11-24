@@ -46,15 +46,19 @@ CASSQLitePreparedStatement::~CASSQLitePreparedStatement()
 	m_pConnection->Release();
 }
 
-void CASSQLitePreparedStatement::Execute()
+SQLQueryResult::SQLQueryResult CASSQLitePreparedStatement::Execute()
 {
 	assert( IsValid() );
+
+	SQLQueryResult::SQLQueryResult queryResult = SQLQueryResult::FAILED;
 
 	int iResult;
 
 	bool bContinue = true;
 
 	int iRowIndex = 0;
+
+	bool bSuccess = true;
 
 	while( bContinue && ( ( iResult = sqlite3_step( m_pStatement ) ) != SQLITE_DONE ) )
 	{
@@ -71,7 +75,7 @@ void CASSQLitePreparedStatement::Execute()
 
 				CASSQLiteRow row( *this, iRowIndex++ );
 
-				m_pConnection->GetThreadPool().GetThreadQueue().AddItem( &row, m_pRowCallback );
+				m_pConnection->GetThreadPool().GetThreadQueue().AddItem( SQLQueryResult::SUCCESS, &row, m_pRowCallback );
 
 				//Let the callback complete first. - Solokiller
 				while( !m_bCallbackInvoked )
@@ -85,6 +89,7 @@ void CASSQLitePreparedStatement::Execute()
 		default:
 			m_pConnection->GetThreadPool().GetThreadQueue().AddLogMessage( "SQLitePreparedStatement::Execute: %s\n", sqlite3_errstr( iResult ) );
 			bContinue = false;
+			bSuccess = false;
 			break;
 		}
 	}
@@ -96,6 +101,11 @@ void CASSQLitePreparedStatement::Execute()
 	}
 
 	m_bExecuting = false;
+
+	if( bSuccess )
+		queryResult = SQLQueryResult::SUCCESS;
+
+	return queryResult;
 }
 
 bool CASSQLitePreparedStatement::IsValid() const

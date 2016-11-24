@@ -1,6 +1,7 @@
 #ifndef ANGELSCRIPT_SCRIPTAPI_SQL_IASSQLASYNCCOMMAND_H
 #define ANGELSCRIPT_SCRIPTAPI_SQL_IASSQLASYNCCOMMAND_H
 
+#include "ASSQL.h"
 #include "IASSQLASyncItem.h"
 
 /**
@@ -9,7 +10,7 @@
 class IASSQLASyncCommand : public IASSQLASyncItem
 {
 public:
-	virtual void Execute() = 0;
+	virtual SQLQueryResult::SQLQueryResult Execute() = 0;
 };
 
 #endif //ANGELSCRIPT_SCRIPTAPI_SQL_IASSQLASYNCCOMMAND_H

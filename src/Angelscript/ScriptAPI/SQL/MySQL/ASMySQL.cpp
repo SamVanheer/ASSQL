@@ -97,7 +97,7 @@ static void RegisterScriptMySQLQuery( asIScriptEngine& engine )
 		pszObjectName, "bool IsValid() const",
 		asMETHOD( CASMySQLQuery, IsValid ), asCALL_THISCALL );
 
-	engine.RegisterFuncdef( "void MySQLQueryCallback(MySQLQuery@ pQuery)" );
+	engine.RegisterFuncdef( "void MySQLQueryCallback(SQLQueryResult::SQLQueryResult result, MySQLQuery@ pQuery)" );
 }
 
 static void RegisterScriptMySQLResultSet( asIScriptEngine& engine )
@@ -265,8 +265,8 @@ static void RegisterScriptMySQLPreparedStatement( asIScriptEngine& engine )
 		pszObjectName, "void BindDateTime(uint uiIndex, const CDateTime& in dateTime)",
 		asMETHOD( CASMySQLPreparedStatement, BindDateTime ), asCALL_THISCALL );
 
-	engine.RegisterFuncdef( "void MySQLResultSetCallback(MySQLResultSet@ pResultSet)" );
-	engine.RegisterFuncdef( "void MySQLPreparedStatementCallback(MySQLPreparedStatement@ pStatement)" );
+	engine.RegisterFuncdef( "void MySQLResultSetCallback(SQLQueryResult::SQLQueryResult result, MySQLResultSet@ pResultSet)" );
+	engine.RegisterFuncdef( "void MySQLPreparedStatementCallback(SQLQueryResult::SQLQueryResult result, MySQLPreparedStatement@ pStatement)" );
 
 	engine.RegisterObjectMethod(
 		pszObjectName, "void ExecuteStatement(MySQLResultSetCallback@ pResultSetCallback = null, MySQLPreparedStatementCallback@ pCallback = null)",

@@ -22,17 +22,19 @@ CASMySQLQuery::~CASMySQLQuery()
 	m_pConnection->Release();
 }
 
-void CASMySQLQuery::Execute()
+SQLQueryResult::SQLQueryResult CASMySQLQuery::Execute()
 {
 	MYSQL* pConn = m_pConnection->Open();
 
 	if( !pConn )
 	{
 		//Open reports any errors.
-		return;
+		return SQLQueryResult::FAILED;
 	}
 
 	const int iResult = mysql_query( pConn, m_szQuery.c_str() );
+
+	SQLQueryResult::SQLQueryResult queryResult = SQLQueryResult::FAILED;
 
 	if( iResult != 0 )
 	{
@@ -56,9 +58,13 @@ void CASMySQLQuery::Execute()
 
 		if( iResult > 0 )
 			m_pConnection->GetThreadPool().GetThreadQueue().AddLogMessage( "MySQLQuery::Execute: %s\n", mysql_error( pConn ) );
+		else
+			queryResult = SQLQueryResult::SUCCESS;
 	}
 
 	m_pConnection->Close( pConn );
+
+	return queryResult;
 }
 
 bool CASMySQLQuery::IsValid() const

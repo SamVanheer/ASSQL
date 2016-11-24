@@ -36,7 +36,7 @@ public:
 
 		void Release() const override {}
 
-		void Execute() override {}
+		SQLQueryResult::SQLQueryResult Execute() override { return SQLQueryResult::SUCCESS; }
 
 		void CallbackInvoked() override;
 
@@ -115,7 +115,7 @@ public:
 			delete this;
 	}
 
-	void Execute() override;
+	SQLQueryResult::SQLQueryResult Execute() override;
 
 	/**
 	*	@return Whether this statement is valid.

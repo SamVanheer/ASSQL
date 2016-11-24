@@ -28,7 +28,7 @@ size_t CASSQLThreadQueue::GetQueueSize() const
 	return m_Queue.size();
 }
 
-bool CASSQLThreadQueue::AddItem( IASSQLASyncItem* pItem, asIScriptFunction* pCallback )
+bool CASSQLThreadQueue::AddItem( SQLQueryResult::SQLQueryResult result, IASSQLASyncItem* pItem, asIScriptFunction* pCallback )
 {
 	assert( pItem );
 	assert( pCallback );
@@ -38,7 +38,7 @@ bool CASSQLThreadQueue::AddItem( IASSQLASyncItem* pItem, asIScriptFunction* pCal
 
 	std::lock_guard<std::mutex> guard( m_Mutex );
 
-	m_Queue.push( { pItem, pCallback } );
+	m_Queue.push( { result, pItem, pCallback } );
 
 	pItem->AddRef();
 
@@ -85,7 +85,7 @@ bool CASSQLThreadQueue::ProcessQueue( asIScriptContext& context )
 	{
 		auto& entry = m_Queue.front();
 
-		as::Call( &context, entry.pCallback, entry.pItem );
+		as::Call( &context, entry.pCallback, entry.result, entry.pItem );
 
 		entry.pItem->CallbackInvoked();
 

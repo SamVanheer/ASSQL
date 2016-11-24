@@ -34,9 +34,11 @@ CASMySQLPreparedStatement::~CASMySQLPreparedStatement()
 	m_pConnection->Release();
 }
 
-void CASMySQLPreparedStatement::Execute()
+SQLQueryResult::SQLQueryResult CASMySQLPreparedStatement::Execute()
 {
 	assert( m_bExecuting );
+
+	SQLQueryResult::SQLQueryResult queryResult = SQLQueryResult::FAILED;
 
 	if( MYSQL* pConn = m_pConnection->Open() )
 	{
@@ -97,7 +99,7 @@ void CASMySQLPreparedStatement::Execute()
 					//Should be false here.
 					assert( !m_bHandledResultSet );
 
-					bSuccess = m_pConnection->GetThreadPool().GetThreadQueue().AddItem( pResultSet, m_pCallback );
+					bSuccess = m_pConnection->GetThreadPool().GetThreadQueue().AddItem( SQLQueryResult::SUCCESS, pResultSet, m_pCallback );
 
 					//Block until the set has been handled.
 					while( !m_bHandledResultSet )
@@ -120,10 +122,14 @@ void CASMySQLPreparedStatement::Execute()
 			if( mysql_stmt_close( pStatement ) )
 			{
 				m_pConnection->GetThreadPool().GetThreadQueue().AddLogMessage( "MySQLPreparedStatement::Execute: Error closing statement: %s\n", mysql_error( pConn ) );
+				bSuccess = false;
 			}
 		}
 
 		m_pConnection->Close( pConn );
+
+		if( bSuccess )
+			queryResult = SQLQueryResult::SUCCESS;
 	}
 	else
 	{
@@ -138,6 +144,8 @@ void CASMySQLPreparedStatement::Execute()
 	}
 
 	m_bExecuting = false;
+
+	return queryResult;
 }
 
 bool CASMySQLPreparedStatement::IsValid() const

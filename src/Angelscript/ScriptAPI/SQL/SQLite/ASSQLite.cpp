@@ -56,7 +56,7 @@ static void RegisterScriptSQLiteQuery( asIScriptEngine& engine )
 		pszObjectName, "bool IsValid() const",
 		asMETHOD( CASSQLiteQuery, IsValid ), asCALL_THISCALL );
 
-	engine.RegisterFuncdef( "void SQLiteQueryCallback(SQLiteQuery@ pQuery)" );
+	engine.RegisterFuncdef( "void SQLiteQueryCallback(SQLQueryResult::SQLQueryResult result, SQLiteQuery@ pQuery)" );
 }
 
 static void RegisterScriptSQLiteRow( asIScriptEngine& engine )
@@ -98,7 +98,7 @@ static void RegisterScriptSQLiteRow( asIScriptEngine& engine )
 		pszObjectName, AS_STRING_OBJNAME " GetString(const uint32 uiColumn) const",
 		asMETHOD( CASSQLitePreparedStatement::CASSQLiteRow, GetString ), asCALL_THISCALL );
 
-	engine.RegisterFuncdef( "void SQLiteRowCallback(SQLiteRow@ pRow)" );
+	engine.RegisterFuncdef( "void SQLiteRowCallback(SQLQueryResult::SQLQueryResult result, SQLiteRow@ pRow)" );
 }
 
 static void RegisterScriptSQLitePreparedStatement( asIScriptEngine& engine )
@@ -133,7 +133,7 @@ static void RegisterScriptSQLitePreparedStatement( asIScriptEngine& engine )
 		pszObjectName, "void BindString(uint32 uiIndex, const " AS_STRING_OBJNAME "& in szString)",
 		asMETHOD( CASSQLitePreparedStatement, BindString ), asCALL_THISCALL );
 
-	engine.RegisterFuncdef( "void SQLitePreparedStatementCallback(SQLitePreparedStatement@ pStatement)" );
+	engine.RegisterFuncdef( "void SQLitePreparedStatementCallback(SQLQueryResult::SQLQueryResult result, SQLitePreparedStatement@ pStatement)" );
 
 	engine.RegisterObjectMethod(
 		pszObjectName, "void ExecuteStatement(SQLiteRowCallback@ pRowCallback = null, SQLitePreparedStatementCallback@ pCallback = null)",
