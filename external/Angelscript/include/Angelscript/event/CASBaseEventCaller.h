@@ -1,6 +1,7 @@
 #ifndef ANGELSCRIPT_CASBASEEVENTCALLER_H
 #define ANGELSCRIPT_CASBASEEVENTCALLER_H
 
+#include <cassert>
 #include <cstdarg>
 
 #include <angelscript.h>
@@ -18,8 +19,9 @@
 *	@tparam SUBCLASS Class that inherits from this class.
 *	@tparam EVENTTYPE Represents the type of the event being called.
 *	@tparam RETURNTYPE Type that will be returned by call methods.
+*	@tparam FAILEDRETURNVAL Value to return when a call fails.
 */
-template<typename SUBCLASS, typename EVENTTYPE, typename RETURNTYPE>
+template<typename SUBCLASS, typename EVENTTYPE, typename RETURNTYPE, RETURNTYPE FAILEDRETURNVAL>
 class CASBaseEventCaller
 {
 public:
@@ -37,6 +39,11 @@ public:
 	*	Type of the return value.
 	*/
 	typedef RETURNTYPE ReturnType_t;
+
+	/**
+	*	Return value when the call fails.
+	*/
+	static const RETURNTYPE FAILED_RETURN_VALUE = FAILEDRETURNVAL;
 
 public:
 	//Can be instanced and have member vars for call specific state.
@@ -56,7 +63,24 @@ public:
 	*/
 	inline ReturnType_t VCall( EventType_t& event, asIScriptContext* pContext, CallFlags_t flags, va_list list )
 	{
-		return static_cast<SubClass_t*>( this )->CallEvent( event, pContext, flags, list );
+		//Take care of some common bookkeeping here.
+		assert( pContext );
+
+		if( !pContext )
+			return FAILED_RETURN_VALUE;
+
+		IncrementCallCount( event );
+
+		auto result = static_cast<SubClass_t*>( this )->CallEvent( event, pContext, flags, list );
+
+		DecrementCallCount( event );
+
+		assert( GetCallCount( event ) >= 0 );
+
+		//Clear any removed hooks.
+		event.ClearRemovedHooks();
+
+		return result;
 	}
 
 	/**
