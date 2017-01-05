@@ -16,7 +16,9 @@
 
 #include "ASLogging.h"
 
-#include "Platform.h"
+#include "ASPlatform.h"
+
+#include "StringUtils.h"
 
 class CScriptAny;
 
@@ -673,7 +675,7 @@ bool RegisterCasts( asIScriptEngine& engine, const char* const pszBaseType, cons
 
 		auto result = snprintf( szBuffer, sizeof( szBuffer ), "%s@ opImplCast()", pszBaseType );
 
-		if( result >= 0 && result < sizeof( szBuffer ) )
+		if( result >= 0 && static_cast<size_t>( result ) < sizeof( szBuffer ) )
 		{
 			//Allocate a string here because documentation does not allocate anything itself.
 			const auto retCode = engine.RegisterObjectMethod(
@@ -689,7 +691,7 @@ bool RegisterCasts( asIScriptEngine& engine, const char* const pszBaseType, cons
 
 		result = snprintf( szBuffer, sizeof( szBuffer ), "%s@ opCast()", pszSubType );
 
-		if( result >= 0 && result < sizeof( szBuffer ) )
+		if( result >= 0 && static_cast<size_t>( result ) < sizeof( szBuffer ) )
 		{
 			const auto retCode = engine.RegisterObjectMethod(
 				pszBaseType, szBuffer, asFUNCTION( downcast ), asCALL_CDECL_OBJFIRST );
@@ -818,6 +820,182 @@ inline std::string ExtractNamespaceFromDecl( const std::string& szDecl, const bo
 		return "";
 
 	return szDecl.substr( uiStart, uiNSEnd - uiStart );
+}
+
+/**
+*	Contains caller info.
+*	@see GetCallerInfo
+*/
+struct CASCallerInfo
+{
+	const char* pszSection = nullptr;
+	int iLine = 0;
+	int iColumn = 0;
+};
+
+/**
+*	Gets information about the calling script.
+*	@param[ out ] pszSection Name of the section, or "Unknown" if it couldn't be retrieved.
+*	@param[ out ] iLine Line number, or 0 if it couldn't be retrieved.
+*	@param[ out ] iColumn Column, or 0 if it couldn't be retrieved.
+*	@param pContext Optional. Context to retrieve the info from. If null, calls asGetActiveContext.
+*	@return Whether the context was valid.
+*/
+inline bool GetCallerInfo( const char*& pszSection, int& iLine, int& iColumn, asIScriptContext* pContext = nullptr )
+{
+	if( !pContext )
+		pContext = asGetActiveContext();
+
+	pszSection = nullptr;
+	iColumn = 0;
+	iLine = 0;
+
+	if( pContext )
+		iLine = pContext->GetLineNumber( 0, &iColumn, &pszSection );
+
+	if( !pszSection )
+		pszSection = "Unknown";
+
+	return pContext != nullptr;
+}
+
+/**
+*	Gets information about the calling script.
+*	@param[ out ] info Caller info.
+*	@param pContext Optional. Context to retrieve the info from. If null, calls asGetActiveContext.
+*	@return Whether the context was valid.
+*/
+inline bool GetCallerInfo( CASCallerInfo& info, asIScriptContext* pContext = nullptr )
+{
+	return GetCallerInfo( info.pszSection, info.iLine, info.iColumn, pContext );
+}
+
+/**
+*	Formats a function name and stores the result in the given buffer.
+*	The format for global functions is \<namespace>::<\name>.
+*	The format for member functions is \n<namespace>::\<classname>::\<name>.
+*	@param function Function whose name should be formatted.
+*	@param pszDest Destination buffer. Must be non-null.
+*	@param uiSizeInCharacters Size of the destination buffer, in characters.
+*	@param bAllowTruncation Whether to truncate the name to "\<name\>..." if the length exceeds the buffer size. If false, the buffer is set to an empty string and false is returned.
+*	@return Whether the name fits in the buffer.
+*/
+inline bool FormatFunctionName( const asIScriptFunction& function, char* pszDest, const size_t uiSizeInCharacters, const bool bAllowTruncation = true )
+{
+	assert( pszDest );
+
+	if( uiSizeInCharacters == 0 )
+		return false;
+
+	*pszDest = '\0';
+
+	//Can never format a function with only room for a null terminator.
+	if( uiSizeInCharacters <= 1 )
+	{
+		return false;
+	}
+
+	const asIScriptFunction* pFunction = &function;
+
+	{
+		//If this is a delegate, get the original function.
+		auto pDelegate = pFunction->GetDelegateFunction();
+
+		if( pDelegate )
+			pFunction = pDelegate;
+	}
+
+	auto pszNamespace = pFunction->GetNamespace();
+	auto pszObjName = pFunction->GetObjectName();
+	auto pszName = pFunction->GetName();
+
+	const char szNSSep[] = "::";
+	const size_t uiNSSepLength = ASARRAYSIZE( szNSSep ) - 1;
+
+	size_t uiNSLength = 0;
+
+	if( pszNamespace && *pszNamespace )
+		uiNSLength += strlen( pszNamespace ) + uiNSSepLength;
+
+	if( pszObjName )
+		uiNSLength += strlen( pszObjName ) + uiNSSepLength;
+
+	const size_t uiNameLength = strlen( pszName );
+
+	//Determine if the entire name would fit.
+	if( ( uiNSLength + uiNameLength ) >= uiSizeInCharacters )
+	{
+		if( !bAllowTruncation )
+		{
+			return false;
+		}
+	}
+
+	size_t uiCurrentLength = 0;
+
+	//Can copy up to a certain amount of the namespace name.
+	if( pszNamespace && *pszNamespace )
+	{
+		strncat( pszDest, pszNamespace, uiSizeInCharacters - 1 );
+		uiCurrentLength = strlen( pszDest );
+		strncat( pszDest, szNSSep, uiSizeInCharacters - uiCurrentLength - 1 );
+		uiCurrentLength = strlen( pszDest );
+	}
+
+	if( pszObjName )
+	{
+		strncat( pszDest, pszObjName, uiSizeInCharacters - 1 );
+		uiCurrentLength = strlen( pszDest );
+		strncat( pszDest, szNSSep, uiSizeInCharacters - uiCurrentLength - 1 );
+		uiCurrentLength = strlen( pszDest );
+	}
+
+	const size_t MAX_DOTS = 3U;
+
+	//The total name would exceed the buffer size, so adjust it.
+	if( uiCurrentLength > 0 && ( ( uiCurrentLength + uiNameLength ) >= uiSizeInCharacters ) )
+	{
+		//If the name itself is too long we can't fit the namespace at all, the dots start at the beginning.
+		const size_t uiDotEnd = uiNameLength >= uiSizeInCharacters ?
+									std::min( uiSizeInCharacters - 1, MAX_DOTS ) : 
+									std::max( uiSizeInCharacters - uiNameLength - 1, MAX_DOTS );
+
+		//This could be a very smaller buffer, but we should try regardless.
+		const size_t uiNumDots = std::min( MAX_DOTS, uiDotEnd );
+
+		for( size_t uiDot = uiDotEnd - uiNumDots; uiDot < uiDotEnd; ++uiDot )
+		{
+			pszDest[ uiDot ] = '.';
+		}
+
+		pszDest[ uiDotEnd ] = '\0';
+
+		uiCurrentLength = strlen( pszDest );
+	}
+
+	strncat( pszDest, pszName, uiSizeInCharacters - uiCurrentLength - 1 );
+
+	uiCurrentLength = strlen( pszDest );
+
+	//The name itself is longer than the entire string, so we have to end with dots.
+	if( uiNameLength >= uiCurrentLength )
+	{
+		//We couldn't fit it at all.
+		if( uiSizeInCharacters <= MAX_DOTS )
+		{
+			*pszDest = '\0';
+			return false;
+		}
+
+		for( size_t uiDot = uiSizeInCharacters - MAX_DOTS - 1; uiDot < uiSizeInCharacters; ++uiDot )
+		{
+			pszDest[ uiDot ] = '.';
+		}
+
+		pszDest[ uiSizeInCharacters - 1 ] = '\0';
+	}
+
+	return true;
 }
 }
 
