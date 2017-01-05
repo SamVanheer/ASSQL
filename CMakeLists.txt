@@ -270,11 +270,22 @@ target_link_libraries( AngelscriptSQL
 
 set_target_properties( AngelscriptSQL PROPERTIES COMPILE_FLAGS "${LINUX_32BIT_FLAG}" LINK_FLAGS "${SQL_LINK_FLAGS} ${LINUX_32BIT_FLAG}" )
 
+#Properly named pdb. By default it always uses the base name.
+set_target_properties( AngelscriptSQL PROPERTIES COMPILE_PDB_NAME_DEBUG "AngelscriptSQLd" )
+#Match the debug version so its relative position is the same.
+set_target_properties( AngelscriptSQL PROPERTIES COMPILE_PDB_NAME_RELWITHDEBINFO "AngelscriptSQL" )
+
 #Create filters
 create_source_groups( "${CMAKE_SOURCE_DIR}" )
 
 install( TARGETS AngelscriptSQL DESTINATION lib )
 install_includes( "${CMAKE_SOURCE_DIR}/src" )
+
+#Install the pdb files.
+if( WIN32 )
+	install( FILES ${CMAKE_BINARY_DIR}/Debug/AngelscriptSQLd.pdb DESTINATION lib CONFIGURATIONS Debug )
+	install( FILES ${CMAKE_BINARY_DIR}/RelWithDebInfo/AngelscriptSQL.pdb DESTINATION lib CONFIGURATIONS RelWithDebInfo )
+endif()
 
 clear_sources()
 
