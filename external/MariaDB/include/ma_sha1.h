@@ -1,5 +1,6 @@
 /****************************************************************************
    Copyright (C) 2012 Monty Program AB
+                 2016 MariaDB Corporation AB
    
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public
@@ -32,10 +33,10 @@ typedef struct {
 	uint32 state[5];		/* state (ABCD) */
 	uint32 count[2];		/* number of bits, modulo 2^64 (lsb first) */
 	unsigned char buffer[64];	/* input buffer */
-} MYSQL_SHA1_CTX;
+} _MA_SHA1_CTX;
 
-void MYSQL_SHA1Init(MYSQL_SHA1_CTX *);
-void MYSQL_SHA1Update(MYSQL_SHA1_CTX *, const unsigned char *, size_t);
-void MYSQL_SHA1Final(unsigned char[20], MYSQL_SHA1_CTX *);
+void ma_SHA1Init(_MA_SHA1_CTX *);
+void ma_SHA1Update(_MA_SHA1_CTX *, const unsigned char *, size_t);
+void ma_SHA1Final(unsigned char[20], _MA_SHA1_CTX *);
 
 #endif

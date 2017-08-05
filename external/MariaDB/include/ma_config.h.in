@@ -3,6 +3,9 @@
  * Include file constants (processed in LibmysqlIncludeFiles.txt 1
  */
 #cmakedefine HAVE_ALLOCA_H 1
+#cmakedefine HAVE_BIGENDIAN 1
+#cmakedefine HAVE_SETLOCALE 1
+#cmakedefine HAVE_NL_LANGINFO 1
 #cmakedefine HAVE_ARPA_INET_H 1
 #cmakedefine HAVE_CRYPT_H 1
 #cmakedefine HAVE_DIRENT_H 1
@@ -44,9 +47,9 @@
 #cmakedefine HAVE_SYSENT_H 1
 #cmakedefine HAVE_TERMIO_H 1
 #cmakedefine HAVE_TERMIOS_H 1
-#cmakedefine HAVE_UCONTEXT_H 1
 #cmakedefine HAVE_UNISTD_H 1
 #cmakedefine HAVE_UTIME_H 1
+#cmakedefine HAVE_UCONTEXT_H 1
 
 /*
  * function definitions - processed in LibmysqlFunctions.txt 
@@ -273,7 +276,5 @@
  * various other defines
  */
 #cmakedefine HAVE_THREADS 1
-#cmakedefine SHAREDIR "@SHAREDIR@"
 #cmakedefine DEFAULT_CHARSET_HOME "@DEFAULT_CHARSET_HOME@"
-#cmakedefine PLUGINDIR "@PREFIX_INSTALL_DIR@/@PLUGIN_INSTALL_DIR@"
-
+#cmakedefine DEFAULT_SYSCONFDIR "@DEFAULT_SYSCONFDIR@"

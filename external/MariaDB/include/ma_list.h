@@ -12,37 +12,36 @@
    
    You should have received a copy of the GNU Library General Public
    License along with this library; if not, write to the Free
-   Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
-   MA 02111-1307, USA */
+   Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+   MA 02111-1301, USA */
 
-/* thread safe version of some common functions */
+#ifndef _list_h_
+#define _list_h_
 
-/* for thread safe my_inet_ntoa */
 #ifdef	__cplusplus
 extern "C" {
-#endif /* __cplusplus */
-
-#if !defined(MSDOS) && !defined(_WIN32) && !defined(__BEOS__)
-#ifdef HAVE_SYS_SOCKET_H
-#include <sys/socket.h>
-#endif
-#ifdef HAVE_NETINET_IN_H
-#include <netinet/in.h>
-#endif
-#ifdef HAVE_ARPA_INET_H
-#include <arpa/inet.h>
-#endif
-#endif /* !defined(MSDOS) && !defined(_WIN32) */
-
-
-/* On SCO you get a link error when refering to h_errno */
-#ifdef SCO
-#undef h_errno
-#define h_errno errno
 #endif
 
-void my_inet_ntoa(struct in_addr in, char *buf);
+typedef struct st_list {
+  struct st_list *prev,*next;
+  void *data;
+} LIST;
+
+typedef int (*list_walk_action)(void *,void *);
+
+extern LIST *list_add(LIST *root,LIST *element);
+extern LIST *list_delete(LIST *root,LIST *element);
+extern LIST *list_cons(void *data,LIST *root);
+extern LIST *list_reverse(LIST *root);
+extern void list_free(LIST *root,unsigned int free_data);
+extern unsigned int list_length(LIST *list);
+extern int list_walk(LIST *list,list_walk_action action,char * argument);
+
+#define rest(a) ((a)->next)
+#define list_push(a,b) (a)=list_cons((b),(a))
+#define list_pop(A) {LIST *old=(A); (A)=list_delete(old,old) ; ma_free((char *) old,MYF(MY_FAE)); }
 
 #ifdef	__cplusplus
 }
+#endif
 #endif

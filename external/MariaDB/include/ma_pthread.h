@@ -1,4 +1,5 @@
 /* Copyright (C) 2000 MySQL AB & MySQL Finland AB & TCX DataKonsult AB
+                 2016 MariaDB Corporation AB
    
    This library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public
@@ -12,13 +13,15 @@
    
    You should have received a copy of the GNU Library General Public
    License along with this library; if not, write to the Free
-   Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
-   MA 02111-1307, USA */
+   Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+   MA 02111-1301, USA */
 
 /* Defines to make different thread packages compatible */
 
 #ifndef _my_pthread_h
 #define _my_pthread_h
+
+#undef SAFE_MUTEX
 
 #include <errno.h>
 #ifndef ETIME
@@ -505,16 +508,6 @@ extern int my_rw_trywrlock(my_rw_lock_t *);
 #define MY_MUTEX_INIT_SLOW   NULL
 #define MY_MUTEX_INIT_FAST   NULL
 #define MY_MUTEX_INIT_ERRCHK NULL
-#ifdef PTHREAD_ADAPTIVE_MUTEX_INITIALIZER_NP
-extern pthread_mutexattr_t my_fast_mutexattr;
-#undef  MY_MUTEX_INIT_FAST
-#define MY_MUTEX_INIT_FAST &my_fast_mutexattr
-#endif
-#ifdef PTHREAD_ERRORCHECK_MUTEX_INITIALIZER_NP
-extern pthread_mutexattr_t my_errchk_mutexattr;
-#undef MY_INIT_MUTEX_ERRCHK
-#define MY_INIT_MUTEX_ERRCHK &my_errchk_mutexattr
-#endif
 
 extern my_bool my_thread_global_init(void);
 extern void my_thread_global_end(void);

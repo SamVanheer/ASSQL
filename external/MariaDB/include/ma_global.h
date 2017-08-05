@@ -12,8 +12,8 @@
    
    You should have received a copy of the GNU Library General Public
    License along with this library; if not, write to the Free
-   Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
-   MA 02111-1307, USA */
+   Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+   MA 02111-1301, USA */
 
 /* This is the main include file that should included 'first' in every
    C file. */
@@ -21,15 +21,26 @@
 #ifndef _global_h
 #define _global_h
 
-
 #ifdef _WIN32
-#include <config-win.h>
-#else
-#include <my_config.h>
-#if defined(__cplusplus) && defined(inline)
-#undef inline				/* fix configure problem */
+#include <winsock2.h>
+#include <Windows.h>
+#include <stdlib.h>
+#define strcasecmp _stricmp
+#define sleep(x) Sleep(1000*(x))
+#ifdef _MSC_VER
+#define inline __inline
+#if _MSC_VER < 1900
+#define snprintf _snprintf
 #endif
-#endif /* _WIN32... */
+#endif
+#define STDCALL __stdcall 
+#endif
+
+#include <ma_config.h>
+#include <assert.h>
+#ifndef __GNUC__
+#define  __attribute(A)
+#endif
 
 /* Fix problem with S_ISLNK() on Linux */
 #if defined(HAVE_LINUXTHREADS)
@@ -174,9 +185,6 @@ double my_ulonglong2double(unsigned long long A);
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>
 #endif
-#ifdef HAVE_SYS_TIMEB_H
-#include <sys/timeb.h>				/* Avoid warnings on SCO */
-#endif
 #if TIME_WITH_SYS_TIME
 # include <sys/time.h>
 # include <time.h>
@@ -244,20 +252,10 @@ double my_ulonglong2double(unsigned long long A);
 #define DONT_REMEMBER_SIGNAL
 #endif
 
-/* Define void to stop lint from generating "null effekt" comments */
-#ifndef DONT_DEFINE_VOID
-#ifdef _lint
-int	__void__;
-#define VOID(X)		(__void__ = (int) (X))
-#else
-#undef VOID
-#define VOID(X)		(X)
-#endif
-#endif /* DONT_DEFINE_VOID */
 
 #if defined(_lint) || defined(FORCE_INIT_OF_VARS)
 #define LINT_INIT(var)	var=0			/* No uninitialize-warning */
-#define LINT_INIT_STRUCT(var) bzero(&var, sizeof(var)) /* No uninitialize-warning */
+#define LINT_INIT_STRUCT(var) memset(&var, 0, sizeof(var)) /* No uninitialize-warning */
 #else
 #define LINT_INIT(var)
 #define LINT_INIT_STRUCT(var)
@@ -335,8 +333,17 @@ typedef unsigned short ushort;
 
 typedef int	File;		/* File descriptor */
 #ifndef my_socket_defined
-typedef int	my_socket;	/* File descriptor for sockets */
 #define my_socket_defined
+#if defined(_WIN64)
+#define my_socket unsigned long long
+#elif defined(_WIN32)
+#define my_socket unsigned int
+#else
+typedef int my_socket;
+#endif
+#define my_socket_defined
+#endif
+#ifndef INVALID_SOCKET
 #define INVALID_SOCKET -1
 #endif
 /* Type for fuctions that handles signals */
@@ -413,7 +420,7 @@ typedef SOCKET_SIZE_TYPE size_socket;
 #define FN_DEVCHAR	':'
 
 #ifndef FN_LIBCHAR
-#ifdef __EMX__
+#ifdef _WIN32
 #define FN_LIBCHAR	'\\'
 #define FN_ROOTDIR	"\\"
 #else
@@ -455,7 +462,6 @@ typedef SOCKET_SIZE_TYPE size_socket;
 #define NO_DIR_LIBRARY		/* Not standar dir-library */
 #define USE_MY_STAT_STRUCT	/* For my_lib */
 #ifdef _MSC_VER
-  
 typedef SSIZE_T ssize_t;
 #endif
 #endif
@@ -526,10 +532,11 @@ extern double		my_atof(const char*);
 #define HAVE_LONG_LONG 1
 #endif
 
-#if defined(HAVE_LONG_LONG) && !defined(LONGLONG_IN)
+#if defined(HAVE_LONG_LONG) && !defined(LONGLONG_MIN)
 #define LONGLONG_MIN	((long long) 0x8000000000000000LL)
 #define LONGLONG_MAX	((long long) 0x7FFFFFFFFFFFFFFFLL)
 #endif
+
 
 #define INT_MIN64       (~0x7FFFFFFFFFFFFFFFLL)
 #define INT_MAX64       0x7FFFFFFFFFFFFFFFLL
@@ -577,7 +584,7 @@ extern double		my_atof(const char*);
   Max size that must be added to a so that we know Size to make
   adressable obj.
 */
-typedef long		my_ptrdiff_t;
+typedef long my_ptrdiff_t;
 #define MY_ALIGN(A,L)	(((A) + (L) - 1) & ~((L) - 1))
 #define ALIGN_SIZE(A)	MY_ALIGN((A),sizeof(double))
 /* Size to make adressable obj. */
@@ -690,7 +697,7 @@ typedef off_t os_off_t;
 #if defined(_WIN32)
 #define socket_errno	WSAGetLastError()
 #define SOCKET_EINTR	WSAEINTR 
-#define SOCKET_EAGAIN	WSAEINPROGRESS
+#define SOCKET_EAGAIN	WSAEWOULDBLOCK
 #define SOCKET_ENFILE	ENFILE
 #define SOCKET_EMFILE	EMFILE
 #define SOCKET_EWOULDBLOCK WSAEWOULDBLOCK
@@ -710,6 +717,7 @@ typedef char		*my_string; /* String of characters */
 typedef unsigned long	size_s; /* Size of strings (In string-funcs) */
 typedef int		myf;	/* Type of MyFlags in my_funcs */
 typedef char		my_bool; /* Small bool */
+typedef unsigned long long my_ulonglong;
 #if !defined(bool) && !defined(bool_defined) && (!defined(HAVE_BOOL) || !defined(__cplusplus))
 typedef char		bool;	/* Ordinary boolean values 0 1 */
 #endif
@@ -925,7 +933,7 @@ do { doubleget_union _tmp; \
 #define int8store(T,A)       do { uint def_temp= (uint) (A), def_temp2= (uint) ((A) >> 32); \
                                   int4store((T),def_temp); \
                                   int4store((T+4),def_temp2); } while(0)
-#ifdef WORDS_BIGENDIAN
+#ifdef HAVE_BIGENDIAN
 #define float4store(T,A) do { *(T)= ((uchar *) &A)[3];\
                               *((T)+1)=(char) ((uchar *) &A)[2];\
                               *((T)+2)=(char) ((uchar *) &A)[1];\
@@ -1002,7 +1010,7 @@ do { doubleget_union _tmp; \
   register) variable, M is a pointer to byte
 */
 
-#ifdef WORDS_BIGENDIAN
+#ifdef HAVE_BIGENDIAN
 
 #define ushortget(V,M)  do { V = (uint16) (((uint16) ((uchar) (M)[1]))+\
                                  ((uint16) ((uint16) (M)[0]) << 8)); } while(0)
@@ -1066,17 +1074,16 @@ do { doubleget_union _tmp; \
 
 #ifdef _WIN32
 #define SO_EXT ".dll"
-#elif defined(__APPLE__)
-#define SO_EXT ".dylib"
 #else
 #define SO_EXT ".so"
 #endif
 
-#include <dbug.h>
 #ifndef DBUG_OFF
 #define dbug_assert(A) assert(A)
+#define DBUG_ASSERT(A) assert(A)
 #else
 #define dbug_assert(A)
+#define DBUG_ASSERT(A)
 #endif
 
 #ifdef HAVE_DLOPEN
