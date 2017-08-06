@@ -15,8 +15,9 @@ public:
 	CASMySQLBind() = default;
 	~CASMySQLBind();
 
-	CASMySQLBind( CASMySQLBind&& other ) = default;
-	CASMySQLBind& operator=( CASMySQLBind&& other ) = default;
+	// JonnyBoy0719: VS2013 fix
+	CASMySQLBind( CASMySQLBind&& other ) {};
+	CASMySQLBind& operator=( CASMySQLBind&& other ) {};
 
 	/**
 	*	Sets the underlying value type. Configures bind settings, allocates the buffer for variable length data.

@@ -44,9 +44,13 @@
 #define LOCAL_HOST_NAMEDPIPE "."
 
 #if defined(_WIN32) && !defined( _CUSTOMCONFIG_)
-#define MYSQL_NAMEDPIPE "MySQL"
+#define MARIADB_NAMEDPIPE "MySQL"
 #define MYSQL_SERVICENAME "MySql"
 #endif /* _WIN32 */
+
+/* for use in mysql client tools only */
+#define MYSQL_AUTODETECT_CHARSET_NAME "auto"
+#define BINCMP_FLAG       131072
 
 enum mysql_enum_shutdown_level
 {
@@ -57,37 +61,41 @@ enum mysql_enum_shutdown_level
 
 enum enum_server_command
 {
-  MYSQL_COM_SLEEP = 0,
-  MYSQL_COM_QUIT,
-  MYSQL_COM_INIT_DB,
-  MYSQL_COM_QUERY,
-  MYSQL_COM_FIELD_LIST,
-  MYSQL_COM_CREATE_DB,
-  MYSQL_COM_DROP_DB,
-  MYSQL_COM_REFRESH,
-  MYSQL_COM_SHUTDOWN,
-  MYSQL_COM_STATISTICS,
-  MYSQL_COM_PROCESS_INFO,
-  MYSQL_COM_CONNECT,
-  MYSQL_COM_PROCESS_KILL,
-  MYSQL_COM_DEBUG,
-  MYSQL_COM_PING,
-  MYSQL_COM_TIME = 15,
-  MYSQL_COM_DELAYED_INSERT,
-  MYSQL_COM_CHANGE_USER,
-  MYSQL_COM_BINLOG_DUMP,
-  MYSQL_COM_TABLE_DUMP,
-  MYSQL_COM_CONNECT_OUT = 20,
-  MYSQL_COM_REGISTER_SLAVE,
-  MYSQL_COM_STMT_PREPARE = 22,
-  MYSQL_COM_STMT_EXECUTE = 23,
-  MYSQL_COM_STMT_SEND_LONG_DATA = 24,
-  MYSQL_COM_STMT_CLOSE = 25,
-  MYSQL_COM_STMT_RESET = 26,
-  MYSQL_COM_SET_OPTION = 27,
-  MYSQL_COM_STMT_FETCH = 28,
-  MYSQL_COM_DAEMON,
-  MYSQL_COM_END
+  COM_SLEEP = 0,
+  COM_QUIT,
+  COM_INIT_DB,
+  COM_QUERY,
+  COM_FIELD_LIST,
+  COM_CREATE_DB,
+  COM_DROP_DB,
+  COM_REFRESH,
+  COM_SHUTDOWN,
+  COM_STATISTICS,
+  COM_PROCESS_INFO,
+  COM_CONNECT,
+  COM_PROCESS_KILL,
+  COM_DEBUG,
+  COM_PING,
+  COM_TIME = 15,
+  COM_DELAYED_INSERT,
+  COM_CHANGE_USER,
+  COM_BINLOG_DUMP,
+  COM_TABLE_DUMP,
+  COM_CONNECT_OUT = 20,
+  COM_REGISTER_SLAVE,
+  COM_STMT_PREPARE = 22,
+  COM_STMT_EXECUTE = 23,
+  COM_STMT_SEND_LONG_DATA = 24,
+  COM_STMT_CLOSE = 25,
+  COM_STMT_RESET = 26,
+  COM_SET_OPTION = 27,
+  COM_STMT_FETCH = 28,
+  COM_DAEMON= 29,
+  COM_UNSUPPORTED= 30,
+  COM_RESET_CONNECTION = 31,
+  COM_STMT_BULK_EXECUTE = 250,
+  COM_MULTI = 254,
+  COM_END
 };
 
 
@@ -128,7 +136,7 @@ enum enum_server_command
 #define REFRESH_READ_LOCK	16384	/* Lock tables for read */
 #define REFRESH_FAST		32768	/* Intern flag */
 
-#define CLIENT_LONG_PASSWORD        1	/* new more secure passwords */
+#define CLIENT_MYSQL          1
 #define CLIENT_FOUND_ROWS	    2	/* Found instead of affected rows */
 #define CLIENT_LONG_FLAG	    4	/* Get all column flags */
 #define CLIENT_CONNECT_WITH_DB	    8	/* One can specify db on connect */
@@ -150,11 +158,26 @@ enum enum_server_command
 #define CLIENT_PS_MULTI_RESULTS  (1UL << 18)
 #define CLIENT_PLUGIN_AUTH       (1UL << 19)
 #define CLIENT_CONNECT_ATTRS     (1UL << 20)
+#define CLIENT_SESSION_TRACKING  (1UL << 23)
 #define CLIENT_PROGRESS          (1UL << 29) /* client supports progress indicator */
+#define CLIENT_PROGRESS_OBSOLETE  CLIENT_PROGRESS 
 #define CLIENT_SSL_VERIFY_SERVER_CERT (1UL << 30)
 #define CLIENT_REMEMBER_OPTIONS  (1UL << 31)
 
-#define CLIENT_SUPPORTED_FLAGS  (CLIENT_LONG_PASSWORD | \
+/* MariaDB specific capabilities */
+#define MARIADB_CLIENT_FLAGS 0xFFFFFFFF00000000ULL
+#define MARIADB_CLIENT_PROGRESS (1ULL << 32)
+#define MARIADB_CLIENT_COM_MULTI (1ULL << 33)
+#define MARIADB_CLIENT_STMT_BULK_OPERATIONS (1ULL << 34)
+
+#define IS_MARIADB_EXTENDED_SERVER(mysql)\
+        !(mysql->server_capabilities & CLIENT_MYSQL)
+
+#define MARIADB_CLIENT_SUPPORTED_FLAGS (MARIADB_CLIENT_PROGRESS |\
+                                       MARIADB_CLIENT_COM_MULTI |\
+                                       MARIADB_CLIENT_STMT_BULK_OPERATIONS)
+
+#define CLIENT_SUPPORTED_FLAGS  (CLIENT_MYSQL |\
                                  CLIENT_FOUND_ROWS |\
                                  CLIENT_LONG_FLAG |\
                                  CLIENT_CONNECT_WITH_DB |\
@@ -176,9 +199,10 @@ enum enum_server_command
 		                 CLIENT_SSL_VERIFY_SERVER_CERT |\
                                  CLIENT_REMEMBER_OPTIONS |\
                                  CLIENT_PLUGIN_AUTH |\
+                                 CLIENT_SESSION_TRACKING |\
                                  CLIENT_CONNECT_ATTRS)
 
-#define CLIENT_CAPABILITIES	(CLIENT_LONG_PASSWORD |\
+#define CLIENT_CAPABILITIES	(CLIENT_MYSQL | \
                                  CLIENT_LONG_FLAG |\
                                  CLIENT_TRANSACTIONS |\
                                  CLIENT_SECURE_CONNECTION |\
@@ -186,6 +210,7 @@ enum enum_server_command
                                  CLIENT_PS_MULTI_RESULTS |\
                                  CLIENT_PROTOCOL_41 |\
                                  CLIENT_PLUGIN_AUTH |\
+                                 CLIENT_SESSION_TRACKING |\
                                  CLIENT_CONNECT_ATTRS)
 
 #define CLIENT_DEFAULT_FLAGS ((CLIENT_SUPPORTED_FLAGS & ~CLIENT_COMPRESS)\
@@ -203,21 +228,21 @@ enum enum_server_command
 #define SERVER_STATUS_METADATA_CHANGED    1024
 #define SERVER_QUERY_WAS_SLOW             2048
 #define SERVER_PS_OUT_PARAMS              4096
+#define SERVER_SESSION_STATE_CHANGED      (1UL << 14)
 
 #define MYSQL_ERRMSG_SIZE	512
 #define NET_READ_TIMEOUT	30		/* Timeout on read */
 #define NET_WRITE_TIMEOUT	60		/* Timeout on write */
 #define NET_WAIT_TIMEOUT	8*60*60		/* Wait for new query */
 
-#ifndef Vio_defined
-#define Vio_defined
-#ifdef HAVE_VIO
-class Vio;					/* Fill Vio class in C++ */
-#else
-struct st_vio;					/* Only C */
-typedef struct st_vio Vio;
-#endif
-#endif
+/* for server integration (mysqlbinlog) */
+#define LIST_PROCESS_HOST_LEN 64
+#define MYSQL50_TABLE_NAME_PREFIX         "#mysql50#"
+#define MYSQL50_TABLE_NAME_PREFIX_LENGTH  (sizeof(MYSQL50_TABLE_NAME_PREFIX)-1)
+#define SAFE_NAME_LEN (NAME_LEN + MYSQL50_TABLE_NAME_PREFIX_LENGTH)
+
+struct st_ma_pvio;
+typedef struct st_ma_pvio MARIADB_PVIO;
 
 #define MAX_CHAR_WIDTH		255	/* Max length for a CHAR colum */
 #define MAX_BLOB_WIDTH		8192	/* Default width for blob */
@@ -231,9 +256,11 @@ typedef struct st_vio Vio;
 #define MAX_INT_WIDTH        10
 #define MAX_BIGINT_WIDTH     20
 
+struct st_ma_connection_plugin;
+
 
 typedef struct st_net {
-  Vio *vio;
+  MARIADB_PVIO *pvio;
   unsigned char *buff;
   unsigned char *buff_end,*write_pos,*read_pos;
   my_socket fd;					/* For Perl DBI/dbd */
@@ -246,18 +273,18 @@ typedef struct st_net {
   unsigned int *return_status;
   unsigned char reading_or_writing;
   char save_char;
-  my_bool unused_1, unused_2;
+  char unused_1;
+  my_bool unused_2;
   my_bool compress;
   my_bool unused_3;
-  unsigned char *unused_4;
+  void *unused_4;
   unsigned int last_errno;
   unsigned char error;
   my_bool unused_5;
   my_bool unused_6;
-  
   char last_error[MYSQL_ERRMSG_SIZE];
   char sqlstate[SQLSTATE_LENGTH+1];
-  void *extension;
+  struct st_mariadb_net_extension *extension;
 } NET;
 
 #define packet_error ((unsigned int) -1)
@@ -269,6 +296,22 @@ enum enum_mysql_set_option
   MYSQL_OPTION_MULTI_STATEMENTS_OFF
 };
 
+enum enum_session_state_type
+{
+  SESSION_TRACK_SYSTEM_VARIABLES= 0,
+  SESSION_TRACK_SCHEMA,
+  SESSION_TRACK_STATE_CHANGE,
+  /* currently not supported by MariaDB Server */
+  SESSION_TRACK_GTIDS,
+  SESSION_TRACK_TRANSACTION_CHARACTERISTICS,
+  SESSION_TRACK_TRANSACTION_TYPE /* make sure that SESSION_TRACK_END always points
+                                    to last element of enum !! */
+};
+
+#define SESSION_TRACK_BEGIN 0
+#define SESSION_TRACK_END SESSION_TRACK_TRANSACTION_TYPE
+#define SESSION_TRACK_TYPES SESSION_TRACK_END + 1
+
 enum enum_field_types { MYSQL_TYPE_DECIMAL, MYSQL_TYPE_TINY,
                         MYSQL_TYPE_SHORT,  MYSQL_TYPE_LONG,
                         MYSQL_TYPE_FLOAT,  MYSQL_TYPE_DOUBLE,
@@ -278,6 +321,15 @@ enum enum_field_types { MYSQL_TYPE_DECIMAL, MYSQL_TYPE_TINY,
                         MYSQL_TYPE_DATETIME, MYSQL_TYPE_YEAR,
                         MYSQL_TYPE_NEWDATE, MYSQL_TYPE_VARCHAR,
                         MYSQL_TYPE_BIT,
+                        /*
+                          the following types are not used by client,
+                          only for mysqlbinlog!!
+                        */
+                        MYSQL_TYPE_TIMESTAMP2,
+                        MYSQL_TYPE_DATETIME2,
+                        MYSQL_TYPE_TIME2,
+                        /* --------------------------------------------- */
+                        MYSQL_TYPE_JSON=245,
                         MYSQL_TYPE_NEWDECIMAL=246,
                         MYSQL_TYPE_ENUM=247,
                         MYSQL_TYPE_SET=248,
@@ -324,15 +376,15 @@ extern unsigned long net_buffer_length;
 
 #define net_new_transaction(net) ((net)->pkt_nr=0)
 
-int	my_net_init(NET *net, Vio *vio);
-void	net_end(NET *net);
-void	net_clear(NET *net);
-int	net_flush(NET *net);
-int	my_net_write(NET *net,const char *packet, size_t len);
-int	net_write_command(NET *net,unsigned char command,const char *packet,
-			  size_t len);
-int	net_real_write(NET *net,const char *packet, size_t len);
-unsigned long	my_net_read(NET *net);
+int	ma_net_init(NET *net, MARIADB_PVIO *pvio);
+void	ma_net_end(NET *net);
+void	ma_net_clear(NET *net);
+int	ma_net_flush(NET *net);
+int	ma_net_write(NET *net,const unsigned char *packet, size_t len);
+int	ma_net_write_command(NET *net,unsigned char command,const char *packet,
+			  size_t len, my_bool disable_flush);
+int	ma_net_real_write(NET *net,const char *packet, size_t len);
+extern unsigned long ma_net_read(NET *net);
 
 struct rand_struct {
   unsigned long seed1,seed2,max_value;
@@ -341,7 +393,7 @@ struct rand_struct {
 
   /* The following is for user defined functions */
 
-enum Item_result {STRING_RESULT,REAL_RESULT,INT_RESULT};
+enum Item_result {STRING_RESULT,REAL_RESULT,INT_RESULT,ROW_RESULT,DECIMAL_RESULT};
 
 typedef struct st_udf_args
 {
@@ -363,6 +415,12 @@ typedef struct st_udf_init
   my_bool const_item;			/* 0 if result is independent of arguments */
 } UDF_INIT;
 
+/* Connection types */
+#define MARIADB_CONNECTION_UNIXSOCKET   0
+#define MARIADB_CONNECTION_TCP          1
+#define MARIADB_CONNECTION_NAMEDPIPE    2
+#define MARIADB_CONNECTION_SHAREDMEM    3
+
   /* Constants when using compression */
 #define NET_HEADER_SIZE 4		/* standard header size */
 #define COMP_HEADER_SIZE 3		/* compression header extra size */
@@ -375,24 +433,17 @@ typedef struct st_udf_init
 extern "C" {
 #endif
   
-void randominit(struct rand_struct *,unsigned long seed1,
-		unsigned long seed2);
-double rnd(struct rand_struct *);
-void make_scrambled_password(char *to,const char *password);
-void get_salt_from_password(unsigned long *res,const char *password);
-void make_password_from_salt(char *to, unsigned long *hash_res);
-char *scramble_323(char *to,const char *message,const char *password);
-void my_scramble_41(const unsigned char *buffer, const char *scramble, const char *password);
-my_bool check_scramble(const char *, const char *message,
-		       unsigned long *salt,my_bool old_ver);
-void hash_password(unsigned long *result, const char *password, size_t len);
+char *ma_scramble_323(char *to,const char *message,const char *password);
+void ma_scramble_41(const unsigned char *buffer, const char *scramble, const char *password);
+void ma_hash_password(unsigned long *result, const char *password, size_t len);
+void ma_make_scrambled_password(char *to,const char *password);
 
 /* Some other useful functions */
 
-void load_defaults(const char *conf_file, const char **groups,
+void mariadb_load_defaults(const char *conf_file, const char **groups,
 		   int *argc, char ***argv);
-my_bool my_thread_init(void);
-void my_thread_end(void);
+my_bool ma_thread_init(void);
+void ma_thread_end(void);
 
 #ifdef __cplusplus
 }
