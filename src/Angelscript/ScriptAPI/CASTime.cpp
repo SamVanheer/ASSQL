@@ -1,7 +1,7 @@
 #include "CASTime.h"
 
 // JonnyBoy0719: VS2013 fix
-#include "Angelscript\util\ASPlatform.h"
+#include "Angelscript/util/ASPlatform.h"
 
 CASTime::CASTime( uint8_t uiHour, uint8_t uiMinute, uint8_t uiSecond, uint16_t uiMillisecond )
 {
