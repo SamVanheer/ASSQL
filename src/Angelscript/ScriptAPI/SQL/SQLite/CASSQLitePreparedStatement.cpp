@@ -171,23 +171,38 @@ void CASSQLitePreparedStatement::BindString( uint32_t uiIndex, const std::string
 
 bool CASSQLitePreparedStatement::ExecuteStatement( asIScriptFunction* pRowCallback, asIScriptFunction* pCallback )
 {
-	if( m_bExecuting )
-		return false;
-
 	bool bSuccess = false;
 
-	if( m_pConnection->GetThreadPool().AddItem( this, pCallback ) )
+	if( !m_bExecuting )
 	{
+		//Set these first in case the query is executed before AddItem's result can be fully handled (race condition)
 		m_bExecuting = true;
-		m_pRowCallback = pRowCallback;
 
-		bSuccess = true;
+		if( pRowCallback )
+		{
+			m_pRowCallback = pRowCallback;
+			pRowCallback->AddRef();
+		}
+
+		bSuccess = m_pConnection->GetThreadPool().AddItem( this, pCallback );
+
+		if( !bSuccess )
+		{
+			m_bExecuting = false;
+
+			if( m_pRowCallback )
+			{
+				m_pRowCallback = nullptr;
+			}
+		}
 	}
 	else
 	{
-		if( pRowCallback )
-			pRowCallback->Release();
+		m_pConnection->GetLogFunction()( "SQLitePreparedStatement::ExecuteStatement: Statement is already being executed!\n" );
 	}
+
+	if( pRowCallback )
+		pRowCallback->Release();
 
 	if( pCallback )
 		pCallback->Release();

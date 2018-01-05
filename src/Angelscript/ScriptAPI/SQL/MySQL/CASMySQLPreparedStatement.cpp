@@ -331,25 +331,38 @@ void CASMySQLPreparedStatement::BindDateTime( uint32_t uiIndex, const CASDateTim
 
 bool CASMySQLPreparedStatement::ExecuteStatement( asIScriptFunction* pResultSetCallback, asIScriptFunction* pCallback )
 {
-	if( m_bExecuting )
-	{
-		m_pConnection->GetLogFunction()( "MySQLPreparedStatement::ExecuteStatement: Statement is already being executed!\n" );
-		return false;
-	}
-
 	bool bSuccess = false;
 
-	if( m_pConnection->GetThreadPool().AddItem( this, pCallback ) )
+	if( !m_bExecuting )
 	{
+		//Set these first in case the query is executed before AddItem's result can be fully handled (race condition)
 		m_bExecuting = true;
-		m_pCallback = pResultSetCallback;
-		bSuccess = true;
+
+		if( pResultSetCallback )
+		{
+			m_pCallback = pResultSetCallback;
+			pResultSetCallback->AddRef();
+		}
+
+		bSuccess = m_pConnection->GetThreadPool().AddItem( this, pCallback );
+
+		if( !bSuccess )
+		{
+			m_bExecuting = false;
+
+			if( m_pCallback )
+			{
+				m_pCallback = nullptr;
+			}
+		}
 	}
 	else
 	{
-		if( pResultSetCallback )
-			pResultSetCallback->Release();
+		m_pConnection->GetLogFunction()( "MySQLPreparedStatement::ExecuteStatement: Statement is already being executed!\n" );
 	}
+
+	if( pResultSetCallback )
+		pResultSetCallback->Release();
 
 	if( pCallback )
 		pCallback->Release();
